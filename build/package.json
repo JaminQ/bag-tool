@@ -1,0 +1,20 @@
+{
+  "name": "bagjs-build",
+  "version": "1.0.0",
+  "description": "A project just for bag",
+  "dependencies": {
+    "browser-sync": "^2.24.6",
+    "del": "^3.0.0",
+    "gulp-changed": "^3.2.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "require-dir": "^1.0.0",
+    "through2": "^2.0.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "JaminQian",
+  "license": "ISC"
+}
