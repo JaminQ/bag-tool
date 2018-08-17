@@ -1,0 +1,13 @@
+{
+  "src": [
+    "../src/"
+  ],
+  "template": "template/",
+  "dest": "../dist",
+  "extname": [
+    "*.html",
+    "*.tpl"
+  ],
+  "startPath": "index.html",
+  "encoding": "utf8"
+}

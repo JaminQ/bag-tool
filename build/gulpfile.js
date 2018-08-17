@@ -1,22 +1,38 @@
 const gulp = require('gulp');
 const del = require('del');
-const changed = require('gulp-changed');
+const path = require('path').posix;
+const watch = require('gulp-watch');
 const browserSync = require('browser-sync').create();
 const requireDir = require('require-dir');
-const through2 = require('through2');
 
-const {
-  src: SRC,
-  dest: DEST
-} = require('./config.json');
 const tasks = requireDir('./tasks');
+const {
+  common,
+  tmpl,
+  through,
+  config: {
+    src: SRC,
+    dest: DEST,
+    template: TEMPLATE,
+    extname: EXTNAME,
+    startPath: STARTPATH
+  }
+} = requireDir('./utils');
 
-gulp.task('default', ['build'], () => {});
+gulp.task('default', ['build']);
 
 gulp.task('build', ['clean'], () => {
-  return gulp.src(`${SRC}/*.*`)
-    .pipe(changed(DEST)) // 仅传递更改过的文件
+  const stream = gulp.src(common.getSrc(SRC, EXTNAME))
+    .pipe(through((content, basePath) => {
+      return tmpl(content, basePath)
+    }))
     .pipe(gulp.dest(DEST));
+
+  stream.on('error', e => {
+    console.log('build task error:', e);
+  });
+
+  return stream;
 });
 
 gulp.task('clean', () => {
@@ -30,32 +46,21 @@ gulp.task('watch', ['build'], () => {
   browserSync.init({
     server: {
       baseDir: DEST
-    }
+    },
+    startPath: STARTPATH
   });
 
-  return gulp.watch(['*'], {
-    cwd: SRC
-  }, ['reload']);
+  const stream = watch(SRC, () => {
+    gulp.start('build');
+  });
+
+  stream.on('error', e => {
+    console.log('watch task error:', e);
+  });
+
+  return stream;
 });
 
 gulp.task('reload', ['build'], () => {
   browserSync.reload();
 });
-
-function through(callback) {
-  return through2.obj(function(file, enc, cb) {
-    let contentStr = '';
-    if (file.isBuffer()) {
-      contentStr = file.contents.toString();
-    } else {
-      contentStr = file;
-    }
-    console.log(contentStr);
-    if (typeof callback === 'function') {
-      contentStr = callback(contentStr, enc, cb);
-    }
-    file.contents = new Buffer(contentStr);
-    this.push(file);
-    cb(null, file);
-  });
-}
