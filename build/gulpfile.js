@@ -1,47 +1,22 @@
 const gulp = require('gulp');
-const del = require('del');
-const path = require('path').posix;
 const watch = require('gulp-watch');
 const browserSync = require('browser-sync').create();
 const requireDir = require('require-dir');
 
 const tasks = requireDir('./tasks');
 const {
-  common,
-  tmpl,
-  through,
-  config: {
-    src: SRC,
-    dest: DEST,
-    template: TEMPLATE,
-    extname: EXTNAME,
-    startPath: STARTPATH
-  }
-} = requireDir('./utils');
+  src: SRC,
+  dest: DEST,
+  startPath: STARTPATH
+} = require('./utils/config');
 
 gulp.task('default', ['build']);
 
-gulp.task('build', ['clean'], () => {
-  const stream = gulp.src(common.getSrc(SRC, EXTNAME))
-    .pipe(through((content, basePath) => {
-      return tmpl(content, basePath)
-    }))
-    .pipe(gulp.dest(DEST));
-
-  stream.on('error', e => {
-    console.log('build task error:', e);
-  });
-
-  return stream;
-});
-
-gulp.task('clean', () => {
-  return del([`${DEST}/**`, `!${DEST}`], {
-    force: true
-  });
-});
+gulp.task('build', ['html', 'less', 'copy']);
 
 gulp.task('watch', ['build'], () => {
+  global.isWatch = true;
+
   // 在本地起一个服务并调起浏览器访问该服务
   browserSync.init({
     server: {
@@ -51,7 +26,7 @@ gulp.task('watch', ['build'], () => {
   });
 
   const stream = watch(SRC, () => {
-    gulp.start('build');
+    gulp.start('reload');
   });
 
   stream.on('error', e => {

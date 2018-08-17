@@ -4,9 +4,12 @@
   ],
   "template": "template/",
   "dest": "../dist",
-  "extname": [
+  "tmplExtname": [
     "*.html",
     "*.tpl"
+  ],
+  "styleExtname": [
+    "*.less"
   ],
   "startPath": "index.html",
   "encoding": "utf8"
