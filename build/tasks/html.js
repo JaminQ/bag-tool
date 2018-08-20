@@ -3,7 +3,9 @@ const changed = require('gulp-changed');
 const requireDir = require('require-dir');
 
 const {
-  common,
+  common: {
+    getSrc
+  },
   tmpl,
   through,
   config: {
@@ -14,7 +16,7 @@ const {
 } = requireDir('../utils');
 
 gulp.task('html', ['clean'], () => {
-  const stream = gulp.src(common.getSrc(SRC, TMPLEXTNAME))
+  const stream = gulp.src(getSrc(SRC, TMPLEXTNAME))
     .pipe(changed(DEST))
     .pipe(through((content, basePath) => {
       return tmpl(content, basePath)

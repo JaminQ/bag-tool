@@ -1,39 +1,61 @@
 const fs = require('fs');
 const path = require('path').posix;
 const iconv = require('iconv-lite');
+const requireDir = require('require-dir');
 
 const {
-  encoding: ENCODING,
-  template: TEMPLATE
-} = require('./config');
+  common: {
+    attrs2obj
+  },
+  config: {
+    encoding: ENCODING,
+    template: TEMPLATE
+  }
+} = requireDir('../utils');
 
 function include(content, basePath) {
-  return content.replace(/<%@include\((.*?)\)%>/g, (w, m) => {
-    let _partName = '',
-      _content = '';
-    m = m.split('#');
-    m.length > 1 && (_partName = m[1]);
+  return content.replace(/<bagjs-include([\s\S]*?)>([\s\S]*?)<\/bagjs-include>/g, (w, attrs, content) => {
+    attrs = attrs.trim();
+    content = content.trim();
 
-    if (m[0]) {
-      const _filePath = path.join(basePath, TEMPLATE, m[0]);
-      if (fs.existsSync(_filePath)) {
-        _content = fs.readFileSync(_filePath);
-        _content = iconv.decode(_content, ENCODING);
+    let _content = '';
+    if (attrs) { // 必须要有属性
+      const attrsObj = attrs2obj(attrs);
+      if (attrsObj.file) { // 必须指定文件及路径
+        const _filePath = path.join(basePath, TEMPLATE, attrsObj.file);
+        if (fs.existsSync(_filePath)) { // 检查文件是否存在
+          _content = fs.readFileSync(_filePath);
+          _content = iconv.decode(_content, ENCODING);
 
-        if (_partName) {
-          const reg = new RegExp(`<%#${_partName}%>([\\s\\S]*?)<%#/${_partName}%>`);
-          _content = _content.match(reg);
-          _content = _content ? _content[1] : '';
+          if (attrsObj.part) { // 如果指定了part，则取指定part内容
+            const reg = new RegExp(`<%#${attrsObj.part}%>([\\s\\S]*?)<%#/${attrsObj.part}%>`);
+            _content = _content.match(reg);
+            _content = _content ? _content[1] : '';
+          }
+
+          // 处理slot
+          content && (_content = slot(content, _content));
         }
-      } else {
-        _content = '';
       }
-    } else {
-      _content = '';
     }
 
     return _content;
   });
+}
+
+function slot(slotContent, html) {
+  slotContent.replace(/<bagjs-slot([\s\S]*?)>([\s\S]*?)<\/bagjs-slot>/g, (w, attrs, content) => {
+    attrs = attrs.trim();
+    content = content.trim();
+
+    if (attrs) { // 必须要有属性
+      const attrsObj = attrs2obj(attrs);
+      const reg = new RegExp(`<%\\$slot-${attrsObj.name}%>`, 'g');
+      html = html.replace(reg, content);
+    }
+  });
+
+  return html;
 }
 
 module.exports = (content, basePath) => {

@@ -3,7 +3,9 @@ const changed = require('gulp-changed');
 const requireDir = require('require-dir');
 
 const {
-  common,
+  common: {
+    getSrc
+  },
   config: {
     src: SRC,
     dest: DEST,
@@ -13,7 +15,7 @@ const {
 } = requireDir('../utils');
 
 gulp.task('copy', ['clean'], () => {
-  const stream = gulp.src(common.getSrc(SRC, ['*.*'], TMPLEXTNAME.concat(STYLEEXTNAME)))
+  const stream = gulp.src(getSrc(SRC, ['*.*'], TMPLEXTNAME.concat(STYLEEXTNAME)))
     .pipe(changed(DEST))
     .pipe(gulp.dest(DEST));
 

@@ -5,7 +5,9 @@ const less = require('gulp-less');
 const requireDir = require('require-dir');
 
 const {
-  common,
+  common: {
+    getSrc
+  },
   config: {
     src: SRC,
     dest: DEST,
@@ -14,7 +16,7 @@ const {
 } = requireDir('../utils');
 
 gulp.task('less', ['clean'], () => {
-  const stream = gulp.src(common.getSrc(SRC, STYLEEXTNAME))
+  const stream = gulp.src(getSrc(SRC, STYLEEXTNAME))
     .pipe(changed(DEST))
     .pipe(less({
       // paths: [
