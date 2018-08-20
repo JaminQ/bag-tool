@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const defaultConfig = require('../config-default.json');
+const defaultConfig = require('../config.json');
 let userConfig = {};
 
 try {
