@@ -2,6 +2,11 @@
   "name": "bagjs-build",
   "version": "1.0.0",
   "description": "A project just for bag",
+  "scripts": {
+    "dev": "gulp watch",
+    "build": "gulp build",
+    "clean": "gulp clean"
+  },
   "dependencies": {
     "browser-sync": "^2.24.6",
     "del": "^3.0.0"

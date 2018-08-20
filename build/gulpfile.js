@@ -10,6 +10,7 @@ const {
   startPath: STARTPATH
 } = require('./utils/config');
 
+// 设置build为默认task
 gulp.task('default', ['build']);
 
 gulp.task('build', ['html', 'less', 'copy']);
@@ -37,5 +38,5 @@ gulp.task('watch', ['build'], () => {
 });
 
 gulp.task('reload', ['build'], () => {
-  browserSync.reload();
+  browserSync.reload(); // 自动刷新页面
 });
