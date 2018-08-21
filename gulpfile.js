@@ -16,7 +16,7 @@ gulp.task('default', ['build']);
 gulp.task('build', ['html', 'less', 'copy']);
 
 gulp.task('watch', ['build'], () => {
-  global.isWatch = true;
+  global.isWatch = true; // 全局标记为监听中
 
   // 在本地起一个服务并调起浏览器访问该服务
   browserSync.init({
@@ -26,7 +26,10 @@ gulp.task('watch', ['build'], () => {
     startPath: STARTPATH
   });
 
-  const stream = watch(SRC, () => {
+  // 监听src文件改动
+  const stream = watch(SRC, {
+    cwd: process.env.PROJECT
+  }, () => {
     gulp.start('reload');
   });
 

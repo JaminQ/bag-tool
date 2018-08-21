@@ -7,7 +7,7 @@ const {
     getSrc
   },
   config: {
-    src: SRC,
+    fullSrc: SRC,
     dest: DEST,
     tmplExtname: TMPLEXTNAME,
     styleExtname: STYLEEXTNAME

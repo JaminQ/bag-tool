@@ -1,25 +1,29 @@
 {
-  "name": "bagjs",
-  "version": "1.0.0",
+  "name": "bag-tool",
+  "version": "0.0.1",
   "description": "A tool just for bag",
+  "main": "index.js",
   "scripts": {
-    "dev": "gulp watch",
+    "start": "gulp watch",
     "build": "gulp build",
     "clean": "gulp clean"
   },
   "dependencies": {
+    "browser-sync": "^2.24.6",
+    "del": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-changed": "^3.2.0",
     "gulp-less": "^4.0.1",
     "gulp-watch": "^5.0.1",
     "require-dir": "^1.0.0",
-    "through2": "^2.0.3",
-    "browser-sync": "^2.24.6",
-    "del": "^3.0.0"
+    "through2": "^2.0.3"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MiniCai/bagjs.git"
+  },
+  "bin": {
+    "bag-tool": "./bin/bag-tool.js"
   },
   "author": "JaminQian",
   "license": "ISC",

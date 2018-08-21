@@ -9,7 +9,7 @@ const {
   tmpl,
   through,
   config: {
-    src: SRC,
+    fullSrc: SRC,
     dest: DEST,
     tmplExtname: TMPLEXTNAME
   }

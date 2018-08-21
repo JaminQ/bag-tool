@@ -9,7 +9,7 @@ const {
     getSrc
   },
   config: {
-    src: SRC,
+    fullSrc: SRC,
     dest: DEST,
     styleExtname: STYLEEXTNAME
   }
