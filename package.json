@@ -1,6 +1,6 @@
 {
   "name": "bag-tool",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A tool just for bag",
   "main": "index.js",
   "scripts": {
