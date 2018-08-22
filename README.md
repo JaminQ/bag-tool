@@ -8,6 +8,22 @@
 - **less编译**：喜欢写less但又懒得自己搭less构建工具的你可以通过bag-tool来非常方便地编译less文件；
 - 暂时没遇到其余前端痛点，如果你有想要的功能，可以[联系我](mailto:jaminqian@outlook.com)或提[Issues](https://github.com/MiniCai/bagjs/issues/new)，有空我就加一下。
 
+## 安装
+
+```shell
+npm install -g bag-tool
+```
+
+## 使用
+
+直接在你的项目目录里执行`bag-tool <command>`，支持以下`<command>`：
+
+- `help` 获取帮助。
+- `init` 初始化src目录以及配置文件。
+- `clean` 清空dest目录。
+- `build` 编译src目录并输出到dest目录。
+- `start` 编译后自动打开默认浏览器并加载，然后监听src目录并实时刷新浏览器。
+
 ## 配置
 
 默认配置可以参考[src/config.json](https://github.com/MiniCai/bagjs/blob/master/src/config.json)
@@ -34,7 +50,7 @@ Type: `Array`
 
 Default: `["src/"]`
 
-项目源码路径，可写多个路径，支持[node-glob语法](https://github.com/isaacs/node-glob)。
+项目源码路径，可写多个路径。
 
 #### dest
 
@@ -84,6 +100,58 @@ Default: `"utf8"`
 
 字符集编码。
 
-## 母版
+## 母版语法
 
-### 如何编写母版文件
+### 引用母版文件
+
+使用`<bag-include file="path/file.html"></bag-include>`来引用母版文件`path/file.html`，`file`属性相对母版目录。注意：母版文件必须在母版目录里。
+
+```html
+fdsfsdf
+```
+
+编译后
+
+```html
+fdsfsdf
+```
+
+### 引用母版文件的部分内容
+
+在母版文件中使用`<%#partName%><%#/partName%>`将母版划分各个模块，`part`为各个模块的id，通过这个id可以指定该模块内容。
+
+```html
+fdsfsdf
+```
+
+使用`<bag-include file="path/file.html" part="partName"></bag-include>`来引用母版文件`path/file.html`的`partName`模块内容。
+
+```html
+fdsfsdf
+```
+
+编译后
+
+```html
+fdsfsdf
+```
+
+### 注入代码
+
+在母版文件中使用`<%$slotName%><%$/slotName%>`来设置一个代码注入口，可在其中设置默认内容，当没有代码注入时就注入默认内容。
+
+```html
+fdsfsdf
+```
+
+使用`<bag-slot name="slotName"></bag-slot>`来注入代码，`<bag-slot>`必须写在`<bag-include>`里。
+
+```html
+fdsfsdf
+```
+
+编译后
+
+```html
+fdsfsdf
+```
