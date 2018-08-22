@@ -11,7 +11,7 @@ const {
 } = require('../config');
 
 function include(content, basePath) {
-  return content.replace(/<bagjs-include([\s\S]*?)>([\s\S]*?)<\/bagjs-include>/g, (w, attrs, content) => {
+  return content.replace(/<bag-include([\s\S]*?)>([\s\S]*?)<\/bag-include>/g, (w, attrs, content) => {
     attrs = attrs.trim();
     content = content.trim();
 
@@ -41,18 +41,21 @@ function include(content, basePath) {
 }
 
 function slot(slotContent, html) {
-  slotContent.replace(/<bagjs-slot([\s\S]*?)>([\s\S]*?)<\/bagjs-slot>/g, (w, attrs, content) => {
+  slotContent.replace(/<bag-slot([\s\S]*?)>([\s\S]*?)<\/bag-slot>/g, (w, attrs, content) => {
     attrs = attrs.trim();
     content = content.trim();
 
     if (attrs) { // 必须要有属性
       const attrsObj = attrs2obj(attrs);
-      const reg = new RegExp(`<%\\$slot-${attrsObj.name}%>`, 'g');
+      const reg = new RegExp(`<%\\$${attrsObj.name}%>([\\s\\S]*?)<%\\$/${attrsObj.name}%>`, 'g');
       html = html.replace(reg, content);
     }
   });
 
-  return html;
+  // TODO: 清空未使用的slot
+  return html.replace(/<%\$(.*?)%>([\s\S]*?)<%\$\/.*?%>/g, (w, slotName, defaultSlot) => {
+    return defaultSlot;
+  });
 }
 
 module.exports = (content, basePath) => {

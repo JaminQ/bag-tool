@@ -1,13 +1,13 @@
 {
   "name": "bag-tool",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A tool just for bag",
-  "main": "index.js",
+  "main": "gulpfile.js",
   "scripts": {
-    "start": "gulp watch",
-    "build": "gulp build",
+    "init": "gulp init",
     "clean": "gulp clean",
-    "init": "gulp init"
+    "build": "gulp build",
+    "start": "gulp watch"
   },
   "dependencies": {
     "browser-sync": "^2.24.6",
