@@ -1,17 +1,14 @@
 const fs = require('fs');
 const path = require('path').posix;
 const iconv = require('iconv-lite');
-const requireDir = require('require-dir');
 
 const {
-  common: {
-    attrs2obj
-  },
-  config: {
-    encoding: ENCODING,
-    template: TEMPLATE
-  }
-} = requireDir('../utils');
+  attrs2obj
+} = require('./common');
+const {
+  encoding: ENCODING,
+  template: TEMPLATE
+} = require('../config');
 
 function include(content, basePath) {
   return content.replace(/<bagjs-include([\s\S]*?)>([\s\S]*?)<\/bagjs-include>/g, (w, attrs, content) => {

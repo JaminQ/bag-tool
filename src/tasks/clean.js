@@ -7,7 +7,7 @@ const {
 
 gulp.task('clean', () => {
   if (!global.isWatch) { // watch的时候不clean
-    return del([`${DEST}/**`, `!${DEST}`], {
+    return del([`${DEST}/**`], {
       force: true
     });
   }

@@ -1,0 +1,11 @@
+用法: bag-tool <命令>
+
+你可以使用这些<命令>:
+  help      获取帮助
+  clean     清空dest目录
+  init      初始化src目录以及配置文件
+  build     编译src目录并输出到dest目录
+  start     编译，然后自动打开默认浏览器并加载，
+            然后监听src目录并实时刷新浏览器
+
+You can use `bag-tool help -c` to get English docs.
