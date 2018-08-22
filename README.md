@@ -30,31 +30,59 @@ bag-tool init
 
 #### src
 
-项目源码路径，可写多个路径，支持[node-glob语法](https://github.com/isaacs/node-glob)，默认`["src/"]`。
+Type: `Array`
+
+Default: `["src/"]`
+
+项目源码路径，可写多个路径，支持[node-glob语法](https://github.com/isaacs/node-glob)。
 
 #### dest
 
-项目输出路径，只可写一个路径，默认`"dest/"`。
+Type: `String`
+
+Default: `"dest/"`
+
+项目输出路径，只可写一个路径。
 
 #### template
 
-母版目录，所有母版文件都必须放在此处，不支持引用母版目录以外的文件，路径相对src，默认`"template/"`。
+Type: `String`
+
+Default: `"template/"`
+
+母版目录，所有母版文件都必须放在此处，不支持引用母版目录以外的文件，路径相对src。
 
 #### tmplExtname
 
-支持的母版文件后缀，默认`["*.html", "*.tpl"]`。
+Type: `Array`
+
+Default: `["*.html", "*.tpl"]`
+
+支持的母版文件后缀。
 
 #### styleExtname
 
-支持的css预处理器后缀，其实目前也就只支持less，写成配置是有望日后去拓展它（至于最后拓不拓展要看我心情），默认`["*.less"]`。
+Type: `Array`
+
+Default: `["*.less"]`
+
+支持的css预处理器后缀，其实目前也就只支持less，写成配置是有望日后去拓展它（至于最后拓不拓展要看我心情）。
 
 #### startPath
 
-本地服务开启后默认加载的路径，默认`"index.html"`。
+Type: `String`
+
+Default: `"index.html"`
+
+本地服务开启后默认加载的路径。
 
 #### encoding
 
-字符集编码，默认`"utf8"`。
+Type: `String`
+
+Default: `"utf8"`
+
+字符集编码。
 
 ## 母版
 
