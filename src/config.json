@@ -2,8 +2,8 @@
   "src": [
     "src/"
   ],
-  "template": "template/",
   "dest": "dest/",
+  "template": "template/",
   "tmplExtname": [
     "*.html",
     "*.tpl"
