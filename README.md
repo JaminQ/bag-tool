@@ -6,7 +6,7 @@
 
 - **母版**：你可以把重复的代码（默认支持.html和.tpl，你可以在配置中修改，以便支持更多类型）写在母版文件中，然后在主文件里引用母版文件，支持全引用、部分引用以及代码注入；
 - **less编译**：喜欢写less但又懒得自己搭less构建工具的你可以通过bag-tool来非常方便地编译less文件；
-- 暂时没遇到其余前端痛点，如果你有想要的功能，可以[联系我](mailto:jaminqian@outlook.com)，有空我就加一下。
+- 暂时没遇到其余前端痛点，如果你有想要的功能，可以[联系我](mailto:jaminqian@outlook.com)或提[Issues](https://github.com/MiniCai/bagjs/issues/new)，有空我就加一下。
 
 ## 配置
 
@@ -14,7 +14,7 @@
 
 当然，如果你对这份默认配置感到很不爽，你可以针对你的项目去单独写配置文件（大哥，答应我，千万不要修改我的[src/config.json](https://github.com/MiniCai/bagjs/blob/master/src/config.json)文件，ok？）
 
-只要在你的项目里新增`bag-tool-config.json`文件然后编辑你的配置内容就可以了，或者执行`bag-tool init`自动创建`bag-tool-config.json`文件。
+只要在你的项目里新增`bag-tool-config.json`文件然后编辑你的配置内容就可以了，或者执行`bag-tool init`自动创建`bag-tool-config.json`文件。注意必须符合JSON规范。
 
 ```shell
 cd your-path
@@ -26,102 +26,36 @@ cd your-path
 bag-tool init
 ```
 
-## 语法
+### 配置项
 
-### include
+#### src
 
-#### 引入指定模版文件全部内容
+项目源码路径，可写多个路径，支持[node-glob语法](https://github.com/isaacs/node-glob)，默认`["src/"]`。
 
-`<%@include(file)%>`，加载指定file的内容并替换到当前位置，注意此处file路径相对于模板目录，可参考以下例子。
+#### dest
 
-```html
-<!-- src -->
-<!-- index.html -->
-<%@include(head.html)%>
-  Hello World!
-<%@include(foot.html)%>
+项目输出路径，只可写一个路径，默认`"dest/"`。
 
+#### template
 
-<!-- template/head.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>bagjs test</title>
-</head>
-<body>
+母版目录，所有母版文件都必须放在此处，不支持引用母版目录以外的文件，路径相对src，默认`"template/"`。
 
+#### tmplExtname
 
-<!-- template/foot.html -->
-</body>
-</html>
+支持的母版文件后缀，默认`["*.html", "*.tpl"]`。
 
+#### styleExtname
 
-<!-- dist -->
-<!-- index.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>bagjs test</title>
-</head>
-<body>
-  Hello World!
-</body>
-</html>
-```
+支持的css预处理器后缀，其实目前也就只支持less，写成配置是有望日后去拓展它（至于最后拓不拓展要看我心情），默认`["*.less"]`。
 
-#### 引入指定模版文件部分内容
+#### startPath
 
-支持`<%@include(file#part)%>`写法，只加载指定file的部分内容（part）并替换到当前位置，在模版文件中使用`<%#part%><%#/part%>`来包裹内容，可参考以下例子。
+本地服务开启后默认加载的路径，默认`"index.html"`。
 
-```html
-<!-- src -->
-<!-- index.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>bagjs test</title>
-</head>
-<body>
-  <%@include(content.html#title)%>
+#### encoding
 
-  <%@include(content.html#nav)%>
-</body>
-</html>
+字符集编码，默认`"utf8"`。
 
+## 母版
 
-<!-- template/content.html -->
-<%#title%>
-  <h1>This is a title.</h1>
-<%#/title%>
-
-<%#nav%>
-  <ul>
-    <li>1</li>
-    <li>2</li>
-    <li>3</li>
-  </ul>
-<%#/nav%>
-
-
-<!-- dist -->
-<!-- index.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>bagjs test</title>
-</head>
-<body>
-  <h1>This is a title.</h1>
-
-  <ul>
-    <li>1</li>
-    <li>2</li>
-    <li>3</li>
-  </ul>
-</body>
-</html>
-```
+### 如何编写母版文件
