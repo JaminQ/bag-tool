@@ -64,7 +64,7 @@ Type: `String`
 
 Default: `"template/"`
 
-母版目录，所有母版文件都必须放在此处，不支持引用母版目录以外的文件，路径相对src。
+母版目录，所有母版文件都必须在母版目录下，不支持引用母版目录以外的文件，路径相对`src/`，编译时不会把母版目录输出到dest。
 
 #### tmplExtname
 
@@ -80,7 +80,7 @@ Type: `Array`
 
 Default: `["*.less"]`
 
-支持的css预处理器后缀，其实目前也就只支持less，写成配置是有望日后去拓展它（至于最后拓不拓展要看我心情）。
+支持的css预处理器后缀，其实目前也就只支持`less`，写成配置是有望日后去拓展它（至于最后拓不拓展要看我心情）。
 
 #### startPath
 
@@ -105,13 +105,41 @@ Default: `"utf8"`
 使用`<bag-include file="path/file.html"></bag-include>`来引用母版文件`path/file.html`，`file`属性相对母版目录。注意：母版文件必须在母版目录里。
 
 ```html
-fdsfsdf
+<!-- src/template/head.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>bag-tool test</title>
+</head>
+<body>
+
+
+<!-- src/template/foot.html -->
+</body>
+</html>
+
+
+<!-- src/index.html -->
+<bag-include file="head.html"></bag-include>
+  <p>hello world</p>
+<bag-include file="foot.html"></bag-include>
 ```
 
 编译后
 
 ```html
-fdsfsdf
+<!-- dest/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>bag-tool test</title>
+</head>
+<body>
+  <p>hello world</p>
+</body>
+</html>
 ```
 
 ### 引用母版文件的部分内容
@@ -119,19 +147,62 @@ fdsfsdf
 在母版文件中使用`<%#partName%><%#/partName%>`将母版划分各个模块，`part`为各个模块的id，通过这个id可以指定该模块内容。
 
 ```html
-fdsfsdf
+<!-- src/template/content.html -->
+<%#title%>
+  <h1>This is a title.</h1>
+<%#/title%>
+
+<%#nav%>
+  <ul>
+    <li>1</li>
+    <li>2</li>
+    <li>3</li>
+  </ul>
+<%#/nav%>
 ```
 
 使用`<bag-include file="path/file.html" part="partName"></bag-include>`来引用母版文件`path/file.html`的`partName`模块内容。
 
 ```html
-fdsfsdf
+<!-- src/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>bag-tool test</title>
+</head>
+<body>
+  <bag-include file="content.html" part="title"></bag-include>
+  <p>hello world</p>
+  <bag-include file="content.html" part="nav"></bag-include>
+</body>
+</html>
 ```
 
 编译后
 
 ```html
-fdsfsdf
+<!-- dest/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>bag-tool test</title>
+</head>
+<body>
+  
+  <h1>This is a title.</h1>
+
+  <p>hello world</p>
+  
+  <ul>
+    <li>1</li>
+    <li>2</li>
+    <li>3</li>
+  </ul>
+
+</body>
+</html>
 ```
 
 ### 注入代码
@@ -139,17 +210,49 @@ fdsfsdf
 在母版文件中使用`<%$slotName%><%$/slotName%>`来设置一个代码注入口，可在其中设置默认内容，当没有代码注入时就注入默认内容。
 
 ```html
-fdsfsdf
+<!-- src/template/layout.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%$title%><%$/title%></title>
+  <%$link%><link rel="stylesheet" type="text/css" href="default.css"><%$/link%>
+</head>
+<body>
+  <%$body%><%$/body%>
+</body>
+</html>
 ```
 
 使用`<bag-slot name="slotName"></bag-slot>`来注入代码，`<bag-slot>`必须写在`<bag-include>`里。
 
 ```html
-fdsfsdf
+<!-- src/index.html -->
+<bag-include file="layout.html">
+  <bag-slot name="title">bag-tool test</bag-slot>
+  <bag-slot name="body">
+    <p>hello world</p>
+  </bag-slot>
+</bag-include>
 ```
 
 编译后
 
 ```html
-fdsfsdf
+<!-- dest/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>bag-tool test</title>
+  <link rel="stylesheet" type="text/css" href="default.css">
+</head>
+<body>
+  <p>hello world</p>
+</body>
+</html>
 ```
+
+## bugs
+
+- 监听时没有监听母版文件的变动。
