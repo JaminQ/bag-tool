@@ -52,8 +52,7 @@ function slot(slotContent, html) {
     }
   });
 
-  // TODO: 清空未使用的slot
-  return html.replace(/<%\$(.*?)%>([\s\S]*?)<%\$\/.*?%>/g, (w, slotName, defaultSlot) => {
+  return html.replace(/<%\$(.*?)%>([\s\S]*?)<%\$\/.*?%>/g, (w, slotName, defaultSlot) => { // 清空未使用的slot，如果有默认值就赋予默认值
     return defaultSlot;
   });
 }
