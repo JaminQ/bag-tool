@@ -1,6 +1,6 @@
 {
   "name": "bag-tool",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "description": "A tool just for bag",
   "main": "gulpfile.js",
   "scripts": {
@@ -30,7 +30,13 @@
   "author": "JaminQian",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MiniCai/bagjs/issues"
+    "url": "https://github.com/MiniCai/bagjs/issues",
+    "email": "jaminqian@outlook.com"
   },
-  "homepage": "https://github.com/MiniCai/bagjs#readme"
+  "homepage": "https://github.com/MiniCai/bagjs#readme",
+  "keywords": [
+    "offline tmpl engine",
+    "less engine",
+    "toolkit"
+  ]
 }
