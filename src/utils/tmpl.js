@@ -10,34 +10,38 @@ const {
   template: TEMPLATE
 } = require('../config');
 
-function include(content, basePath) {
-  return content.replace(/<bag-include([\s\S]*?)>([\s\S]*?)<\/bag-include>/g, (w, attrs, content) => {
-    attrs = attrs.trim();
-    content = content.trim();
+function include(html, basePath) {
+  while (/<bag-include([\s\S]*?)>/.test(html)) { // 遍历替代递归，处理层级引用
+    html = html.replace(/<bag-include([\s\S]*?)>([\s\S]*?)<\/bag-include>/g, (w, attrs, content) => {
+      attrs = attrs.trim();
+      content = content.trim();
 
-    let _content = '';
-    if (attrs) { // 必须要有属性
-      const attrsObj = attrs2obj(attrs);
-      if (attrsObj.file) { // 必须指定文件及路径
-        const _filePath = path.join(basePath, TEMPLATE, attrsObj.file);
-        if (fs.existsSync(_filePath)) { // 检查文件是否存在
-          _content = fs.readFileSync(_filePath);
-          _content = iconv.decode(_content, ENCODING);
+      let _html = '';
+      if (attrs) { // 必须要有属性
+        const attrsObj = attrs2obj(attrs);
+        if (attrsObj.file) { // 必须指定文件及路径
+          const _filePath = path.join(basePath, TEMPLATE, attrsObj.file);
+          if (fs.existsSync(_filePath)) { // 检查文件是否存在
+            _html = fs.readFileSync(_filePath);
+            _html = iconv.decode(_html, ENCODING);
 
-          if (attrsObj.part) { // 如果指定了part，则取指定part内容
-            const reg = new RegExp(`<%#${attrsObj.part}%>([\\s\\S]*?)<%#/${attrsObj.part}%>`);
-            _content = _content.match(reg);
-            _content = _content ? _content[1] : '';
+            if (attrsObj.part) { // 如果指定了part，则取指定part内容
+              const reg = new RegExp(`<%#${attrsObj.part}%>([\\s\\S]*?)<%#/${attrsObj.part}%>`);
+              _html = _html.match(reg);
+              _html = _html ? _html[1] : '';
+            }
+
+            // 处理slot
+            content && (_html = slot(content, _html));
           }
-
-          // 处理slot
-          content && (_content = slot(content, _content));
         }
       }
-    }
 
-    return _content;
-  });
+      return _html;
+    });
+  }
+
+  return html;
 }
 
 function slot(slotContent, html) {
@@ -57,7 +61,7 @@ function slot(slotContent, html) {
   });
 }
 
-module.exports = (content, basePath) => {
-  content = include(content, basePath);
-  return content;
+module.exports = (html, basePath) => {
+  html = include(html, basePath);
+  return html;
 };

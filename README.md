@@ -28,7 +28,7 @@ npm install -g bag-tool
 
 默认配置可以参考[src/config.json](https://github.com/MiniCai/bagjs/blob/master/src/config.json)文件。
 
-当然，如果你对这份默认配置感到很不爽，你可以针对你的项目去单独写配置文件，只要在你的项目里新增`bag-tool-config.json`文件然后编辑你的配置内容就可以了，或者执行`bag-tool init`自动创建`bag-tool-config.json`文件。注意配置编写必须符合JSON规范。
+当然，如果你对这份默认配置感到很不爽，你可以针对你的项目去单独写配置文件，只要在你的项目里新增`bag-tool-config.json`文件然后编辑你的配置内容就可以了，或者执行`bag-tool init`自动创建`bag-tool-config.json`文件。**注意**：配置编写必须符合JSON规范。
 
 ```shell
 cd your-path
@@ -102,7 +102,7 @@ Default: `"utf8"`
 
 ### 引用母版文件
 
-使用`<bag-include file="path/file.html"></bag-include>`来引用母版文件`path/file.html`，`file`属性相对母版目录。注意：母版文件必须在母版目录里。
+使用`<bag-include file="path/file.html"></bag-include>`来引用母版文件`path/file.html`，`file`属性相对母版目录。**注意**：母版文件必须在母版目录里。
 
 ```html
 <!-- src/template/head.html -->
@@ -141,6 +141,8 @@ Default: `"utf8"`
 </body>
 </html>
 ```
+
+当然，你也可以在母版文件中嵌套引用其它母版文件。**注意**：路径依旧相对于母版目录。
 
 ### 引用母版文件的部分内容
 

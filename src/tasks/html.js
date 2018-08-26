@@ -18,8 +18,8 @@ const {
 gulp.task('html', ['clean'], () => {
   const stream = gulp.src(getSrc(SRC, TMPLEXTNAME))
     .pipe(changed(DEST))
-    .pipe(through((content, basePath) => {
-      return tmpl(content, basePath)
+    .pipe(through((html, basePath) => {
+      return tmpl(html, basePath)
     }))
     .pipe(gulp.dest(DEST));
 
