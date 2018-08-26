@@ -1,5 +1,7 @@
 # bag-tool: A tool just for bag
 
+[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url]
+
 这是一款针对某前端开发程序媛在写代码时遇到的痛点而设计的工具，功能简单，喜欢就拿去，不喜勿喷（**反正也不是为你而设计的**）。
 
 ## 功能
@@ -259,3 +261,7 @@ Default: `"utf8"`
 ## bugs
 
 - 监听时没有监听母版文件的变动。
+
+[npm-url]: https://www.npmjs.com/package/bag-tool
+[npm-image]: https://img.shields.io/npm/v/bag-tool.svg
+[downloads-image]: https://img.shields.io/npm/dm/bag-tool.svg
