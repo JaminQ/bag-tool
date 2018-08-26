@@ -18,6 +18,7 @@ npm install -g bag-tool
 
 直接在你的项目目录里执行`bag-tool <command>`，支持以下`<command>`：
 
+- `-v` 查看bag-tool当前版本。
 - `help` 获取帮助。
 - `init` 初始化src目录以及配置文件。
 - `clean` 清空dest目录。

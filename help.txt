@@ -1,6 +1,7 @@
 usage: bag-tool <command>
 
 You can use these <command>:
+  -v        View bag-tool version
   help      Get docs
   clean     Clear dest-dir
   init      Init your src-dir and config-file
