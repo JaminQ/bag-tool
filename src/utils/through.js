@@ -8,7 +8,13 @@ module.exports = callback => {
     } else {
       contentStr = file;
     }
-    typeof callback === 'function' && (contentStr = callback(contentStr, file.base.replace(/\\/g, '/'), enc, cb));
+    typeof callback === 'function' && (contentStr = callback({
+      content: contentStr,
+      file: file.history[0].replace(/\\/g, '/'),
+      basePath: file.base.replace(/\\/g, '/'),
+      enc,
+      cb
+    }));
     file.contents = new Buffer(contentStr);
     this.push(file);
     cb(null, file);

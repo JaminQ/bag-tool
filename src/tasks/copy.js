@@ -1,5 +1,4 @@
 const gulp = require('gulp');
-const changed = require('gulp-changed');
 const requireDir = require('require-dir');
 
 const {
@@ -16,7 +15,6 @@ const {
 
 gulp.task('copy', ['clean'], () => {
   const stream = gulp.src(getSrc(SRC, ['*.*'], TMPLEXTNAME.concat(STYLEEXTNAME)))
-    .pipe(changed(DEST))
     .pipe(gulp.dest(DEST));
 
   stream.on('error', e => {
@@ -24,4 +22,15 @@ gulp.task('copy', ['clean'], () => {
   });
 
   return stream;
+});
+
+gulp.task('copy_watch', () => {
+  // const stream = gulp.src(getSrc(SRC, ['*.*'], TMPLEXTNAME.concat(STYLEEXTNAME)))
+  //   .pipe(gulp.dest(DEST));
+
+  // stream.on('error', e => {
+  //   console.log('copy task error:', e);
+  // });
+
+  // return stream;
 });

@@ -17,6 +17,7 @@ const {
   noConfig: NOCONFIG,
   encoding: ENCODING
 } = require('./src/utils/config');
+const sourceMap = require('./src/utils/sourceMap');
 
 // 设置build为默认task
 gulp.task('default', ['build']);
@@ -41,8 +42,6 @@ gulp.task('init', () => {
 gulp.task('build', ['html', 'less', 'copy']);
 
 gulp.task('watch', ['build'], () => {
-  global.isWatch = true; // 全局标记为监听中
-
   // 在本地起一个服务并调起浏览器访问该服务
   browserSync.init({
     server: {
@@ -51,10 +50,15 @@ gulp.task('watch', ['build'], () => {
     startPath: STARTPATH
   });
 
+  global.changedFiles = [];
+
   // 监听src文件改动
   const stream = watch(SRC, {
     cwd: PROJECT
-  }, () => {
+  }, (vinyl) => {
+    vinyl.history.forEach(file => {
+      global.changedFiles.push(sourceMap.get(file.replace(/\\/g, '/')));
+    });
     gulp.start('reload');
   });
 
@@ -65,6 +69,6 @@ gulp.task('watch', ['build'], () => {
   return stream;
 });
 
-gulp.task('reload', ['build'], () => {
+gulp.task('reload', ['html_watch', 'less_watch', 'copy_watch'], () => {
   browserSync.reload(); // 自动刷新页面
 });

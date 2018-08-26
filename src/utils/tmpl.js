@@ -5,12 +5,13 @@ const iconv = require('iconv-lite');
 const {
   attrs2obj
 } = require('./common');
+const sourceMap = require('./sourceMap');
 const {
   encoding: ENCODING,
   template: TEMPLATE
 } = require('../config');
 
-function include(html, basePath) {
+function include(html, file, basePath) {
   while (/<bag-include([\s\S]*?)>/.test(html)) { // 遍历替代递归，处理层级引用
     html = html.replace(/<bag-include([\s\S]*?)>([\s\S]*?)<\/bag-include>/g, (w, attrs, content) => {
       attrs = attrs.trim();
@@ -21,6 +22,7 @@ function include(html, basePath) {
         const attrsObj = attrs2obj(attrs);
         if (attrsObj.file) { // 必须指定文件及路径
           const _filePath = path.join(basePath, TEMPLATE, attrsObj.file);
+          sourceMap.set(_filePath, file);
           if (fs.existsSync(_filePath)) { // 检查文件是否存在
             _html = fs.readFileSync(_filePath);
             _html = iconv.decode(_html, ENCODING);
@@ -61,7 +63,7 @@ function slot(slotContent, html) {
   });
 }
 
-module.exports = (html, basePath) => {
-  html = include(html, basePath);
+module.exports = (html, basePath, file) => {
+  html = include(html, basePath, file);
   return html;
 };
