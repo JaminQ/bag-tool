@@ -4,18 +4,17 @@ const fs = require('fs');
 const childProcess = require('child_process');
 const path = require('path').posix;
 
-const childProcessOpt = {
-  cwd: path.join(__dirname.replace(/\\/g, '/'), '../'),
-  env: {
-    PROJECT: process.cwd().replace(/\\/g, '/') // 运行命令时的当前路径
-  }
-};
-
+// 简单封装spawn
 const spawn = ({
   command,
   argv
 }) => {
-  const spawnProcess = childProcess.spawn(process.platform === 'win32' ? `${command}.cmd` : command, argv, childProcessOpt);
+  const spawnProcess = childProcess.spawn(process.platform === 'win32' ? `${command}.cmd` : command, argv, {
+    cwd: path.join(__dirname.replace(/\\/g, '/'), '../'),
+    env: {
+      PROJECT: process.cwd().replace(/\\/g, '/') // 运行命令时的当前路径
+    }
+  });
 
   spawnProcess.stdout.on('data', data => {
     process.stdout.write(`${data}`);
@@ -43,17 +42,15 @@ const getStdinArgvs = ([, , ...argvs]) => {
 
 const [command, ...argv] = getStdinArgvs(process.argv);
 switch (command) {
-  case 'build':
-    spawn({
-      command: 'gulp',
-      argv: ['build']
-    });
+  case '-v':
+    console.log(JSON.parse(fs.readFileSync(path.join(__dirname.replace(/\\/g, '/'), '../package.json'), {
+      encoding: 'utf8'
+    })).version);
     break;
-  case 'start':
-    spawn({
-      command: 'gulp',
-      argv: ['watch']
-    });
+  case 'help':
+    console.log(fs.readFileSync(path.join(__dirname.replace(/\\/g, '/'), `../help${argv.indexOf('-c') > -1 ? '_CN' : ''}.txt`), {
+      encoding: 'utf8'
+    }));
     break;
   case 'init':
     spawn({
@@ -67,10 +64,17 @@ switch (command) {
       argv: ['clean']
     });
     break;
-  case 'help':
-    console.log(fs.readFileSync(path.join(__dirname.replace(/\\/g, '/'), `../help${argv.indexOf('-c') > -1 ? '_CN' : ''}.txt`), {
-      encoding: 'utf8'
-    }));
+  case 'build':
+    spawn({
+      command: 'gulp',
+      argv: ['build']
+    });
+    break;
+  case 'start':
+    spawn({
+      command: 'gulp',
+      argv: ['watch']
+    });
     break;
   default:
     console.log('bag-tool: Incorrect command, maybe you need \`bag-tool help\`.');
