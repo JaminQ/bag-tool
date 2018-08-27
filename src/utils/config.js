@@ -15,7 +15,7 @@ try {
 
 Object.assign(defaultConfig, userConfig);
 Object.assign(defaultConfig, {
-  fullSrc: defaultConfig.src.map(src => path.join(PROJECT, src)), // src绝对路径
+  fullSrc: path.join(PROJECT, defaultConfig.src), // src绝对路径
   dest: path.join(PROJECT || '', defaultConfig.dest),
   project: PROJECT
 });

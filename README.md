@@ -47,11 +47,11 @@ bag-tool init
 
 #### src
 
-Type: `Array`
+Type: `String`
 
-Default: `["src/"]`
+Default: `"src/"`
 
-项目源码路径，可写多个路径。
+项目源码路径。
 
 #### dest
 
@@ -59,7 +59,7 @@ Type: `String`
 
 Default: `"dest/"`
 
-项目输出路径，只可写一个路径。
+项目输出路径。
 
 #### template
 
@@ -100,6 +100,14 @@ Type: `String`
 Default: `"utf8"`
 
 字符集编码。
+
+#### showDetailLog
+
+Type: `Boolean`
+
+Default: `true`
+
+是否显示详细日志。
 
 ## 母版语法
 
@@ -257,10 +265,6 @@ Default: `"utf8"`
 </body>
 </html>
 ```
-
-## bugs
-
-- 监听时没有监听母版文件的变动。
 
 [npm-url]: https://www.npmjs.com/package/bag-tool
 [npm-image]: https://img.shields.io/npm/v/bag-tool.svg

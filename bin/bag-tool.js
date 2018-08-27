@@ -3,6 +3,9 @@
 const fs = require('fs');
 const childProcess = require('child_process');
 const path = require('path').posix;
+const {
+  showDetailLog
+} = require('../src/utils/config');
 
 // 简单封装spawn
 const spawn = ({
@@ -17,7 +20,7 @@ const spawn = ({
   });
 
   spawnProcess.stdout.on('data', data => {
-    process.stdout.write(`${data}`);
+    showDetailLog && process.stdout.write(`${data}`);
   });
 
   spawnProcess.stderr.on('data', data => {
@@ -26,6 +29,10 @@ const spawn = ({
 
   spawnProcess.on('error', err => {
     process.stdout.write(`${err}`);
+  });
+
+  spawnProcess.on('close', () => {
+    console.log(`${argv.join(' ')} done`);
   });
 
   return spawnProcess;

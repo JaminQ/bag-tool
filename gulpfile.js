@@ -8,16 +8,19 @@ const makeDir = require('make-dir');
 
 const tasks = requireDir('./src/tasks');
 const {
-  src: SRC,
-  fullSrc: FULLSRC,
-  dest: DEST,
-  template: TEMPLATE,
-  startPath: STARTPATH,
-  project: PROJECT,
-  noConfig: NOCONFIG,
-  encoding: ENCODING
-} = require('./src/utils/config');
-const sourceMap = require('./src/utils/sourceMap');
+  sourceMap,
+  changedFiles,
+  config: {
+    src: SRC,
+    fullSrc: FULLSRC,
+    dest: DEST,
+    template: TEMPLATE,
+    startPath: STARTPATH,
+    project: PROJECT,
+    noConfig: NOCONFIG,
+    encoding: ENCODING
+  }
+} = requireDir('./src/utils');
 
 // 设置build为默认task
 gulp.task('default', ['build']);
@@ -28,18 +31,15 @@ gulp.task('init', () => {
     encoding: ENCODING
   }, () => {});
 
-  // 创建src目录以及template目录
-  FULLSRC.forEach(src => {
-    // 创建src目录
-    !fs.existsSync(src) && makeDir.sync(src);
+  // 创建src目录
+  !fs.existsSync(FULLSRC) && makeDir.sync(FULLSRC);
 
-    // 创建template目录
-    src = path.join(src, TEMPLATE);
-    !fs.existsSync(src) && makeDir.sync(src);
-  });
+  // 创建template目录
+  const templateDir = path.join(FULLSRC, TEMPLATE);
+  !fs.existsSync(templateDir) && makeDir.sync(templateDir);
 });
 
-gulp.task('build', ['html', 'less', 'copy']);
+gulp.task('build', ['html', 'css', 'copy']);
 
 gulp.task('watch', ['build'], () => {
   // 在本地起一个服务并调起浏览器访问该服务
@@ -50,14 +50,19 @@ gulp.task('watch', ['build'], () => {
     startPath: STARTPATH
   });
 
-  global.changedFiles = [];
+  changedFiles.reset(); // 初始化
 
   // 监听src文件改动
   const stream = watch(SRC, {
     cwd: PROJECT
   }, (vinyl) => {
     vinyl.history.forEach(file => {
-      global.changedFiles.push(sourceMap.get(file.replace(/\\/g, '/')));
+      file = file.replace(/\\/g, '/');
+      if (sourceMap.hasKey(file)) {
+        sourceMap.get(file).forEach(_file => changedFiles.add(_file));
+      } else {
+        changedFiles.add(file);
+      }
     });
     gulp.start('reload');
   });
@@ -69,6 +74,7 @@ gulp.task('watch', ['build'], () => {
   return stream;
 });
 
-gulp.task('reload', ['html_watch', 'less_watch', 'copy_watch'], () => {
+gulp.task('reload', ['html_watch', 'css_watch', 'copy_watch'], () => {
   browserSync.reload(); // 自动刷新页面
+  changedFiles.reset(); // 重置
 });

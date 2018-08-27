@@ -1,7 +1,5 @@
 {
-  "src": [
-    "src/"
-  ],
+  "src": "src/",
   "dest": "dest/",
   "template": "template/",
   "tmplExtname": [
@@ -12,5 +10,6 @@
     "*.less"
   ],
   "startPath": "index.html",
-  "encoding": "utf8"
+  "encoding": "utf8",
+  "showDetailLog": true
 }
