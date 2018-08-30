@@ -267,6 +267,11 @@ Default: `true`
 </html>
 ```
 
+## TODO
+
+- 监听时，用户删除文件后，dest需删除对应文件；
+- 开发GUI版本。
+
 [npm-url]: https://www.npmjs.com/package/bag-tool
 [npm-image]: https://img.shields.io/npm/v/bag-tool.svg
 [downloads-image]: https://img.shields.io/npm/dm/bag-tool.svg
