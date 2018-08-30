@@ -38,7 +38,8 @@ gulp.task('css', ['clean'], () => {
 });
 
 gulp.task('css_watch', () => {
-  const stream = gulp.src(changedFiles.get('css'), {
+  const cssFiles = changedFiles.get('css');
+  const stream = gulp.src(cssFiles.length ? cssFiles.concat(getSrc(FULLSRC)) : cssFiles, {
       base: FULLSRC
     })
     .pipe(parseCss());

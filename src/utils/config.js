@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path').posix;
 
-const PROJECT = process.env.PROJECT || '';
+const PROJECT = process.env.PROJECT || process.cwd() || '';
 const defaultConfig = require('../config.json');
 let userConfig = {};
 

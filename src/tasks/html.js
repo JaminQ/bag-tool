@@ -40,7 +40,8 @@ gulp.task('html', ['clean'], () => {
 });
 
 gulp.task('html_watch', () => {
-  const stream = gulp.src(changedFiles.get('html'), {
+  const htmlFiles = changedFiles.get('html');
+  const stream = gulp.src(htmlFiles.length ? htmlFiles.concat(getSrc(FULLSRC)) : htmlFiles, {
       base: FULLSRC
     })
     .pipe(parseHtml());

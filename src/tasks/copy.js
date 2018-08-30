@@ -32,7 +32,8 @@ gulp.task('copy', ['clean'], () => {
 });
 
 gulp.task('copy_watch', () => {
-  const stream = gulp.src(changedFiles.get('copy'), {
+  const copyFiles = changedFiles.get('copy');
+  const stream = gulp.src(copyFiles.length ? copyFiles.concat(getSrc(FULLSRC)) : copyFiles, {
       base: FULLSRC
     })
     .pipe(parseCopy());
