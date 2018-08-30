@@ -15,6 +15,8 @@ const reset = () => {
 module.exports = {
   reset,
   add(file) {
+    if (/\/\..*/.test(file)) return; // 如果有.开头的文件或文件夹，则忽略
+
     const extname = `*${path.extname(file)}`;
     let key = '';
 
@@ -28,10 +30,12 @@ module.exports = {
 
     changedFiles[key].indexOf(file) === -1 && changedFiles[key].push(file);
   },
-  get(key) {
+  get(key = 'all') {
+    if (key === 'all') return changedFiles;
     return changedFiles[key] || [];
   },
-  getData() {
-    return changedFiles;
+  getLen(key = 'all') {
+    if (key === 'all') return changedFiles.html.length + changedFiles.css.length + changedFiles.copy.length;
+    return (changedFiles[key] || []).length;
   }
 };

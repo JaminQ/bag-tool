@@ -11,5 +11,8 @@
   ],
   "startPath": "index.html",
   "encoding": "utf8",
-  "showDetailLog": true
+  "showDetailLog": true,
+  "ignore": [
+    "test"
+  ]
 }

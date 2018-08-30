@@ -75,6 +75,8 @@ gulp.task('watch', ['build'], () => {
 });
 
 gulp.task('reload', ['html_watch', 'css_watch', 'copy_watch'], () => {
-  browserSync.reload(); // 自动刷新页面
-  changedFiles.reset(); // 重置
+  if (changedFiles.getLen('all')) {
+    browserSync.reload(); // 自动刷新页面
+    changedFiles.reset(); // 重置
+  }
 });
