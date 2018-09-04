@@ -1,6 +1,8 @@
 const path = require('path').posix;
 const gulp = require('gulp');
+const filter = require('gulp-filter');
 const less = require('gulp-less');
+const sass = require('gulp-sass');
 const requireDir = require('require-dir');
 const lazypipe = require('lazypipe');
 
@@ -12,16 +14,41 @@ const {
   config: {
     fullSrc: FULLSRC,
     dest: DEST,
+    cssEngine: CSSENGINE,
     styleExtname: STYLEEXTNAME
   }
 } = requireDir('../utils');
+let parseCss = lazypipe();
 
-const parseCss = lazypipe()
-  .pipe(less, {
-    // paths: [
-    //   path.join(__dirname, 'less', 'includes')
-    // ]
-  })
+CSSENGINE.forEach(engine => {
+  switch (engine) {
+    case 'less':
+      const lessFilter = filter(['**/*.less'], {
+        restore: true
+      });
+      parseCss = parseCss
+        .pipe(() => lessFilter)
+        .pipe(less, {
+          // paths: [
+          //   path.join(__dirname, 'less', 'includes')
+          // ]
+        })
+        .pipe(() => lessFilter.restore);
+      break;
+    case 'sass':
+      const sassFilter = filter(['**/*.scss'], {
+        restore: true
+      });
+      parseCss = parseCss
+        .pipe(() => sassFilter)
+        .pipe(() => sass({}).on('error', sass.logError))
+        .pipe(() => sassFilter.restore);
+      break;
+    default:
+  }
+});
+
+parseCss = parseCss
   .pipe(gulp.dest, DEST);
 
 gulp.task('css', ['clean'], () => {

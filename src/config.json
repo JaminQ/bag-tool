@@ -6,8 +6,8 @@
     "*.html",
     "*.tpl"
   ],
-  "styleExtname": [
-    "*.less"
+  "cssEngine": [
+    "less"
   ],
   "startPath": "index.html",
   "encoding": "utf8",
