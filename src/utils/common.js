@@ -1,7 +1,8 @@
 const path = require('path').posix;
 
 const {
-  template: TEMPLATE
+  template: TEMPLATE,
+  ignore: IGNORE
 } = require('./config');
 
 module.exports = {
@@ -26,6 +27,11 @@ module.exports = {
     });
 
     res.push(`!${path.join(_src, '/**/*')}`, `!${_src}`); // 排除template目录
+
+    // 添加忽略目录
+    IGNORE.forEach(dir => {
+      res.push(`!${path.join(src, dir.replace(/^!/, ''))}`);
+    });
 
     return res;
   },

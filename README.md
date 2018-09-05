@@ -116,7 +116,7 @@ Type: `Boolean`
 
 Default: `[]`
 
-忽略的文件或目录，支持glob语法。
+忽略的文件或目录，请参考[node-glob语法](https://github.com/isaacs/node-glob)，你也可以直接写文件的路径。**注意**：路径相对`src/`。
 
 ## 母版语法
 
