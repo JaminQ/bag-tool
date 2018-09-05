@@ -279,6 +279,8 @@ Default: `[]`
 
 - 支持babel；
 - 监听时，用户删除文件后，dest需删除对应文件；
+- 新增英文文档；
+- 兼容Mac；
 - 开发GUI版本。
 
 [npm-url]: https://www.npmjs.com/package/bag-tool
