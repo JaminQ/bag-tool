@@ -13,6 +13,6 @@
   "encoding": "utf8",
   "showDetailLog": true,
   "ignore": [
-    "test/**/*"
+    "**/.DS_Store"
   ]
 }
