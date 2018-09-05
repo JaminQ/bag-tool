@@ -18,44 +18,50 @@ const {
     styleExtname: STYLEEXTNAME
   }
 } = requireDir('../utils');
-let parseCss = lazypipe();
 
-CSSENGINE.forEach(engine => {
-  switch (engine) {
-    case 'less':
-      const lessFilter = filter(['**/*.less'], {
-        restore: true
-      });
-      parseCss = parseCss
-        .pipe(() => lessFilter)
-        .pipe(less, {
-          // paths: [
-          //   path.join(__dirname, 'less', 'includes')
-          // ]
-        })
-        .pipe(() => lessFilter.restore);
-      break;
-    case 'sass':
-      const sassFilter = filter(['**/*.scss'], {
-        restore: true
-      });
-      parseCss = parseCss
-        .pipe(() => sassFilter)
-        .pipe(() => sass({}).on('error', sass.logError))
-        .pipe(() => sassFilter.restore);
-      break;
-    default:
-  }
-});
+const getParseCssPipe = (cssEngine = CSSENGINE) => {
+  let pipe = lazypipe();
 
-parseCss = parseCss
-  .pipe(gulp.dest, DEST);
+  cssEngine.forEach(engine => {
+    switch (engine) {
+      case 'less':
+        const lessFilter = filter(['**/*.less'], {
+          restore: true
+        });
+
+        pipe = pipe
+          .pipe(() => lessFilter)
+          .pipe(less, {
+            // paths: [
+            //   path.join(__dirname, 'less', 'includes')
+            // ]
+          })
+          .pipe(() => lessFilter.restore);
+
+        break;
+      case 'sass':
+        const sassFilter = filter(['**/*.scss'], {
+          restore: true
+        });
+
+        pipe = pipe
+          .pipe(() => sassFilter)
+          .pipe(() => sass({}).on('error', sass.logError))
+          .pipe(() => sassFilter.restore);
+
+        break;
+      default:
+    }
+  });
+
+  return pipe.pipe(gulp.dest, DEST);
+};
 
 gulp.task('css', ['clean'], () => {
   const stream = gulp.src(getSrc(FULLSRC, STYLEEXTNAME), {
       base: FULLSRC
     })
-    .pipe(parseCss());
+    .pipe(getParseCssPipe()());
 
   stream.on('error', e => {
     console.log('css task error:', e);
@@ -69,7 +75,7 @@ gulp.task('css_watch', () => {
   const stream = gulp.src(cssFiles.length ? cssFiles.concat(getSrc(FULLSRC)) : cssFiles, {
       base: FULLSRC
     })
-    .pipe(parseCss());
+    .pipe(getParseCssPipe()());
 
   stream.on('error', e => {
     console.log('css_watch task error:', e);
@@ -77,3 +83,7 @@ gulp.task('css_watch', () => {
 
   return stream;
 });
+
+module.exports = {
+  getPipe: getParseCssPipe
+};

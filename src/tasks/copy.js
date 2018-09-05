@@ -15,14 +15,16 @@ const {
   }
 } = requireDir('../utils');
 
-const parseCopy = lazypipe()
-  .pipe(gulp.dest, DEST);
+const getParseHtmlPipe = () => {
+  return lazypipe()
+    .pipe(gulp.dest, DEST);
+};
 
 gulp.task('copy', ['clean'], () => {
   const stream = gulp.src(getSrc(FULLSRC, ['*.*'], TMPLEXTNAME.concat(STYLEEXTNAME)), {
       base: FULLSRC
     })
-    .pipe(parseCopy());
+    .pipe(getParseHtmlPipe()());
 
   stream.on('error', e => {
     console.log('copy task error:', e);
@@ -36,7 +38,7 @@ gulp.task('copy_watch', () => {
   const stream = gulp.src(copyFiles.length ? copyFiles.concat(getSrc(FULLSRC)) : copyFiles, {
       base: FULLSRC
     })
-    .pipe(parseCopy());
+    .pipe(getParseHtmlPipe()());
 
   stream.on('error', e => {
     console.log('copy_watch task error:', e);
@@ -44,3 +46,7 @@ gulp.task('copy_watch', () => {
 
   return stream;
 });
+
+module.exports = {
+  getPipe: getParseCopyPipe
+};

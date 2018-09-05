@@ -9,6 +9,7 @@ const changedFiles = {};
 const reset = () => {
   changedFiles.html = [];
   changedFiles.css = [];
+  changedFiles.js = [];
   changedFiles.copy = [];
 };
 
@@ -24,6 +25,8 @@ module.exports = {
       key = 'html';
     } else if (STYLEEXTNAME.indexOf(extname) > -1) {
       key = 'css';
+    } else if (extname === '*.js') {
+      key = 'js';
     } else {
       key = 'copy';
     }
@@ -35,7 +38,14 @@ module.exports = {
     return changedFiles[key] || [];
   },
   getLen(key = 'all') {
-    if (key === 'all') return changedFiles.html.length + changedFiles.css.length + changedFiles.copy.length;
-    return (changedFiles[key] || []).length;
+    if (key === 'all') {
+      let len = 0;
+      Object.values(changedFiles).forEach(array => {
+        len += array.length;
+      });
+      return len;
+    } else {
+      return (changedFiles[key] || []).length;
+    }
   }
 };
