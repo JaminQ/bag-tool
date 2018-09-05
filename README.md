@@ -7,7 +7,7 @@
 ## 功能
 
 - **母版**：你可以把重复的代码（默认支持.html和.tpl，你可以在配置中修改，以便支持更多类型）写在母版文件中，然后在主文件里引用母版文件，支持全引用、部分引用以及代码注入；
-- **less编译**：喜欢写less但又懒得自己搭less构建工具的你可以通过bag-tool来非常方便地编译less文件；
+- **css编译**：喜欢写less或sass但又懒得搭构建工具的你可以通过bag-tool来非常方便地编译；
 - **实时预览**：别浪费时间在F5手动刷新上了，来体验下保存文件后浏览器自动刷新的快感吧；
 - 暂时没遇到其余前端痛点，如果你有想要的功能，可以[联系我](mailto:jaminqian@outlook.com)或提[Issues](https://github.com/MiniCai/bagjs/issues/new)，有空我就加一下。
 
@@ -76,15 +76,15 @@ Type: `Array`
 
 Default: `["*.html", "*.tpl"]`
 
-支持的母版文件后缀。
+支持的母版文件后缀名。
 
-#### styleExtname
+#### cssEngine
 
 Type: `Array`
 
-Default: `["*.less"]`
+Default: `["less"]`
 
-支持的css预处理器后缀，其实目前也就只支持`less`，写成配置是有望日后去拓展它（至于最后拓不拓展要看我心情）。
+启用的css预处理器，支持`less`和`sass`。
 
 #### startPath
 
@@ -109,6 +109,14 @@ Type: `Boolean`
 Default: `true`
 
 是否显示详细日志。
+
+#### ignore
+
+Type: `Boolean`
+
+Default: `[]`
+
+忽略的文件或目录，支持glob语法。
 
 ## 母版语法
 
@@ -269,6 +277,7 @@ Default: `true`
 
 ## TODO
 
+- 支持babel；
 - 监听时，用户删除文件后，dest需删除对应文件；
 - 开发GUI版本。
 
