@@ -33,7 +33,8 @@ Object.assign(defaultConfig, {
   fullSrc: path.join(PROJECT, defaultConfig.src), // src绝对路径
   dest: path.join(PROJECT || '', defaultConfig.dest),
   project: PROJECT,
-  styleExtname: STYLEEXTNAME
+  styleExtname: STYLEEXTNAME,
+  jsExtname: ['*.js']
 });
 
 module.exports = defaultConfig;

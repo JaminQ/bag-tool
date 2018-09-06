@@ -1,7 +1,8 @@
 const path = require('path').posix;
 const {
   tmplExtname: TMPLEXTNAME,
-  styleExtname: STYLEEXTNAME
+  styleExtname: STYLEEXTNAME,
+  jsExtname: JSEXTNAME
 } = require('./config');
 
 const changedFiles = {};
@@ -25,7 +26,7 @@ module.exports = {
       key = 'html';
     } else if (STYLEEXTNAME.indexOf(extname) > -1) {
       key = 'css';
-    } else if (extname === '*.js') {
+    } else if (JSEXTNAME.indexOf(extname) > -1) {
       key = 'js';
     } else {
       key = 'copy';

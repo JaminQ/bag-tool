@@ -11,7 +11,8 @@ const {
     fullSrc: FULLSRC,
     dest: DEST,
     tmplExtname: TMPLEXTNAME,
-    styleExtname: STYLEEXTNAME
+    styleExtname: STYLEEXTNAME,
+    jsExtname: JSEXTNAME
   }
 } = requireDir('../utils');
 
@@ -21,7 +22,7 @@ const getParseCopyPipe = () => {
 };
 
 gulp.task('copy', ['clean'], () => {
-  const stream = gulp.src(getSrc(FULLSRC, ['*.*'], TMPLEXTNAME.concat(STYLEEXTNAME)), {
+  const stream = gulp.src(getSrc(FULLSRC, ['*.*'], TMPLEXTNAME.concat(STYLEEXTNAME, JSEXTNAME)), {
       base: FULLSRC
     })
     .pipe(getParseCopyPipe()());

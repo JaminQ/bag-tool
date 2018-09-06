@@ -39,7 +39,7 @@ gulp.task('init', () => {
   !fs.existsSync(templateDir) && makeDir.sync(templateDir);
 });
 
-gulp.task('build', ['html', 'css', 'copy']);
+gulp.task('build', ['html', 'css', 'js', 'copy']);
 
 gulp.task('watch', ['build'], () => {
   // 在本地起一个服务并调起浏览器访问该服务
@@ -74,7 +74,7 @@ gulp.task('watch', ['build'], () => {
   return stream;
 });
 
-gulp.task('reload', ['html_watch', 'css_watch', 'copy_watch'], () => {
+gulp.task('reload', ['html_watch', 'css_watch', 'js_watch', 'copy_watch'], () => {
   if (changedFiles.getLen('all')) {
     browserSync.reload(); // 自动刷新页面
     changedFiles.reset(); // 重置
