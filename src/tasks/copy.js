@@ -9,7 +9,7 @@ const {
   changedFiles,
   config: {
     fullSrc: FULLSRC,
-    dest: DEST,
+    fullDest: FULLDEST,
     tmplExtname: TMPLEXTNAME,
     styleExtname: STYLEEXTNAME,
     jsExtname: JSEXTNAME
@@ -18,7 +18,7 @@ const {
 
 const getParseCopyPipe = () => {
   return lazypipe()
-    .pipe(gulp.dest, DEST);
+    .pipe(gulp.dest, FULLDEST);
 };
 
 gulp.task('copy', ['clean'], () => {

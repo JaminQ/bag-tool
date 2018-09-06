@@ -13,7 +13,7 @@ const {
   changedFiles,
   config: {
     fullSrc: FULLSRC,
-    dest: DEST,
+    fullDest: FULLDEST,
     cssEngine: CSSENGINE,
     styleExtname: STYLEEXTNAME
   }
@@ -54,7 +54,7 @@ const getParseCssPipe = (cssEngine = CSSENGINE) => {
     }
   });
 
-  return pipe.pipe(gulp.dest, DEST);
+  return pipe.pipe(gulp.dest, FULLDEST);
 };
 
 gulp.task('css', ['clean'], () => {

@@ -11,7 +11,7 @@ const {
   changedFiles,
   config: {
     fullSrc: FULLSRC,
-    dest: DEST,
+    fullDest: FULLDEST,
     tmplExtname: TMPLEXTNAME
   }
 } = requireDir('../utils');
@@ -25,7 +25,7 @@ const getParseHtmlPipe = () => {
     }) => {
       return tmpl(content, file, basePath);
     })
-    .pipe(gulp.dest, DEST);
+    .pipe(gulp.dest, FULLDEST);
 };
 
 gulp.task('html', ['clean'], () => {

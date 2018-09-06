@@ -10,7 +10,7 @@ const {
   changedFiles,
   config: {
     fullSrc: FULLSRC,
-    dest: DEST,
+    fullDest: FULLDEST,
     jsExtname: JSEXTNAME
   }
 } = requireDir('../utils');
@@ -20,7 +20,7 @@ const getParseJsPipe = () => {
     .pipe(babel, {
       presets: ['@babel/env']
     })
-    .pipe(gulp.dest, DEST);
+    .pipe(gulp.dest, FULLDEST);
 };
 
 gulp.task('js', ['clean'], () => {

@@ -44,6 +44,8 @@
   "keywords": [
     "offline-tmpl-engine",
     "less-engine",
+    "sass-engine",
+    "babel",
     "toolkits"
   ]
 }

@@ -31,7 +31,7 @@ defaultConfig.cssEngine.forEach(engine => {
 
 Object.assign(defaultConfig, {
   fullSrc: path.join(PROJECT, defaultConfig.src), // src绝对路径
-  dest: path.join(PROJECT || '', defaultConfig.dest),
+  fullDest: path.join(PROJECT || '', defaultConfig.dest), // dest绝对路径
   project: PROJECT,
   styleExtname: STYLEEXTNAME,
   jsExtname: ['*.js']

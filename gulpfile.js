@@ -13,7 +13,7 @@ const {
   config: {
     src: SRC,
     fullSrc: FULLSRC,
-    dest: DEST,
+    fullDest: FULLDEST,
     template: TEMPLATE,
     startPath: STARTPATH,
     project: PROJECT,
@@ -45,23 +45,23 @@ gulp.task('watch', ['build'], () => {
   // 在本地起一个服务并调起浏览器访问该服务
   browserSync.init({
     server: {
-      baseDir: DEST
+      baseDir: FULLDEST
     },
     startPath: STARTPATH
   });
 
-  changedFiles.reset(); // 初始化
+  changedFiles.init(); // 初始化
 
   // 监听src文件改动
   const stream = watch(SRC, {
     cwd: PROJECT
-  }, (vinyl) => {
+  }, vinyl => {
     vinyl.history.forEach(file => {
       file = file.replace(/\\/g, '/');
       if (sourceMap.hasKey(file)) {
         sourceMap.get(file).forEach(_file => changedFiles.add(_file));
       } else {
-        changedFiles.add(file);
+        changedFiles.add(file, vinyl.event);
       }
     });
     gulp.start('reload');
@@ -74,9 +74,9 @@ gulp.task('watch', ['build'], () => {
   return stream;
 });
 
-gulp.task('reload', ['html_watch', 'css_watch', 'js_watch', 'copy_watch'], () => {
+gulp.task('reload', ['html_watch', 'css_watch', 'js_watch', 'copy_watch', 'clean_watch'], () => {
   if (changedFiles.getLen('all')) {
     browserSync.reload(); // 自动刷新页面
-    changedFiles.reset(); // 重置
+    changedFiles.init(); // 重置
   }
 });

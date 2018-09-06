@@ -7,29 +7,32 @@ const {
 
 const changedFiles = {};
 
-const reset = () => {
-  changedFiles.html = [];
-  changedFiles.css = [];
-  changedFiles.js = [];
-  changedFiles.copy = [];
-};
-
 module.exports = {
-  reset,
-  add(file) {
+  init() {
+    changedFiles.html = [];
+    changedFiles.css = [];
+    changedFiles.js = [];
+    changedFiles.copy = [];
+    changedFiles.del = [];
+  },
+  add(file, type) {
     if (/\/\..*/.test(file)) return; // 如果有.开头的文件或文件夹，则忽略
 
     const extname = `*${path.extname(file)}`;
     let key = '';
 
-    if (TMPLEXTNAME.indexOf(extname) > -1) {
-      key = 'html';
-    } else if (STYLEEXTNAME.indexOf(extname) > -1) {
-      key = 'css';
-    } else if (JSEXTNAME.indexOf(extname) > -1) {
-      key = 'js';
+    if (type === 'unlink') { // 删除
+      key = 'del';
     } else {
-      key = 'copy';
+      if (TMPLEXTNAME.indexOf(extname) > -1) {
+        key = 'html';
+      } else if (STYLEEXTNAME.indexOf(extname) > -1) {
+        key = 'css';
+      } else if (JSEXTNAME.indexOf(extname) > -1) {
+        key = 'js';
+      } else {
+        key = 'copy';
+      }
     }
 
     changedFiles[key].indexOf(file) === -1 && changedFiles[key].push(file);
@@ -41,8 +44,8 @@ module.exports = {
   getLen(key = 'all') {
     if (key === 'all') {
       let len = 0;
-      Object.values(changedFiles).forEach(array => {
-        len += array.length;
+      Object.keys(changedFiles).forEach(key => {
+        key !== 'del' && (len += changedFiles[key].length);
       });
       return len;
     } else {
