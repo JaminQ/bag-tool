@@ -1,6 +1,6 @@
 {
   "src": "src/",
-  "dest": "dest/",
+  "dest": "dist/",
   "template": "template/",
   "tmplExtname": [
     "*.html",

@@ -62,7 +62,7 @@ Default: `"src/"`
 
 Type: `String`
 
-Default: `"dest/"`
+Default: `"dist/"`
 
 项目输出路径。
 
@@ -153,7 +153,7 @@ Default: `["**/.DS_Store"]`
 编译后
 
 ```html
-<!-- dest/index.html -->
+<!-- dist/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -208,7 +208,7 @@ Default: `["**/.DS_Store"]`
 编译后
 
 ```html
-<!-- dest/index.html -->
+<!-- dist/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -265,7 +265,7 @@ Default: `["**/.DS_Store"]`
 编译后
 
 ```html
-<!-- dest/index.html -->
+<!-- dist/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
