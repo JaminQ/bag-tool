@@ -8,11 +8,18 @@ const {
 } = require('../src/utils/config');
 
 // 简单封装spawn
-const spawn = ({
-  command,
-  argv
-}) => {
-  const spawnProcess = childProcess.spawn(process.platform === 'win32' ? `${command}.cmd` : command, argv, {
+const spawn = command => {
+  let file = '';
+  let args = [];
+  if (process.platform === 'win32') {
+    file = process.env.comspec || 'cmd.exe';
+    args = ['/s', '/c', command];
+  } else {
+    file = '/bin/sh';
+    args = ['-c', command];
+  }
+
+  const spawnProcess = childProcess.spawn(file, args, {
     cwd: path.join(__dirname.replace(/\\/g, '/'), '../'),
     env: {
       PROJECT: process.cwd().replace(/\\/g, '/') // 运行命令时的当前路径
@@ -32,7 +39,7 @@ const spawn = ({
   });
 
   spawnProcess.on('close', () => {
-    console.log(`${argv.join(' ')} done`);
+    console.log('done');
   });
 
   return spawnProcess;
@@ -60,28 +67,16 @@ switch (command) {
     }));
     break;
   case 'init':
-    spawn({
-      command: 'gulp',
-      argv: ['init']
-    });
+    spawn('gulp init');
     break;
   case 'clean':
-    spawn({
-      command: 'gulp',
-      argv: ['clean']
-    });
+    spawn('gulp clean');
     break;
   case 'build':
-    spawn({
-      command: 'gulp',
-      argv: ['build']
-    });
+    spawn('gulp build');
     break;
   case 'start':
-    spawn({
-      command: 'gulp',
-      argv: ['watch']
-    });
+    spawn('gulp watch');
     break;
   default:
     console.log('bag-tool: Incorrect command, maybe you need \`bag-tool help\`.');
