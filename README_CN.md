@@ -280,7 +280,6 @@ Default: `["**/.DS_Store"]`
 
 ## TODO
 
-- 新增英文文档；
 - 兼容Mac；
 - 开发GUI版本。
 
