@@ -12,7 +12,7 @@ bag-tool
 - **CSS编译**：喜欢写[less](http://lesscss.org/)或[sass](https://sass-lang.com/)但又懒得搭构建工具的你可以通过bag-tool来非常方便地编译；
 - **Babel编译**：放心写es6吧，bag-tool会通过[babel](https://babeljs.io/)帮你把es6编译成es5的；
 - **实时预览**：别浪费时间在F5手动刷新上了，来体验下保存文件后浏览器自动刷新的快感吧；
-- 暂时没遇到其余前端痛点，如果你有想要的功能，可以[联系我](mailto:jaminqian@outlook.com)或提[Issues](https://github.com/MiniCai/bag-tool/issues/new)，有空我就加一下。
+- 暂时没遇到其余前端痛点，如果你有想要的功能，可以[联系我](mailto:jaminqian@outlook.com)或提[issue](https://github.com/MiniCai/bag-tool/issues/new)，有空我就加一下。
 
 ## 安装
 
@@ -71,7 +71,7 @@ Type: `String`
 
 Default: `"template/"`
 
-母版目录，所有母版文件都必须在母版目录下，不支持引用母版目录以外的文件，路径相对`src/`，编译时不会把母版目录输出到dest。
+母版目录，路径相对`src`。所有母版文件都必须在母版目录下，不支持引用母版目录以外的文件。编译时不会把母版目录输出到`dest`。
 
 #### tmplExtname
 
@@ -119,7 +119,7 @@ Type: `Boolean`
 
 Default: `["**/.DS_Store"]`
 
-忽略的文件或目录，请参考[node-glob语法](https://github.com/isaacs/node-glob)，你也可以直接写文件的路径。**注意**：路径相对`src/`。
+忽略的文件或目录，路径相对`src`。请参考[node-glob](https://github.com/isaacs/node-glob)，你也可以直接写文件的路径。
 
 ## 母版语法
 

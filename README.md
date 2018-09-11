@@ -9,34 +9,33 @@ This is a tool designed for the pain of a front-end development program when wri
 ## Features
 
 - **Layout**: You can write duplicate code in the layout file (default supports `.html` and `.tpl`, which you can modify in the configuration to support more extname) and then import it in the main file;
-- **CSS-compile**: 
-- **CSS编译**：喜欢写[less](http://lesscss.org/)或[sass](https://sass-lang.com/)但又懒得搭构建工具的你可以通过bag-tool来非常方便地编译；
-- **Babel编译**：放心写es6吧，bag-tool会通过[babel](https://babeljs.io/)帮你把es6编译成es5的；
-- **Live-reload**：别浪费时间在F5手动刷新上了，来体验下保存文件后浏览器自动刷新的快感吧；
-- 暂时没遇到其余前端痛点，如果你有想要的功能，可以[联系我](mailto:jaminqian@outlook.com)或提[Issues](https://github.com/MiniCai/bag-tool/issues/new)，有空我就加一下。
+- **CSS-compile**: You can write [less](http://lesscss.org/) or [sass](https://sass-lang.com/) according to your preferences, then bag-tool will help you compile very easily;
+- **Babel-compile**: Feel free to write es6, bag-tool will help you compile es6 into es5 through babel;
+- **Live-reload**: Don't waste time on `F5`, just enjoy the pleasure of the browser automatically refreshing after `ctrl+s`;
+- If you have the function you want, just [contact me](mailto:jaminqian@outlook.com) or [open an issue](https://github.com/MiniCai/bag-tool/issues/new).
 
-## 安装
+## Install
 
 ```shell
 npm install -g bag-tool
 ```
 
-## 使用
+## Usage
 
-直接在你的项目目录里执行`bag-tool <command>`，支持以下`<command>`：
+Run `bag-tool <command>` in your projoct. Bag-tool support these `<command>`:
 
-- `-v` 查看bag-tool当前版本。
-- `help` 获取帮助。
-- `init` 初始化src目录以及配置文件。
-- `clean` 清空dest目录。
-- `build` 编译src目录并输出到dest目录。
-- `start` 编译后自动打开默认浏览器并加载，然后监听src目录并实时刷新浏览器。
+- `-v` View bag-tool version.
+- `help` Get docs.
+- `init` Init your src-dir and config-file.
+- `clean` Clear dest-dir.
+- `build` Compile your src-dir to dest-dir.
+- `start` Build once, open your browser and load, then watch your src-dir to live-reload.
 
-## 配置
+## Config
 
-默认配置可以参考[src/config.json](./src/config.json)文件。
+The default configuration can refer to the [src/config.json](./src/config.json) file.
 
-当然，如果你对这份默认配置感到很不爽，你可以针对你的项目去单独写配置文件，只要在你的项目里新增`bag-tool-config.json`文件然后编辑你的配置内容就可以了，或者执行`bag-tool init`自动创建`bag-tool-config.json`文件。**注意**：配置编写必须符合JSON规范。
+Of course, you can rewrite it by the `bag-tool-config.json` file in your project(When you run `bag-tool init`, bag-tool will create `bag-tool-config.json` file. Or you can create it manually). **Note**: Configuration must conform to the JSON specification.
 
 ```shell
 cd your-path
@@ -48,7 +47,7 @@ cd your-path
 bag-tool init
 ```
 
-### 配置项
+### Config item
 
 #### src
 
@@ -56,7 +55,7 @@ Type: `String`
 
 Default: `"src/"`
 
-项目源码路径。
+Project src-dir.
 
 #### dest
 
@@ -64,7 +63,7 @@ Type: `String`
 
 Default: `"dist/"`
 
-项目输出路径。
+Project dest-dir.
 
 #### template
 
@@ -72,7 +71,7 @@ Type: `String`
 
 Default: `"template/"`
 
-母版目录，所有母版文件都必须在母版目录下，不支持引用母版目录以外的文件，路径相对`src/`，编译时不会把母版目录输出到dest。
+Layout-dir, its path relative to `src`. All layout files must be in the layout-dir and do not support references to files other than the layout-dir. The layout-dir will not be output to `dest`.
 
 #### tmplExtname
 
@@ -80,7 +79,7 @@ Type: `Array`
 
 Default: `["*.html", "*.tpl"]`
 
-支持的母版文件后缀名。
+Supported layout file extnames.
 
 #### cssEngine
 
@@ -88,7 +87,7 @@ Type: `Array`
 
 Default: `["less"]`
 
-启用的css预处理器，支持`less`和`sass`。
+The enabled css preprocessor, supports `less` and `sass`.
 
 #### startPath
 
@@ -96,7 +95,7 @@ Type: `String`
 
 Default: `"index.html"`
 
-本地服务开启后默认加载的路径。
+The path that is loaded by default after the local service is turned on.
 
 #### encoding
 
@@ -104,7 +103,7 @@ Type: `String`
 
 Default: `"utf8"`
 
-字符集编码。
+Character set encoding.
 
 #### showDetailLog
 
@@ -112,7 +111,7 @@ Type: `Boolean`
 
 Default: `true`
 
-是否显示详细日志。
+Whether to display detailed logs.
 
 #### ignore
 
@@ -120,13 +119,13 @@ Type: `Boolean`
 
 Default: `["**/.DS_Store"]`
 
-忽略的文件或目录，请参考[node-glob语法](https://github.com/isaacs/node-glob)，你也可以直接写文件的路径。**注意**：路径相对`src/`。
+Ignored file or directory, its path relative to `src`. Please refer to the [node-glob](https://github.com/isaacs/node-glob), you can also write the file path directly.
 
-## 母版语法
+## Layout
 
-### 引用母版文件
+### Import
 
-使用`<bag-include file="path/file.html"></bag-include>`来引用母版文件`path/file.html`，`file`属性相对母版目录。**注意**：母版文件必须在母版目录里。
+Use `<bag-include file="path/file.html"></bag-include>` to import layout file `path/file.html`, the `file` attr relative to the layout-dir. **Note**: The layout file must be in the layout-dir.
 
 ```html
 <!-- src/template/head.html -->
@@ -150,7 +149,7 @@ Default: `["**/.DS_Store"]`
 <bag-include file="foot.html"></bag-include>
 ```
 
-编译后
+After compilation
 
 ```html
 <!-- dist/index.html -->
@@ -166,11 +165,11 @@ Default: `["**/.DS_Store"]`
 </html>
 ```
 
-当然，你也可以在母版文件中嵌套引用其它母版文件。**注意**：路径依旧相对于母版目录。
+Of course, you can also import other layout files in the layout file. **Note**: The path is still relative to the layout-dir.
 
-### 引用母版文件的部分内容
+### Module import
 
-在母版文件中使用`<%#partName%><%#/partName%>`将母版划分各个模块，`part`为各个模块的id，通过这个id可以指定该模块内容。
+In the layout file, use `<%#partName%><%#/partName%>` to divide it into modules, and `part` is the id of each module. This id can be used to specify the module content.
 
 ```html
 <!-- src/template/content.html -->
@@ -187,7 +186,7 @@ Default: `["**/.DS_Store"]`
 <%#/nav%>
 ```
 
-使用`<bag-include file="path/file.html" part="partName"></bag-include>`来引用母版文件`path/file.html`的`partName`模块内容。
+Use `<bag-include file="path/file.html" part="partName"></bag-include>` to import the contents of the `partName` module of the layout file `path/file.html`.
 
 ```html
 <!-- src/index.html -->
@@ -205,7 +204,7 @@ Default: `["**/.DS_Store"]`
 </html>
 ```
 
-编译后
+After compilation
 
 ```html
 <!-- dist/index.html -->
@@ -231,9 +230,9 @@ Default: `["**/.DS_Store"]`
 </html>
 ```
 
-### 注入代码
+### Slot
 
-在母版文件中使用`<%$slotName%><%$/slotName%>`来设置一个代码注入口，可在其中设置默认内容，当没有代码注入时就注入默认内容。
+Use `<%$slotName%><%$/slotName%>` in the layout file to set up a code injection port where you can set the default content and inject the default content when there is no code injection.
 
 ```html
 <!-- src/template/layout.html -->
@@ -250,7 +249,7 @@ Default: `["**/.DS_Store"]`
 </html>
 ```
 
-使用`<bag-slot name="slotName"></bag-slot>`来注入代码，`<bag-slot>`必须写在`<bag-include>`里。
+Use `<bag-slot name="slotName"></bag-slot>` to inject the code, `<bag-slot>` must be written in `<bag-include>`.
 
 ```html
 <!-- src/index.html -->
@@ -262,7 +261,7 @@ Default: `["**/.DS_Store"]`
 </bag-include>
 ```
 
-编译后
+After compilation
 
 ```html
 <!-- dist/index.html -->
@@ -281,9 +280,8 @@ Default: `["**/.DS_Store"]`
 
 ## TODO
 
-- 新增英文文档；
-- 兼容Mac；
-- 开发GUI版本。
+- Fix bugs on Mac;
+- Develop a GUI version.
 
 [npm-url]: https://www.npmjs.com/package/bag-tool
 [npm-image]: https://img.shields.io/npm/v/bag-tool.svg
