@@ -215,11 +215,11 @@ After compilation
   <title>bag-tool test</title>
 </head>
 <body>
-  
+
   <h1>This is a title.</h1>
 
   <p>hello world</p>
-  
+
   <ul>
     <li>1</li>
     <li>2</li>
@@ -281,7 +281,9 @@ After compilation
 ## TODO
 
 - Fix bugs on Mac;
-- Develop a GUI version.
+- Develop a GUI version;
+- add ignore;
+- add not browser.
 
 [npm-url]: https://www.npmjs.com/package/bag-tool
 [npm-image]: https://img.shields.io/npm/v/bag-tool.svg
