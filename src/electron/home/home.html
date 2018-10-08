@@ -1,15 +1,20 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
-    <link rel="stylesheet" href="./home.css">
-  </head>
-  <body>
-    <h1>Hello World!</h1>
+<bag-include file="layout.html">
+  <bag-slot name="title">Hello World!</bag-slot>
 
+  <bag-slot name="link">
+    <link rel="stylesheet" href="./home.css">
+  </bag-slot>
+
+  <bag-slot name="body">
+    <h1>Bag Tool</h1>
+
+    <button>编译</button>
+    <button>监听</button>
+  </bag-slot>
+
+  <bag-slot name="script">
     <script type="text/javascript">
       require('./home.js');
     </script>
-  </body>
-</html>
+  </bag-slot>
+</bag-include>

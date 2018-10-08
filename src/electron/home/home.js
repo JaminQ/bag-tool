@@ -1,8 +1,8 @@
-const {
-  ipcRenderer
-} = require('electron');
+// const {
+//   ipcRenderer
+// } = require('electron');
 
-ipcRenderer.on('test-res', (event, arg) => {
-  console.log(arg);
-});
-ipcRenderer.send('test', 'ping');
+// ipcRenderer.on('test-res', (event, arg) => {
+//   console.log(arg);
+// });
+// ipcRenderer.send('test', 'ping');
