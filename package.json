@@ -47,5 +47,8 @@
     "sass-engine",
     "babel",
     "toolkits"
-  ]
+  ],
+  "devDependencies": {
+    "electron": "^3.0.3"
+  }
 }
