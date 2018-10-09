@@ -1,15 +1,16 @@
 <bag-include file="layout.html">
-  <bag-slot name="title">Hello World!</bag-slot>
+  <bag-slot name="title">Bag Tool</bag-slot>
 
   <bag-slot name="link">
     <link rel="stylesheet" href="./home.css">
   </bag-slot>
 
   <bag-slot name="body">
-    <h1>Bag Tool</h1>
+    <h1>{{ title }}</h1>
 
-    <button>编译</button>
+    <button @click="build">编译</button>
     <button>监听</button>
+    <button @click="clean">清理</button>
   </bag-slot>
 
   <bag-slot name="script">
