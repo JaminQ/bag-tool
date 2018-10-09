@@ -1,6 +1,7 @@
 const gulp = require('gulp');
 const requireDir = require('require-dir');
 const lazypipe = require('lazypipe');
+const merge = require('merge-stream');
 
 const {
   common: {
@@ -12,7 +13,8 @@ const {
     fullDest: FULLDEST,
     tmplExtname: TMPLEXTNAME,
     styleExtname: STYLEEXTNAME,
-    jsExtname: JSEXTNAME
+    jsExtname: JSEXTNAME,
+    whiteList: WHITELIST
   }
 } = requireDir('../utils');
 
@@ -22,7 +24,7 @@ const getParseCopyPipe = () => {
 };
 
 gulp.task('copy', ['clean'], () => {
-  const stream = gulp.src(getSrc({
+  const copyStream = gulp.src(getSrc({
       src: FULLSRC,
       includeExtname: ['*.*'],
       excludeExtname: TMPLEXTNAME.concat(STYLEEXTNAME, JSEXTNAME)
@@ -31,11 +33,23 @@ gulp.task('copy', ['clean'], () => {
     })
     .pipe(getParseCopyPipe()());
 
-  stream.on('error', e => {
+  copyStream.on('error', e => {
     console.log('copy task error:', e);
   });
 
-  return stream;
+  const copyWhiteListStream = gulp.src(getSrc({
+      src: FULLSRC,
+      include: WHITELIST
+    }), {
+      base: FULLSRC
+    })
+    .pipe(getParseCopyPipe()());
+
+  copyWhiteListStream.on('error', e => {
+    console.log('copy whiteList task error:', e);
+  });
+
+  return merge(copyStream, copyWhiteListStream);
 });
 
 gulp.task('copy_watch', () => {
