@@ -22,7 +22,11 @@ const getParseCopyPipe = () => {
 };
 
 gulp.task('copy', ['clean'], () => {
-  const stream = gulp.src(getSrc(FULLSRC, ['*.*'], TMPLEXTNAME.concat(STYLEEXTNAME, JSEXTNAME)), {
+  const stream = gulp.src(getSrc({
+      src: FULLSRC,
+      includeExtname: ['*.*'],
+      excludeExtname: TMPLEXTNAME.concat(STYLEEXTNAME, JSEXTNAME)
+    }), {
       base: FULLSRC
     })
     .pipe(getParseCopyPipe()());
@@ -36,7 +40,9 @@ gulp.task('copy', ['clean'], () => {
 
 gulp.task('copy_watch', () => {
   const copyFiles = changedFiles.get('copy');
-  const stream = gulp.src(copyFiles.length ? copyFiles.concat(getSrc(FULLSRC)) : copyFiles, {
+  const stream = gulp.src(copyFiles.length ? copyFiles.concat(getSrc({
+      src: FULLSRC
+    })) : copyFiles, {
       base: FULLSRC
     })
     .pipe(getParseCopyPipe()());

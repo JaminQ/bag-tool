@@ -89,6 +89,14 @@ Default: `["less"]`
 
 启用的css预处理器，支持`less`和`sass`。
 
+#### liveReload
+
+Type: `Boolean`
+
+Default: `true`
+
+是否开启本地服务以及自动刷新功能。
+
 #### startPath
 
 Type: `String`
@@ -113,13 +121,21 @@ Default: `true`
 
 是否显示详细日志。
 
+#### whiteList
+
+Type: `Array`
+
+Default: `[]`
+
+文件白名单，白名单里的文件将不会被编译，直接复制到`dest`，路径相对`src`。
+
 #### ignore
 
-Type: `Boolean`
+Type: `Array`
 
 Default: `["**/.DS_Store"]`
 
-忽略的文件或目录，路径相对`src`。请参考[node-glob](https://github.com/isaacs/node-glob)，你也可以直接写文件的路径。
+忽略的文件或目录，路径相对`src`。支持[node-glob](https://github.com/isaacs/node-glob)。
 
 ## 母版语法
 
@@ -215,11 +231,11 @@ Default: `["**/.DS_Store"]`
   <title>bag-tool test</title>
 </head>
 <body>
-  
+
   <h1>This is a title.</h1>
 
   <p>hello world</p>
-  
+
   <ul>
     <li>1</li>
     <li>2</li>

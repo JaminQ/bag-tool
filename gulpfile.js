@@ -15,6 +15,7 @@ const {
     fullSrc: FULLSRC,
     fullDest: FULLDEST,
     template: TEMPLATE,
+    liveReload: LIVERELOAD,
     startPath: STARTPATH,
     project: PROJECT,
     noConfig: NOCONFIG,
@@ -43,12 +44,14 @@ gulp.task('build', ['html', 'css', 'js', 'copy']);
 
 gulp.task('watch', ['build'], () => {
   // 在本地起一个服务并调起浏览器访问该服务
-  browserSync.init({
-    server: {
-      baseDir: FULLDEST
-    },
-    startPath: STARTPATH
-  });
+  if (LIVERELOAD) {
+    browserSync.init({
+      server: {
+        baseDir: FULLDEST
+      },
+      startPath: STARTPATH
+    });
+  }
 
   changedFiles.init(); // 初始化
 
@@ -76,7 +79,7 @@ gulp.task('watch', ['build'], () => {
 
 gulp.task('reload', ['html_watch', 'css_watch', 'js_watch', 'copy_watch', 'clean_watch'], () => {
   if (changedFiles.getLen('all')) {
-    browserSync.reload(); // 自动刷新页面
+    if (LIVERELOAD) browserSync.reload(); // 自动刷新页面
     changedFiles.init(); // 重置
   }
 });

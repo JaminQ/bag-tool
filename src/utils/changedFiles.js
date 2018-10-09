@@ -2,7 +2,9 @@ const path = require('path').posix;
 const {
   tmplExtname: TMPLEXTNAME,
   styleExtname: STYLEEXTNAME,
-  jsExtname: JSEXTNAME
+  jsExtname: JSEXTNAME,
+  whiteList: WHITELIST,
+  fullSrc: FULLSRC
 } = require('./config');
 
 const changedFiles = {};
@@ -24,7 +26,9 @@ module.exports = {
     if (type === 'unlink') { // 删除
       key = 'del';
     } else {
-      if (TMPLEXTNAME.indexOf(extname) > -1) {
+      if (WHITELIST.indexOf(file.slice(FULLSRC.length)) > -1) {
+        key = 'copy';
+      } else if (TMPLEXTNAME.indexOf(extname) > -1) {
         key = 'html';
       } else if (STYLEEXTNAME.indexOf(extname) > -1) {
         key = 'css';

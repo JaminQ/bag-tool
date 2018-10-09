@@ -2,6 +2,7 @@
   "src": "src/",
   "dest": "dist/",
   "template": "template/",
+
   "tmplExtname": [
     "*.html",
     "*.tpl"
@@ -9,9 +10,15 @@
   "cssEngine": [
     "less"
   ],
-  "startPath": "index.html",
+
   "encoding": "utf8",
+
   "showDetailLog": true,
+
+  "liveReload": true,
+  "startPath": "index.html",
+
+  "whiteList": [],
   "ignore": [
     "**/.DS_Store"
   ]

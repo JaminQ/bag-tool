@@ -15,7 +15,8 @@ const {
     fullSrc: FULLSRC,
     fullDest: FULLDEST,
     cssEngine: CSSENGINE,
-    styleExtname: STYLEEXTNAME
+    styleExtname: STYLEEXTNAME,
+    whiteList: WHITELIST
   }
 } = requireDir('../utils');
 
@@ -58,7 +59,11 @@ const getParseCssPipe = (cssEngine = CSSENGINE) => {
 };
 
 gulp.task('css', ['clean'], () => {
-  const stream = gulp.src(getSrc(FULLSRC, STYLEEXTNAME), {
+  const stream = gulp.src(getSrc({
+      src: FULLSRC,
+      includeExtname: STYLEEXTNAME,
+      exclude: WHITELIST
+    }), {
       base: FULLSRC
     })
     .pipe(getParseCssPipe()());
@@ -72,7 +77,9 @@ gulp.task('css', ['clean'], () => {
 
 gulp.task('css_watch', () => {
   const cssFiles = changedFiles.get('css');
-  const stream = gulp.src(cssFiles.length ? cssFiles.concat(getSrc(FULLSRC)) : cssFiles, {
+  const stream = gulp.src(cssFiles.length ? cssFiles.concat(getSrc({
+      src: FULLSRC
+    })) : cssFiles, {
       base: FULLSRC
     })
     .pipe(getParseCssPipe()());

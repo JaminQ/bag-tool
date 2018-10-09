@@ -10,20 +10,35 @@ module.exports = {
    * 获取glob src
    * [input]
    * src: 原src
-   * include: 支持的文件后缀名列表，如['*.html']
-   * exclude: 不支持的文件名后缀名列表，如['*.js']
+   * includeExtname: 支持的文件后缀名列表，如['*.html']
+   * excludeExtname: 不支持的文件名后缀名列表，如['*.js']
+   * include: 支持的文件，不支持glob，如['a.html']
+   * exclude: 不支持的文件，不支持glob，如['a.js']
    * [ouput]
    * glob src数组
    */
-  getSrc(src = [], include = [], exclude = []) {
+  getSrc({
+    src = '',
+    includeExtname = [],
+    excludeExtname = [],
+    include = [],
+    exclude = []
+  }) {
     const res = [];
     const _src = path.join(src, TEMPLATE);
 
-    include.forEach(extname => {
+    includeExtname.forEach(extname => {
       res.push(path.join(src, '/**/', extname));
     });
-    exclude.forEach(extname => {
+    excludeExtname.forEach(extname => {
       res.push(`!${path.join(src, '/**/', extname)}`);
+    });
+
+    include.forEach(file => {
+      res.push(path.join(src, file));
+    });
+    exclude.forEach(file => {
+      res.push(`!${path.join(src, file)}`);
     });
 
     res.push(`!${path.join(_src, '/**/*')}`, `!${_src}`); // 排除template目录
