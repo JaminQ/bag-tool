@@ -1,39 +1,46 @@
+// 简单封装spawn
 const childProcess = require('child_process');
-const path = require('path').posix;
 
-module.exports = command => {
-  let file = '';
-  let args = [];
-  if (process.platform === 'win32') {
-    file = process.env.comspec || 'cmd.exe';
-    args = ['/s', '/c', command];
-  } else {
-    file = '/bin/sh';
-    args = ['-c', command];
-  }
-
-  const spawnProcess = childProcess.spawn(file, args, {
-    cwd: path.join(__dirname.replace(/\\/g, '/'), '../../'),
-    env: {
-      PROJECT: process.cwd().replace(/\\/g, '/') // 运行命令时的当前路径
+module.exports = ({
+  cwd = '',
+  env = {},
+  stdout,
+  stderr,
+  error,
+  close
+}) => {
+  return command => {
+    let file = '';
+    let args = [];
+    if (process.platform === 'win32') {
+      file = process.env.comspec || 'cmd.exe';
+      args = ['/s', '/c', command];
+    } else {
+      file = '/bin/sh';
+      args = ['-c', command];
     }
-  });
 
-  spawnProcess.stdout.on('data', data => {
-    process.stdout.write(`${data}`);
-  });
+    const spawn = childProcess.spawn(file, args, {
+      cwd: cwd,
+      env: Object.assign({}, process.env, env)
+    });
 
-  spawnProcess.stderr.on('data', data => {
-    process.stdout.write(`${data}`);
-  });
+    spawn.stdout.on('data', data => {
+      typeof stdout === 'function' && stdout(data);
+    });
 
-  spawnProcess.on('error', err => {
-    process.stdout.write(`${err}`);
-  });
+    spawn.stderr.on('data', data => {
+      typeof stderr === 'function' && stderr(data);
+    });
 
-  spawnProcess.on('close', () => {
-    console.log('done');
-  });
+    spawn.on('error', err => {
+      typeof error === 'function' && error(err);
+    });
 
-  return spawnProcess;
+    spawn.on('close', () => {
+      typeof close === 'function' && close();
+    });
+
+    return spawn;
+  };
 };

@@ -1,49 +1,28 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
-const childProcess = require('child_process');
 const path = require('path').posix;
 const {
   showDetailLog
 } = require('../src/utils/config');
-
-// 简单封装spawn
-const spawn = command => {
-  let file = '';
-  let args = [];
-  if (process.platform === 'win32') {
-    file = process.env.comspec || 'cmd.exe';
-    args = ['/s', '/c', command];
-  } else {
-    file = '/bin/sh';
-    args = ['-c', command];
-  }
-
-  const spawnProcess = childProcess.spawn(file, args, {
-    cwd: path.join(__dirname.replace(/\\/g, '/'), '../'),
-    env: Object.assign({}, process.env, {
-      PROJECT: process.cwd().replace(/\\/g, '/') // 运行命令时的当前路径
-    })
-  });
-
-  spawnProcess.stdout.on('data', data => {
+const spawn = require('../src/common/spawn')({
+  cwd: path.join(__dirname.replace(/\\/g, '/'), '../'),
+  env: {
+    PROJECT: process.cwd().replace(/\\/g, '/') // 运行命令时的当前路径
+  },
+  stdout(data) {
     showDetailLog && process.stdout.write(`${data}`);
-  });
-
-  spawnProcess.stderr.on('data', data => {
+  },
+  stderr(data) {
     process.stdout.write(`${data}`);
-  });
-
-  spawnProcess.on('error', err => {
+  },
+  error(err) {
     process.stdout.write(`${err}`);
-  });
-
-  spawnProcess.on('close', () => {
+  },
+  close() {
     console.log('done');
-  });
-
-  return spawnProcess;
-};
+  }
+});
 
 // 获取输入参数并排序，command在前面，其余在后面
 const getStdinArgvs = ([, , ...argvs]) => {
