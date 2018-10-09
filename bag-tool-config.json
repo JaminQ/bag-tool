@@ -1,4 +1,8 @@
 {
   "template": "electron/template",
-  "showDetailLog": false
+  "showDetailLog": true,
+  "liveReload": false,
+  "whiteList": [
+    "electron/lib/vue.min.js"
+  ]
 }
