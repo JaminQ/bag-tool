@@ -21,9 +21,9 @@ const spawn = command => {
 
   const spawnProcess = childProcess.spawn(file, args, {
     cwd: path.join(__dirname.replace(/\\/g, '/'), '../'),
-    env: {
+    env: Object.assign({}, process.env, {
       PROJECT: process.cwd().replace(/\\/g, '/') // 运行命令时的当前路径
-    }
+    })
   });
 
   spawnProcess.stdout.on('data', data => {

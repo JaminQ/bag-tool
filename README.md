@@ -296,7 +296,6 @@ After compilation
 
 ## TODO
 
-- Fix bugs on Mac
 - Develop a GUI version
 
 [npm-url]: https://www.npmjs.com/package/bag-tool
