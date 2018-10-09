@@ -296,8 +296,7 @@ Default: `["**/.DS_Store"]`
 
 ## TODO
 
-- 兼容Mac；
-- 开发GUI版本。
+- 开发GUI版本
 
 [npm-url]: https://www.npmjs.com/package/bag-tool
 [npm-image]: https://img.shields.io/npm/v/bag-tool.svg
