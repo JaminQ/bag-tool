@@ -89,6 +89,14 @@ Default: `["less"]`
 
 The enabled css preprocessor, supports `less` and `sass`.
 
+#### liveReload
+
+Type: `Boolean`
+
+Default: `true`
+
+Whether to enable liveReload function.
+
 #### startPath
 
 Type: `String`
@@ -113,13 +121,21 @@ Default: `true`
 
 Whether to display detailed logs.
 
+#### whiteList
+
+Type: `Array`
+
+Default: `[]`
+
+File whitelist, the files in the whitelist will not be complied, directly copied to `dest`, the path relative to `src`.
+
 #### ignore
 
-Type: `Boolean`
+Type: `Array`
 
 Default: `["**/.DS_Store"]`
 
-Ignored file or directory, its path relative to `src`. Please refer to the [node-glob](https://github.com/isaacs/node-glob), you can also write the file path directly.
+Ignored file or directory, the path relative to `src`. Support [node-glob](https://github.com/isaacs/node-glob).
 
 ## Layout
 
@@ -280,10 +296,8 @@ After compilation
 
 ## TODO
 
-- Fix bugs on Mac;
-- Develop a GUI version;
-- add ignore;
-- add not browser.
+- Fix bugs on Mac
+- Develop a GUI version
 
 [npm-url]: https://www.npmjs.com/package/bag-tool
 [npm-image]: https://img.shields.io/npm/v/bag-tool.svg

@@ -1,4 +1,3 @@
-const fs = require('fs');
 const path = require('path').posix;
 
 const PROJECT = process.env.PROJECT || process.cwd() || '';
@@ -34,7 +33,8 @@ Object.assign(defaultConfig, {
   fullDest: path.join(PROJECT || '', defaultConfig.dest), // dest绝对路径
   project: PROJECT,
   styleExtname: STYLEEXTNAME,
-  jsExtname: ['*.js']
+  jsExtname: ['*.js'],
+  whiteList: defaultConfig.whiteList.map(file => file.replace(/^\//, '')) // 删掉前面的/
 });
 
 module.exports = defaultConfig;

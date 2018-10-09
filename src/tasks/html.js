@@ -12,7 +12,8 @@ const {
   config: {
     fullSrc: FULLSRC,
     fullDest: FULLDEST,
-    tmplExtname: TMPLEXTNAME
+    tmplExtname: TMPLEXTNAME,
+    whiteList: WHITELIST
   }
 } = requireDir('../utils');
 
@@ -29,7 +30,11 @@ const getParseHtmlPipe = () => {
 };
 
 gulp.task('html', ['clean'], () => {
-  const stream = gulp.src(getSrc(FULLSRC, TMPLEXTNAME), {
+  const stream = gulp.src(getSrc({
+      src: FULLSRC,
+      includeExtname: TMPLEXTNAME,
+      exclude: WHITELIST
+    }), {
       base: FULLSRC
     })
     .pipe(getParseHtmlPipe()());
@@ -43,7 +48,9 @@ gulp.task('html', ['clean'], () => {
 
 gulp.task('html_watch', () => {
   const htmlFiles = changedFiles.get('html');
-  const stream = gulp.src(htmlFiles.length ? htmlFiles.concat(getSrc(FULLSRC)) : htmlFiles, {
+  const stream = gulp.src(htmlFiles.length ? htmlFiles.concat(getSrc({
+      src: FULLSRC
+    })) : htmlFiles, {
       base: FULLSRC
     })
     .pipe(getParseHtmlPipe()());

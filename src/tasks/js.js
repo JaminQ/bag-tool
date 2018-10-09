@@ -11,7 +11,8 @@ const {
   config: {
     fullSrc: FULLSRC,
     fullDest: FULLDEST,
-    jsExtname: JSEXTNAME
+    jsExtname: JSEXTNAME,
+    whiteList: WHITELIST
   }
 } = requireDir('../utils');
 
@@ -24,7 +25,11 @@ const getParseJsPipe = () => {
 };
 
 gulp.task('js', ['clean'], () => {
-  const stream = gulp.src(getSrc(FULLSRC, JSEXTNAME), {
+  const stream = gulp.src(getSrc({
+      src: FULLSRC,
+      includeExtname: JSEXTNAME,
+      exclude: WHITELIST
+    }), {
       base: FULLSRC
     })
     .pipe(getParseJsPipe()());
@@ -38,7 +43,9 @@ gulp.task('js', ['clean'], () => {
 
 gulp.task('js_watch', () => {
   const jsFiles = changedFiles.get('js');
-  const stream = gulp.src(jsFiles.length ? jsFiles.concat(getSrc(FULLSRC)) : jsFiles, {
+  const stream = gulp.src(jsFiles.length ? jsFiles.concat(getSrc({
+      src: FULLSRC
+    })) : jsFiles, {
       base: FULLSRC
     })
     .pipe(getParseJsPipe()());
