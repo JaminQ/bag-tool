@@ -43,6 +43,8 @@ gulp.task('init', () => {
 gulp.task('build', ['html', 'css', 'js', 'copy']);
 
 gulp.task('watch', ['build'], () => {
+  console.log(`begin to watch the dir: ${FULLDEST}`);
+
   // 在本地起一个服务并调起浏览器访问该服务
   if (LIVERELOAD) {
     browserSync.init({
