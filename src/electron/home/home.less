@@ -1,3 +1,96 @@
-* {
-  font-family: 'Microsoft YaHei';
+.poster {
+  h1 {
+    color: #6db3fb;
+    font-weight: 100;
+    padding: 200px 0;
+    text-align: center;
+  }
+}
+
+.projects-area {
+  height: 100%;
+  padding-bottom: 74px;
+
+  header {
+    height: 40px;
+    line-height: 40px;
+    color: #8a8282;
+    font-family: Arial;
+    font-weight: 100;
+    padding-left: 10px;
+  }
+
+  ul {
+    li {
+      height: 50px;
+
+      label {
+        height: 100%;
+
+        .project-main {
+          height: 100%;
+          display: flex;
+          align-items: center;
+
+          .project-icon {
+            font-size: 30px;
+            color: #6db3fb;
+            margin: 0 12px 0 28px;
+          }
+        }
+
+        input[type=radio] {
+          position: absolute;
+          left: -1000px;
+
+          + .project-main:hover {
+            background-color: #eefaf0;
+          }
+        }
+
+        input[type=radio]:checked {
+          + .project-main {
+            background-color: #f1f1f1;
+          }
+        }
+      }
+    }
+  }
+}
+
+.gulp-area {
+  height: 50px;
+  width: 100%;
+  position: fixed;
+  bottom: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid #ddd;
+
+  .btn {
+    margin: 0 10px;
+  }
+}
+
+.bottom-bar {
+  height: 24px;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #ddd;
+
+  .function-btn {
+    color: #6db3fb;
+    font-weight: 100;
+    font-size: 14px;
+    margin: 0 5px;
+    cursor: pointer;
+
+    &:hover {
+      color: #09bb07;
+    }
+  }
 }

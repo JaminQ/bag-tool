@@ -1,7 +1,8 @@
 const {
   app,
   BrowserWindow,
-  ipcMain
+  ipcMain,
+  Menu
 } = require('electron');
 const path = require('path');
 
@@ -10,10 +11,14 @@ const path = require('path');
 let win;
 
 const createWindow = () => {
+  // 隐藏菜单
+  Menu.setApplicationMenu(null);
+
   // 创建浏览器窗口。
   win = new BrowserWindow({
-    width: 800,
-    height: 600
+    width: 400,
+    height: 600,
+    // frame: false
   });
 
   // 然后加载应用的 index.html。

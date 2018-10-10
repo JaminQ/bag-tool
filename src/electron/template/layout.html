@@ -3,13 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <title><%$title%><%$/title%></title>
+  <link rel="stylesheet" href="../common/lib/normalize.css">
+  <link rel="stylesheet" href="../common/base.css">
+  <style>
+    [v-cloak] {
+      visibility: hidden;
+    }
+  </style>
+
   <%$link%><%$/link%>
 </head>
 <body>
-  <div id="body">
+  <div id="app" v-cloak>
     <%$body%><%$/body%>
   </div>
-  <script type="text/javascript" src="../lib/vue.min.js"></script>
+
+  <script type="text/javascript" src="../common/lib/vue.min.js"></script>
+  <script type="text/javascript" src="../common/lib/font-awesome.min.js"></script>
+
   <%$script%><%$/script%>
 </body>
 </html>

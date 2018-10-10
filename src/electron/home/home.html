@@ -6,11 +6,38 @@
   </bag-slot>
 
   <bag-slot name="body">
-    <h1>{{ title }}</h1>
+    <div class="poster" v-if="projects.length === 0">
+      <h1>{{ title }}</h1>
+    </div>
 
-    <button @click="build">编译</button>
-    <button>监听</button>
-    <button @click="clean">清理</button>
+    <div class="projects-area" v-else>
+      <header>Projects</header>
+
+      <ul>
+        <li v-for="project in projects">
+          <label>
+            <input type="radio" name="project-radio">
+            <div class="project-main">
+              <i class="project-icon fas fa-folder"></i>
+              <div class="project-title">{{ project.title }}</div>
+            </div>
+          </label>
+        </li>
+      </ul>
+    </div>
+
+    <div class="gulp-area">
+      <button class="btn" @click="build">编译</button>
+      <button class="btn">监听</button>
+      <button class="btn" @click="clean">清理</button>
+    </div>
+
+    <div class="bottom-bar">
+      <a class="function-btn" @click="addProject"><i title="添加新项目" class="fas fa-plus"></i></a>
+      <a class="function-btn"><i title="删除项目" class="fas fa-minus"></i></a>
+      <a class="function-btn"><i title="打开项目" class="far fa-folder-open"></i></a>
+      <a class="function-btn"><i title="设置" class="fas fa-cog"></i></a>
+    </div>
   </bag-slot>
 
   <bag-slot name="script">

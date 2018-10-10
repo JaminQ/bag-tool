@@ -29,11 +29,16 @@ const spawn = require('../../common/spawn')({
     console.log('done');
   }
 });
+const Base = require('../common/base');
 
-var vm = new Vue({
-  el: '#body',
+var vm = new Base({
   data: {
-    title: 'Bag Tool'
+    title: 'Bag Tool GUI版',
+    projects: [{
+      title: 'wechat-game'
+    }, {
+      title: 'wechat-city'
+    }]
   },
   methods: {
     build() {
@@ -41,6 +46,10 @@ var vm = new Vue({
     },
     clean() {
       spawn('gulp clean');
+    },
+
+    addProject() {
+      console.log('addProject');
     }
   }
 });
