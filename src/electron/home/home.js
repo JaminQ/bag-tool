@@ -1,7 +1,8 @@
-const {
-  ipcRenderer
-} = require('electron');
 const path = require('path');
+const {
+  ipcRenderer,
+  shell
+} = require('electron');
 const {
   dialog
 } = require('electron').remote;
@@ -9,7 +10,10 @@ const {
 const {
   showDetailLog
 } = require('../../utils/config');
-const spawn = require('../../common/spawn')({
+const spawn = require('../../common/spawn');
+const Base = require('../common/base');
+
+const spawnOpt = {
   cwd: path.join(__dirname.replace(/\\/g, '/'), '../../../'),
   env: {
     PROJECT: process.cwd().replace(/\\/g, '/') // 运行命令时的当前路径
@@ -22,20 +26,28 @@ const spawn = require('../../common/spawn')({
   },
   error(err) {
     console.log(`${err}`);
-  },
-  close() {
-    console.log('done');
   }
-});
-const Base = require('../common/base');
+};
 
-new Base({
+const vm = new Base({
   data: {
-    projects: ipcRenderer.sendSync('getData', ['projects']).projects || []
+    projects: ipcRenderer.sendSync('getData', ['projects']).projects || [],
+    workingArr: [],
+    nowProjectIdx: '',
+    removeMode: false
   },
   methods: {
-    build() {
-      spawn('gulp build');
+    // gulp-area
+    build(idx) {
+      spawn(Object.assign({}, spawnOpt, {
+        begin: () => {
+          Vue.set(this.workingArr, idx, true);
+        },
+        close: () => {
+          console.log('done');
+          Vue.set(this.workingArr, idx, false);
+        }
+      }))('gulp build');
     },
     watch() {
       console.log('watch');
@@ -47,11 +59,14 @@ new Base({
       spawn('gulp clean');
     },
 
+    // bottom-bar
     addProject() {
       dialog.showOpenDialog({
         title: '添加新项目',
         properties: ['openDirectory']
       }, filePaths => {
+        if (!filePaths) return;
+
         filePaths.forEach(filePath => {
           this.projects.push({
             title: path.basename(filePath),
@@ -61,6 +76,19 @@ new Base({
         ipcRenderer.sendSync('setData', {
           projects: this.projects
         });
+      });
+    },
+    removeProjects() {
+      this.removeMode = !this.removeMode;
+    },
+    openProject() {
+      shell.showItemInFolder(this.projects[this.nowProjectIdx].path);
+    },
+
+    removeProject(idx) {
+      this.projects.splice(idx, 1);
+      ipcRenderer.sendSync('setData', {
+        projects: this.projects
       });
     }
   }

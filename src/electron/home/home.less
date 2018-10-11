@@ -16,7 +16,7 @@
   header {
     height: 40px;
     line-height: 40px;
-    color: #808080;
+    color: @disable-color;
     font-family: Arial;
     font-weight: 100;
     padding-left: 10px;
@@ -24,9 +24,13 @@
 
   ul {
     li {
+      width: 100%;
       height: 50px;
+      display: flex;
+      align-items: center;
 
       label {
+        width: 100%;
         height: 100%;
 
         .project-main {
@@ -58,16 +62,33 @@
           position: absolute;
           left: -1000px;
 
-          + .project-main:hover {
+          +.project-main:hover {
             background-color: @gray-color;
           }
         }
 
         input[type='radio']:checked {
-          + .project-main {
+          +.project-main {
             background-color: @sub-color;
             box-shadow: inset 2px 0 0 0 @accent-color;
           }
+        }
+      }
+
+      .project-del {
+        display: none;
+        color: @error-color;
+        font-size: 14px;
+        position: absolute;
+        right: 28px;
+        cursor: pointer;
+      }
+    }
+
+    &.remove-mode {
+      li {
+        .project-del {
+          display: block;
         }
       }
     }
@@ -105,8 +126,17 @@
     margin: 0 5px;
     cursor: pointer;
 
+    &.remove-mode {
+      color: @accent-color;
+    }
+
     &:hover {
       color: @accent-color;
+    }
+
+    &[disabled] {
+      color: @disable-color;
+      cursor: default;
     }
   }
 }

@@ -1,5 +1,5 @@
 <bag-include file="layout.html">
-  <bag-slot name="title">Bag Tool</bag-slot>
+  <bag-slot name="title">Bag Tool GUI版</bag-slot>
 
   <bag-slot name="link">
     <link rel="stylesheet" href="./home.css">
@@ -13,31 +13,33 @@
     <div class="projects-area" v-else>
       <header>Projects</header>
 
-      <ul>
+      <ul :class="[removeMode ? 'remove-mode' : '']">
         <li v-for="(project, project_i) in projects">
           <label>
-            <input type="radio" name="project-radio">
-            <div class="project-main">
+            <input type="radio" :value="project_i" v-model="nowProjectIdx">
+            <div :class="['project-main', workingArr[project_i] ? 'working' : '']">
               <i class="project-icon fas fa-folder"></i>
               <div class="project-title">{{ project.title }}</div>
+              <!-- <i class="project-info fas fa-info-circle"></i> -->
             </div>
           </label>
+          <button class="project-del" @click.prevent="removeProject(project_i)"><i class="fas fa-trash-alt" title="移除"></i></button>
         </li>
       </ul>
     </div>
 
     <div class="gulp-area">
-      <button class="btn" @click="build">编译</button>
-      <button class="btn" @click="watch">监听</button>
-      <button class="btn" @click="init">初始化</button>
-      <button class="btn" @click="clean">清理</button>
+      <button class="btn" @click="build(nowProjectIdx)">编译</button>
+      <button class="btn" @click="watch(nowProjectIdx)">监听</button>
+      <button class="btn" @click="init(nowProjectIdx)">初始化</button>
+      <button class="btn" @click="clean(nowProjectIdx)">清理</button>
     </div>
 
     <div class="bottom-bar">
-      <a class="function-btn" @click="addProject"><i title="添加新项目" class="fas fa-plus"></i></a>
-      <a class="function-btn"><i title="移除项目" class="fas fa-minus"></i></a>
-      <a class="function-btn"><i title="打开项目目录" class="far fa-folder-open"></i></a>
-      <a class="function-btn"><i title="设置" class="fas fa-cog"></i></a>
+      <button class="function-btn" @click="addProject"><i title="添加新项目" class="fas fa-plus"></i></button>
+      <button :class="['function-btn', removeMode ? 'remove-mode' : '']" :disabled="projects.length === 0" @click="removeProjects"><i title="移除项目" class="fas fa-minus"></i></button>
+      <button class="function-btn" :disabled="nowProjectIdx === ''" @click="openProject"><i title="打开项目目录" class="far fa-folder-open"></i></button>
+      <button class="function-btn" :disabled="nowProjectIdx === ''"><i title="设置" class="fas fa-cog"></i></button>
     </div>
   </bag-slot>
 

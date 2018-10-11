@@ -4,6 +4,7 @@ const childProcess = require('child_process');
 module.exports = ({
   cwd = '',
   env = {},
+  begin,
   stdout,
   stderr,
   error,
@@ -19,6 +20,8 @@ module.exports = ({
       file = '/bin/sh';
       args = ['-c', command];
     }
+
+    typeof begin === 'function' && begin();
 
     const spawn = childProcess.spawn(file, args, {
       cwd: cwd,
