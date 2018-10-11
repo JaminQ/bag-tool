@@ -1,6 +1,8 @@
+@import '../common/base.less';
+
 .poster {
   h1 {
-    color: #6db3fb;
+    color: @main-color;
     font-weight: 100;
     padding: 200px 0;
     text-align: center;
@@ -14,7 +16,7 @@
   header {
     height: 40px;
     line-height: 40px;
-    color: #8a8282;
+    color: #808080;
     font-family: Arial;
     font-weight: 100;
     padding-left: 10px;
@@ -31,26 +33,40 @@
           height: 100%;
           display: flex;
           align-items: center;
+          position: relative;
+
+          &.working::after {
+            content: '';
+            width: 4px;
+            height: 4px;
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            margin-top: -2px;
+            border-radius: 2px;
+            background-color: @accent-color;
+          }
 
           .project-icon {
             font-size: 30px;
-            color: #6db3fb;
+            color: #74c2e1;
             margin: 0 12px 0 28px;
           }
         }
 
-        input[type=radio] {
+        input[type='radio'] {
           position: absolute;
           left: -1000px;
 
           + .project-main:hover {
-            background-color: #eefaf0;
+            background-color: @gray-color;
           }
         }
 
-        input[type=radio]:checked {
+        input[type='radio']:checked {
           + .project-main {
-            background-color: #f1f1f1;
+            background-color: @sub-color;
+            box-shadow: inset 2px 0 0 0 @accent-color;
           }
         }
       }
@@ -66,7 +82,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid @border-color;
 
   .btn {
     margin: 0 10px;
@@ -80,17 +96,17 @@
   bottom: 0;
   display: flex;
   align-items: center;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid @border-color;
 
   .function-btn {
-    color: #6db3fb;
+    color: @main-color;
     font-weight: 100;
     font-size: 14px;
     margin: 0 5px;
     cursor: pointer;
 
     &:hover {
-      color: #09bb07;
+      color: @accent-color;
     }
   }
 }

@@ -1,13 +1,11 @@
-// const {
-//   ipcRenderer
-// } = require('electron');
-
-// ipcRenderer.on('test-res', (event, arg) => {
-//   console.log(arg);
-// });
-// ipcRenderer.send('test', 'ping');
-
+const {
+  ipcRenderer
+} = require('electron');
 const path = require('path');
+const {
+  dialog
+} = require('electron').remote;
+
 const {
   showDetailLog
 } = require('../../utils/config');
@@ -31,25 +29,39 @@ const spawn = require('../../common/spawn')({
 });
 const Base = require('../common/base');
 
-var vm = new Base({
+new Base({
   data: {
-    title: 'Bag Tool GUI版',
-    projects: [{
-      title: 'wechat-game'
-    }, {
-      title: 'wechat-city'
-    }]
+    projects: ipcRenderer.sendSync('getData', ['projects']).projects || []
   },
   methods: {
     build() {
       spawn('gulp build');
+    },
+    watch() {
+      console.log('watch');
+    },
+    init() {
+      console.log('init');
     },
     clean() {
       spawn('gulp clean');
     },
 
     addProject() {
-      console.log('addProject');
+      dialog.showOpenDialog({
+        title: '添加新项目',
+        properties: ['openDirectory']
+      }, filePaths => {
+        filePaths.forEach(filePath => {
+          this.projects.push({
+            title: path.basename(filePath),
+            path: filePath
+          });
+        });
+        ipcRenderer.sendSync('setData', {
+          projects: this.projects
+        });
+      });
     }
   }
 });

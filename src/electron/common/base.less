@@ -1,3 +1,10 @@
+// #1ed75f
+@main-color: #4a90e2; // 主色调
+@sub-color: #eefaf0; // 次色调
+@accent-color: #54d560; // 强调色
+@gray-color: #f1f1f1; // 灰色
+@border-color: #dedede; // 边框颜色
+
 #app {
   height: 100%;
 }
@@ -5,15 +12,15 @@
 .btn {
   width: 60px;
   font-size: 14px;
-  color: #6db3fb;
+  color: @main-color;
   padding: 5px;
-  border: 1px solid #6db3fb;
+  border: 1px solid @main-color;
   background-color: #fff;
   border-radius: 3px;
   cursor: pointer;
 
   &:hover {
-    color: #09bb07;
-    border: 1px solid #09bb07;
+    color: #1ca62a;
+    border: 1px solid #1ca62a;
   }
 }
