@@ -4,7 +4,7 @@
   "liveReload": false,
   "whiteList": [
     "electron/common/lib/vue.min.js",
-    "electron/common/lib/font-awesome.min.js",
-    "electron/common/lib/normalize.css"
+    "electron/common/lib/normalize.css",
+    "electron/common/lib/font-awesome.min.css"
   ]
 }

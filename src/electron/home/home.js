@@ -45,7 +45,8 @@ const vm = new Base({
     projects: ipcRenderer.sendSync('getData', ['projects']).projects || [],
     workingArr: [],
     nowProjectIdx: '',
-    removeMode: false
+    removeMode: false,
+    infoMode: true
   },
   methods: {
     // gulp-area
@@ -102,6 +103,7 @@ const vm = new Base({
 
     infoProject(idx) {
       console.log('info', idx);
+      this.infoMode = true;
     },
     removeProject(idx) {
       this.projects.splice(idx, 1);
