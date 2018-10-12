@@ -73,7 +73,7 @@ gulp.task('watch', ['build'], () => {
   });
 
   stream.on('error', e => {
-    console.log('watch task error:', e);
+    console.error('watch task error:', e);
   });
 
   return stream;

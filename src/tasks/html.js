@@ -40,7 +40,7 @@ gulp.task('html', ['clean'], () => {
     .pipe(getParseHtmlPipe()());
 
   stream.on('error', e => {
-    console.log('html task error:', e);
+    console.error('html task error:', e);
   });
 
   return stream;
@@ -56,7 +56,7 @@ gulp.task('html_watch', () => {
     .pipe(getParseHtmlPipe()());
 
   stream.on('error', e => {
-    console.log('html_watch task error:', e);
+    console.error('html_watch task error:', e);
   });
 
   return stream;

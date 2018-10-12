@@ -34,22 +34,26 @@ gulp.task('copy', ['clean'], () => {
     .pipe(getParseCopyPipe()());
 
   copyStream.on('error', e => {
-    console.log('copy task error:', e);
+    console.error('copy task error:', e);
   });
 
-  const copyWhiteListStream = gulp.src(getSrc({
-      src: FULLSRC,
-      include: WHITELIST
-    }), {
-      base: FULLSRC
-    })
-    .pipe(getParseCopyPipe()());
+  if (WHITELIST.length) {
+    const copyWhiteListStream = gulp.src(getSrc({
+        src: FULLSRC,
+        include: WHITELIST
+      }), {
+        base: FULLSRC
+      })
+      .pipe(getParseCopyPipe()());
 
-  copyWhiteListStream.on('error', e => {
-    console.log('copy whiteList task error:', e);
-  });
+    copyWhiteListStream.on('error', e => {
+      console.error('copy whiteList task error:', e);
+    });
 
-  return merge(copyStream, copyWhiteListStream);
+    return merge(copyStream, copyWhiteListStream);
+  } else {
+    return copyStream;
+  }
 });
 
 gulp.task('copy_watch', () => {
@@ -62,7 +66,7 @@ gulp.task('copy_watch', () => {
     .pipe(getParseCopyPipe()());
 
   stream.on('error', e => {
-    console.log('copy_watch task error:', e);
+    console.error('copy_watch task error:', e);
   });
 
   return stream;

@@ -69,7 +69,7 @@ gulp.task('css', ['clean'], () => {
     .pipe(getParseCssPipe()());
 
   stream.on('error', e => {
-    console.log('css task error:', e);
+    console.error('css task error:', e);
   });
 
   return stream;
@@ -85,7 +85,7 @@ gulp.task('css_watch', () => {
     .pipe(getParseCssPipe()());
 
   stream.on('error', e => {
-    console.log('css_watch task error:', e);
+    console.error('css_watch task error:', e);
   });
 
   return stream;
