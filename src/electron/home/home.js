@@ -46,7 +46,7 @@ const vm = new Base({
     workingArr: [],
     nowProjectIdx: '',
     removeMode: false,
-    infoMode: true
+    infoMode: false
   },
   methods: {
     // gulp-area
