@@ -35,7 +35,7 @@ gulp.task('js', ['clean'], () => {
     .pipe(getParseJsPipe()());
 
   stream.on('error', e => {
-    console.log('js task error:', e);
+    console.error('js task error:', e);
   });
 
   return stream;
@@ -51,7 +51,7 @@ gulp.task('js_watch', () => {
     .pipe(getParseJsPipe()());
 
   stream.on('error', e => {
-    console.log('js_watch task error:', e);
+    console.error('js_watch task error:', e);
   });
 
   return stream;
