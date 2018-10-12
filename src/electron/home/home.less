@@ -1,4 +1,4 @@
-@import '../common/base.less';
+@import "../common/base.less";
 
 .page {
   width: 100%;
@@ -16,7 +16,7 @@
     height: 40px;
     line-height: 40px;
     color: @disable-color;
-    font-family: 'Microsoft YaHei';
+    font-family: "Microsoft YaHei";
     font-weight: 100;
     padding-left: 10px;
   }
@@ -46,12 +46,12 @@
         width: 100%;
         height: 100%;
 
-        input[type='radio'] {
+        input[type=radio] {
           position: absolute;
           left: -1000px;
         }
 
-        input[type='radio']:checked {
+        input[type=radio]:checked {
           +.project-main {
             background-color: @sub-color;
             box-shadow: inset 2px 0 0 0 @accent-color;
@@ -75,7 +75,7 @@
           position: relative;
 
           &.working::after {
-            content: '';
+            content: "";
             width: 4px;
             height: 4px;
             position: absolute;
@@ -143,7 +143,7 @@
     &.remove-mode {
       li {
         label {
-          input[type='radio']+.project-main {
+          input[type=radio]+.project-main {
             .project-del {
               display: block;
             }
@@ -227,17 +227,14 @@
     height: @form-row-height;
     line-height: @form-row-height;
     padding: 0 28px;
-  }
-}
 
-input[type=checkbox] {
-  display: none;
+    label {
+      display: flex;
+      align-items: center;
 
-  &::after {
-    content: '\f14a';
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    margin-top: -2px;
+      input[type=checkbox] {
+        margin-right: 10px;
+      }
+    }
   }
 }
