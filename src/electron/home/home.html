@@ -10,7 +10,7 @@
       <h1>Bag Tool GUI版</h1>
     </div>
 
-    <div class="projects-area" v-else>
+    <div class="projects-area" v-else @click="nowProjectIdx = ''">
       <header>Projects</header>
 
       <ul :class="[removeMode ? 'remove-mode' : '']">
@@ -20,26 +20,28 @@
             <div :class="['project-main', workingArr[project_i] ? 'working' : '']">
               <i class="project-icon fas fa-folder"></i>
               <div class="project-title">{{ project.title }}</div>
-              <!-- <i class="project-info fas fa-info-circle"></i> -->
+              <button class="project-info" @click.stop="infoProject(project_i)"><i class="fas fa-info-circle"></i></button>
+              <button class="project-del" @click.stop="removeProject(project_i)"><i class="fas fa-trash-alt" title="移除"></i></button>
             </div>
           </label>
-          <button class="project-del" @click.prevent="removeProject(project_i)"><i class="fas fa-trash-alt" title="移除"></i></button>
         </li>
       </ul>
     </div>
 
-    <div class="gulp-area">
-      <button class="btn" @click="build(nowProjectIdx)">编译</button>
-      <button class="btn" @click="watch(nowProjectIdx)">监听</button>
-      <button class="btn" @click="init(nowProjectIdx)">初始化</button>
-      <button class="btn" @click="clean(nowProjectIdx)">清理</button>
-    </div>
+    <transition name="slide-updown">
+      <div v-show="nowProjectIdx !== ''" class="work-area">
+        <button :class="['btn', workingArr[nowProjectIdx] === 'build' ? 'working' : '']" @click="build(nowProjectIdx)">编译{{ workingArr[nowProjectIdx] === 'build' ? '...' : '' }}</button>
+        <button :class="['btn', workingArr[nowProjectIdx] === 'watch' ? 'working' : '']" @click="watch(nowProjectIdx)">监听{{ workingArr[nowProjectIdx] === 'watch' ? '...' : '' }}</button>
+        <button :class="['btn', workingArr[nowProjectIdx] === 'init' ? 'working' : '']" @click="init(nowProjectIdx)">初始化{{ workingArr[nowProjectIdx] === 'init' ? '...' : '' }}</button>
+        <button :class="['btn', workingArr[nowProjectIdx] === 'clean' ? 'working' : '']" @click="clean(nowProjectIdx)">清理{{ workingArr[nowProjectIdx] === 'clean' ? '...' : '' }}</button>
+      </div>
+    </transition>
 
     <div class="bottom-bar">
       <button class="function-btn" @click="addProject"><i title="添加新项目" class="fas fa-plus"></i></button>
       <button :class="['function-btn', removeMode ? 'remove-mode' : '']" :disabled="projects.length === 0" @click="removeProjects"><i title="移除项目" class="fas fa-minus"></i></button>
       <button class="function-btn" :disabled="nowProjectIdx === ''" @click="openProject"><i title="打开项目目录" class="far fa-folder-open"></i></button>
-      <button class="function-btn" :disabled="nowProjectIdx === ''"><i title="设置" class="fas fa-cog"></i></button>
+      <button class="function-btn"><i title="设置" class="fas fa-cog"></i></button>
     </div>
   </bag-slot>
 

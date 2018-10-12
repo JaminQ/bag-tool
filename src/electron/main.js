@@ -29,7 +29,7 @@ const createWindow = () => {
 
   // 创建浏览器窗口。
   win = new BrowserWindow({
-    width: 400,
+    width: 450,
     height: 600,
     // frame: false
   });

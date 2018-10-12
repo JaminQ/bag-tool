@@ -7,27 +7,38 @@ const {
   dialog
 } = require('electron').remote;
 
-const {
-  showDetailLog
-} = require('../../utils/config');
 const spawn = require('../../common/spawn');
 const Base = require('../common/base');
 
-const spawnOpt = {
-  cwd: path.join(__dirname.replace(/\\/g, '/'), '../../../'),
-  env: {
-    PROJECT: process.cwd().replace(/\\/g, '/') // 运行命令时的当前路径
-  },
-  stdout(data) {
-    showDetailLog && console.log(`${data}`);
-  },
-  stderr(data) {
-    console.log(`${data}`);
-  },
-  error(err) {
-    console.log(`${err}`);
-  }
-};
+const bagToolSpawn = ({
+  command,
+  idx,
+  cwd
+}) => {
+  cwd = cwd.replace(/\\/g, '/');
+  spawn(Object.assign({}, {
+    cwd,
+    env: {
+      PROJECT: cwd // 运行命令时的当前路径
+    },
+    stdout(data) {
+      console.log(`${data}`);
+    },
+    stderr(data) {
+      console.log(`${data}`);
+    },
+    error(err) {
+      console.log(`${err}`);
+    }
+  }, {
+    begin: () => {
+      Vue.set(vm.workingArr, idx, command);
+    },
+    close: () => {
+      Vue.set(vm.workingArr, idx, '');
+    }
+  }))(`bag-tool  ${command}`);
+}
 
 const vm = new Base({
   data: {
@@ -39,24 +50,28 @@ const vm = new Base({
   methods: {
     // gulp-area
     build(idx) {
-      spawn(Object.assign({}, spawnOpt, {
-        begin: () => {
-          Vue.set(this.workingArr, idx, true);
-        },
-        close: () => {
-          console.log('done');
-          Vue.set(this.workingArr, idx, false);
-        }
-      }))('gulp build');
+      bagToolSpawn({
+        command: 'build',
+        idx,
+        cwd: this.projects[this.nowProjectIdx].path
+      });
     },
-    watch() {
-      console.log('watch');
+    watch(idx) {
+      console.log('watch', idx);
     },
-    init() {
-      console.log('init');
+    init(idx) {
+      bagToolSpawn({
+        command: 'init',
+        idx,
+        cwd: this.projects[this.nowProjectIdx].path
+      });
     },
-    clean() {
-      spawn('gulp clean');
+    clean(idx) {
+      bagToolSpawn({
+        command: 'clean',
+        idx,
+        cwd: this.projects[this.nowProjectIdx].path
+      });
     },
 
     // bottom-bar
@@ -85,6 +100,9 @@ const vm = new Base({
       shell.showItemInFolder(this.projects[this.nowProjectIdx].path);
     },
 
+    infoProject(idx) {
+      console.log('info', idx);
+    },
     removeProject(idx) {
       this.projects.splice(idx, 1);
       ipcRenderer.sendSync('setData', {
