@@ -6,57 +6,190 @@
   </bag-slot>
 
   <bag-slot name="body">
-    <div :class="['page', infoMode ? 'blur' : '']">
-      <div class="poster" v-if="projects.length === 0">
-        <h1>Bag Tool GUI版</h1>
-      </div>
+    <div class="outer-page">
+      <div :class="['page', (infoMode || aboutMode) ? 'blur' : '']">
+        <div class="poster" v-if="projects.length === 0">
+          <h1 class="no-select">Bag Tool GUI版</h1>
+        </div>
 
-      <div class="projects-area" v-else @click="nowProjectIdx = ''">
-        <header>Projects</header>
+        <div class="projects-area" v-else @click="nowProjectIdx = ''">
+          <header>Projects</header>
 
-        <ul :class="[removeMode ? 'remove-mode' : '']">
-          <li v-for="(project, project_i) in projects">
-            <label>
-              <input type="radio" :value="project_i" v-model="nowProjectIdx">
-              <div :class="['project-main', workingArr[project_i] ? 'working' : '']">
-                <i class="project-icon fas fa-folder"></i>
-                <div class="project">
-                  <div class="project-title">{{ project.title }}</div>
-                  <div class="project-path">{{ project.path }}</div>
+          <ul :class="[removeMode ? 'remove-mode' : '']">
+            <li v-for="(project, project_i) in projects" @click.stop>
+              <label>
+                <input type="radio" :value="project_i" v-model="nowProjectIdx">
+                <div :class="['project-main', workingArr[project_i] ? 'working' : '']">
+                  <i class="project-icon fas fa-folder"></i>
+                  <div class="project">
+                    <div class="project-title">{{ project.title }}</div>
+                    <div class="project-path">{{ project.path }}</div>
+                  </div>
+                  <button class="project-info" @click.stop="infoProject(project_i)"><i class="fas fa-info-circle"></i></button>
+                  <button class="project-del" @click.stop="removeProject(project_i)"><i class="fas fa-trash-alt" title="移除"></i></button>
                 </div>
-                <button class="project-info" @click.stop="infoProject(project_i)"><i class="fas fa-info-circle"></i></button>
-                <button class="project-del" @click.stop="removeProject(project_i)"><i class="fas fa-trash-alt" title="移除"></i></button>
-              </div>
+              </label>
+            </li>
+          </ul>
+        </div>
+
+        <transition name="slide-updown">
+          <div v-show="nowProjectIdx !== ''" class="work-area">
+            <button :class="['btn', workingArr[nowProjectIdx] === 'build' ? 'working' : '']" @click="build(nowProjectIdx)">编译{{ workingArr[nowProjectIdx] === 'build' ? '...' : '' }}</button>
+            <button :class="['btn', workingArr[nowProjectIdx] === 'watch' ? 'working' : '']" @click="watch(nowProjectIdx)">监听{{ workingArr[nowProjectIdx] === 'watch' ? '...' : '' }}</button>
+            <!-- <button :class="['btn', workingArr[nowProjectIdx] === 'init' ? 'working' : '']" @click="init(nowProjectIdx)">初始化{{ workingArr[nowProjectIdx] === 'init' ? '...' : '' }}</button> -->
+            <button :class="['btn', workingArr[nowProjectIdx] === 'clean' ? 'working' : '']" @click="clean(nowProjectIdx)">清理{{ workingArr[nowProjectIdx] === 'clean' ? '...' : '' }}</button>
+          </div>
+        </transition>
+
+        <div class="bottom-bar">
+          <button class="function-btn" @click="addProject"><i title="添加新项目" class="fas fa-plus"></i></button>
+          <button :class="['function-btn', removeMode ? 'remove-mode' : '']" :disabled="projects.length === 0" @click="removeProjects"><i title="移除项目" class="fas fa-minus"></i></button>
+          <button class="function-btn" :disabled="nowProjectIdx === ''" @click="openProject"><i title="打开项目目录" class="far fa-folder-open"></i></button>
+          <button class="function-btn" @click="aboutUs"><i title="关于" class="far fa-question-circle"></i></button>
+        </div>
+      </div>
+
+      <div class="page transparent-page page-info outer-page" v-if="infoMode">
+        <button class="close-info-page-btn" @click="closeInfoPage"><i class="far fa-times-circle"></i></button>
+
+        <div class="info-block">
+          <header>项目配置</header>
+
+          <main>
+            <div class="form-tips">项目目录，路径相对当前项目</div>
+
+            <label class="form-row">
+              <div class="form-title form-label">源目录</div>
+              <input type="text" v-model="info.src">
             </label>
-          </li>
-        </ul>
+
+            <label class="form-row">
+              <div class="form-title form-label">生产目录</div>
+              <input type="text" v-model="info.dest">
+            </label>
+
+            <label class="form-row">
+              <div class="form-title form-label">母版目录</div>
+              <input type="text" v-model="info.template">
+            </label>
+
+            <div class="form-tips">其余配置</div>
+
+            <label class="form-row">
+              <div class="form-title form-label">编码集</div>
+              <input type="text" v-model="info.encoding">
+            </label>
+
+            <label class="form-row">
+              <input class="form-margin-right" type="checkbox" v-model="info.showDetailLog">
+              <div class="form-label">是否打印详细log</div>
+            </label>
+          </main>
+        </div>
+
+        <div class="info-block">
+          <header>LiveReload</header>
+
+          <main>
+            <label class="form-row">
+              <input class="form-margin-right" type="checkbox" v-model="info.liveReload">
+              <div class="form-label">开启 LiveReload 浏览器自动刷新</div>
+            </label>
+
+            <label class="form-row" v-show="info.liveReload">
+              <input class="form-margin-left form-margin-right" type="text" v-model="info.startPath">
+              <div class="form-label">默认加载的路径</div>
+            </label>
+          </main>
+        </div>
+
+        <div class="info-block">
+          <header>母版引擎</header>
+
+          <main>
+            <div class="form-tips">支持的文件后缀名</div>
+
+            <label class="form-row" v-for="(extname, idx) in info.tmplExtname">
+              <input class="form-margin-right" type="text" v-model="extname">
+              <button class="form-delete" @click="arrRemove(info.tmplExtname, idx)"></button>
+            </label>
+
+            <label class="form-row">
+              <button class="form-add" @click="arrAdd(info.tmplExtname)"></button>
+            </label>
+          </main>
+        </div>
+
+        <div class="info-block">
+          <header>CSS预处理</header>
+
+          <main>
+            <div class="form-tips">勾选你需要使用的CSS预处理引擎：</div>
+
+            <label class="form-row">
+              <input class="form-margin-right" type="checkbox" v-model="info.cssEngine" value="less">
+              <div class="form-label">Less</div>
+            </label>
+
+            <label class="form-row">
+              <input class="form-margin-right" type="checkbox" v-model="info.cssEngine" value="sass">
+              <div class="form-label">Sass</div>
+            </label>
+          </main>
+        </div>
+
+        <div class="info-block">
+          <header>文件白名单</header>
+
+          <main>
+            <div class="form-tips">白名单里的文件将直接复制到生产目录，路径相对源目录</div>
+
+            <label class="form-row" v-for="(file, idx) in info.whiteList">
+              <input class="form-margin-right long" type="text" v-model="file">
+              <button class="form-delete" @click="arrRemove(info.whiteList, idx)"></button>
+            </label>
+
+            <label class="form-row">
+              <button class="form-add" @click="arrAdd(info.whiteList)"></button>
+            </label>
+          </main>
+        </div>
+
+        <div class="info-block">
+          <header>忽略的文件或目录</header>
+
+          <main>
+            <div class="form-tips">路径相对源目录</div>
+
+            <label class="form-row" v-for="(file, idx) in info.ignore">
+              <input class="form-margin-right long" type="text" v-model="file">
+              <button class="form-delete" @click="arrRemove(info.ignore, idx)"></button>
+            </label>
+
+            <label class="form-row">
+              <button class="form-add" @click="arrAdd(info.ignore)"></button>
+            </label>
+          </main>
+        </div>
+
+        <div class="info-block control-block">
+          <button class="btn" @click="saveInfo">保存</button>
+        </div>
       </div>
 
-      <transition name="slide-updown">
-        <div v-show="nowProjectIdx !== ''" class="work-area">
-          <button :class="['btn', workingArr[nowProjectIdx] === 'build' ? 'working' : '']" @click="build(nowProjectIdx)">编译{{ workingArr[nowProjectIdx] === 'build' ? '...' : '' }}</button>
-          <button :class="['btn', workingArr[nowProjectIdx] === 'watch' ? 'working' : '']" @click="watch(nowProjectIdx)">监听{{ workingArr[nowProjectIdx] === 'watch' ? '...' : '' }}</button>
-          <button :class="['btn', workingArr[nowProjectIdx] === 'init' ? 'working' : '']" @click="init(nowProjectIdx)">初始化{{ workingArr[nowProjectIdx] === 'init' ? '...' : '' }}</button>
-          <button :class="['btn', workingArr[nowProjectIdx] === 'clean' ? 'working' : '']" @click="clean(nowProjectIdx)">清理{{ workingArr[nowProjectIdx] === 'clean' ? '...' : '' }}</button>
+      <div class="page transparent-page page-about" v-if="aboutMode">
+        <img class="avatar" src="../imgs/avatar.jpg" alt="头像" draggable="false">
+        <div class="line version">Version: 0.0.1</div>
+        <div class="line author">Author: <a href="javascript:;" @click="openUrl('https://github.com/JaminQ')">Jamin Qian</a></div>
+        <div class="line link">
+          <a href="javascript:;" @click="openUrl('https://github.com/MiniCai/bag-tool')">Github</a>
+          ,
+          <a href="javascript:;" @click="openUrl('https://www.npmjs.com/package/bag-tool')">NPM</a>
+          ,
+          <a href="javascript:;" @click="openUrl('https://github.com/MiniCai/bag-tool/blob/master/README.md')">README</a>
         </div>
-      </transition>
-
-      <div class="bottom-bar">
-        <button class="function-btn" @click="addProject"><i title="添加新项目" class="fas fa-plus"></i></button>
-        <button :class="['function-btn', removeMode ? 'remove-mode' : '']" :disabled="projects.length === 0" @click="removeProjects"><i title="移除项目" class="fas fa-minus"></i></button>
-        <button class="function-btn" :disabled="nowProjectIdx === ''" @click="openProject"><i title="打开项目目录" class="far fa-folder-open"></i></button>
-        <button class="function-btn"><i title="设置" class="fas fa-cog"></i></button>
-      </div>
-    </div>
-
-    <div class="page page-info" v-if="infoMode">
-      <div class="function-area">
-        <header>功能</header>
-        <div class="form-row">
-          <label>
-            <input type="checkbox">开启 LiveReload 浏览器自动刷新
-          </label>
-        </div>
+        <button class="btn like" @click="closeAboutPage"><i class="far fa-thumbs-up"></i> Good</button>
       </div>
     </div>
   </bag-slot>

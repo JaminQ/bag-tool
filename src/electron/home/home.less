@@ -1,24 +1,46 @@
 @import "../common/base.less";
 
-.page {
+.full-page() {
   width: 100%;
   height: 100%;
+};
+
+.outer-page {
+  .full-page();
   position: absolute;
   top: 0;
   left: 0;
-  background-color: #fff;
+  overflow: hidden;
 
-  &.blur {
-    filter: blur(20px);
-  }
+  .page {
+    .full-page();
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    overflow-x: hidden;
+    overflow-y: scroll;
 
-  header {
-    height: 40px;
-    line-height: 40px;
-    color: @disable-color;
-    font-family: "Microsoft YaHei";
-    font-weight: 100;
-    padding-left: 10px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &.blur {
+      filter: blur(15px);
+    }
+
+    header {
+      line-height: 40px;
+      color: @disable-color;
+      font-family: "Microsoft YaHei";
+      font-weight: 100;
+      padding-left: 10px;
+      .no-select();
+    }
+
+    &.transparent-page {
+      background: none;
+    }
   }
 }
 
@@ -43,8 +65,7 @@
       align-items: center;
 
       label {
-        width: 100%;
-        height: 100%;
+        .full-page();
 
         input[type=radio] {
           position: absolute;
@@ -54,7 +75,7 @@
         input[type=radio]:checked {
           +.project-main {
             background-color: @sub-color;
-            box-shadow: inset 2px 0 0 0 @accent-color;
+            box-shadow: inset 3px 0 0 0 @accent-color;
 
             .project {
               .project-path {
@@ -79,10 +100,10 @@
             width: 4px;
             height: 4px;
             position: absolute;
-            left: 12px;
+            left: 13px;
             top: 50%;
             margin-top: -2px;
-            border-radius: 2px;
+            border-radius: 50%;
             background-color: @accent-color;
           }
 
@@ -101,6 +122,7 @@
             justify-content: center;
 
             .project-title {
+              .no-select();
               font-size: 15px;
               color: #000;
             }
@@ -110,6 +132,7 @@
               color: @disable-color;
               margin-top: 4px;
               display: none;
+              cursor: text;
             }
           }
 
@@ -119,22 +142,19 @@
             margin: 0 12px 0 28px;
           }
 
-          .project-info {
+          .project-right-icon(@color) {
             display: none;
-            color: #74c2e1;
+            color: @color;
             font-size: 14px;
             position: absolute;
             right: 28px;
-            cursor: pointer;
+          };
+          .project-info {
+            .project-right-icon(#74c2e1);
           }
 
           .project-del {
-            display: none;
-            color: @error-color;
-            font-size: 14px;
-            position: absolute;
-            right: 28px;
-            cursor: pointer;
+            .project-right-icon(@error-color);
           }
         }
       }
@@ -202,7 +222,6 @@
     color: @main-color;
     font-size: 14px;
     margin: 0 5px;
-    cursor: pointer;
 
     &.remove-mode {
       color: @accent-color;
@@ -220,21 +239,145 @@
 }
 
 .page-info {
-  background: none;
+  font-size: 14px;
 
-  .form-row {
-    @form-row-height: 30px;
-    height: @form-row-height;
-    line-height: @form-row-height;
-    padding: 0 28px;
+  .close-info-page-btn {
+    position: absolute;
+    top: 0;
+    right: 14px;
+    color: @main-color;
+    font-size: 20px;
+    line-height: 40px;
+  }
 
-    label {
-      display: flex;
-      align-items: center;
+  .info-block {
+    margin: 10px 0;
+    .no-select();
 
-      input[type=checkbox] {
-        margin-right: 10px;
+    header {
+      color: #000;
+      line-height: 30px;
+      box-shadow: inset 3px 0 0 0 @main-color;
+    }
+
+    main {
+      padding: 0 28px;
+
+      @form-row-height: 30px;
+
+      .form-tips {
+        line-height: @form-row-height;
+        color: @disable-color;
+      }
+
+      .form-row {
+        height: @form-row-height;
+        line-height: @form-row-height;
+        position: relative;
+        display: flex;
+        align-items: center;
+
+        .form-margin-left {
+          margin-left: 19px;
+        }
+
+        .form-margin-right {
+          margin-right: 5px;
+        }
+
+        .form-label {
+          cursor: pointer;
+        }
+
+        .form-title {
+          width: 70px;
+        }
+      }
+
+      @edit-icon-width: 2px;
+      @edit-icon-height: 16px;
+      .edit-icon(@color) {
+        width: @edit-icon-height;
+        height: @edit-icon-height;
+        border: @edit-icon-width solid @color;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      };
+
+      .edit-icon-element(@type, @color) {
+        content: "";
+        display: block;
+        width: if((@type=row), @edit-icon-height/2, @edit-icon-width);
+        height: if((@type=row), @edit-icon-width, @edit-icon-height/2);
+        background-color: @color;
+        .edit-icon-element-column(@type) when(@type=column){
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          margin: -@edit-icon-height/4 0 0 -@edit-icon-width/2;
+        };
+        .edit-icon-element-column(@type);
+      };
+
+      .form-add {
+        .edit-icon(@form-color);
+
+        &::before {
+          .edit-icon-element(column, @form-color);
+        }
+
+        &::after {
+          .edit-icon-element(row, @form-color);
+        }
+      }
+
+      .form-delete {
+        .edit-icon(@error-color);
+
+        &::after {
+          .edit-icon-element(row, @error-color);
+        }
       }
     }
+  }
+
+  .control-block {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+}
+
+.page-about {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding-bottom: 60px;
+
+  .avatar {
+    @avatarWidth: 100px;
+    width: @avatarWidth;
+    height: @avatarWidth;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    .no-select();
+  }
+
+  .line {
+    line-height: 24px;
+    font-size: 14px;
+    .no-select();
+  }
+
+  a {
+    color: @main-color;
+    text-decoration: underline;
+  }
+
+  .like {
+    margin-top: 10px;
   }
 }

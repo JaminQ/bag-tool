@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const {
   ipcRenderer,
@@ -9,6 +10,7 @@ const {
 
 const spawn = require('../../common/spawn');
 const Base = require('../common/base');
+const defaultConfig = require('../../config.json');
 
 const bagToolSpawn = ({
   command,
@@ -40,13 +42,17 @@ const bagToolSpawn = ({
   }))(`bag-tool  ${command}`);
 }
 
-const vm = new Base({
+const vm = window.vm = new Base({
   data: {
     projects: ipcRenderer.sendSync('getData', ['projects']).projects || [],
     workingArr: [],
     nowProjectIdx: '',
     removeMode: false,
-    infoMode: false
+    infoMode: false,
+    configFile: '',
+    aboutMode: false,
+
+    info: {}
   },
   methods: {
     // gulp-area
@@ -60,13 +66,13 @@ const vm = new Base({
     watch(idx) {
       console.log('watch', idx);
     },
-    init(idx) {
-      bagToolSpawn({
-        command: 'init',
-        idx,
-        cwd: this.projects[this.nowProjectIdx].path
-      });
-    },
+    // init(idx) {
+    //   bagToolSpawn({
+    //     command: 'init',
+    //     idx,
+    //     cwd: this.projects[this.nowProjectIdx].path
+    //   });
+    // },
     clean(idx) {
       bagToolSpawn({
         command: 'clean',
@@ -100,9 +106,19 @@ const vm = new Base({
     openProject() {
       shell.showItemInFolder(this.projects[this.nowProjectIdx].path);
     },
+    aboutUs() {
+      this.aboutMode = true;
+    },
 
     infoProject(idx) {
-      console.log('info', idx);
+      this.configFile = path.join(this.projects[idx].path, 'bag-tool-config.json');
+      if (fs.existsSync(this.configFile)) {
+        this.info = Object.assign({}, defaultConfig, JSON.parse(fs.readFileSync(this.configFile, {
+          encoding: 'utf8'
+        })));
+      } else {
+        this.info = Object.assign({}, defaultConfig);
+      }
       this.infoMode = true;
     },
     removeProject(idx) {
@@ -110,6 +126,39 @@ const vm = new Base({
       ipcRenderer.sendSync('setData', {
         projects: this.projects
       });
+    },
+
+    // info-page
+    closeInfoPage() {
+      this.infoMode = false;
+      this.configFile = '';
+    },
+    saveInfo() {
+      if (this.configFile !== '') {
+        fs.writeFile(this.configFile, JSON.stringify(this.info), {
+          encoding: 'utf8'
+        }, () => {
+          this.closeInfoPage();
+        });
+      } else {
+        this.closeInfoPage();
+      }
+    },
+
+    // about-page
+    closeAboutPage() {
+      this.aboutMode = false;
+    },
+
+    // common
+    arrAdd(arr, val = '') {
+      arr.push(val);
+    },
+    arrRemove(arr, idx = 0, len = 1) {
+      arr.splice(idx, len);
+    },
+    openUrl(url) {
+      shell.openExternal(url);
     }
   }
 });
