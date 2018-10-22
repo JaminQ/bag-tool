@@ -22,6 +22,14 @@
   user-select: none;
 };
 
+.no-scrollbar() {
+  overflow: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .no-select {
   .no-select();
 }
