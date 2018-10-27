@@ -43,11 +43,12 @@
   background-color: #fff;
   border-radius: 3px;
   cursor: pointer;
+  transition: color .3s ease, border-color .3s ease;
   .no-select();
 
   &:hover {
     color: #1ca62a;
-    border: 1px solid #1ca62a;
+    border-color: #1ca62a;
   }
 }
 
@@ -60,9 +61,15 @@ input[type=text] {
   padding: 0 10px;
   border: 1px solid @form-color;
   outline: none;
+  transition: border-color .3s ease;
 
   &.long {
     width: 300px;
+  }
+
+  &:hover,
+  &:focus {
+    border-color: #34c7ff;
   }
 }
 

@@ -24,7 +24,7 @@ const bagToolSpawn = ({
       PROJECT: cwd // 运行命令时的当前路径
     },
     stdout(data) {
-      console.log(`${data}`);
+      vm.parseLog(`${data}`);
     },
     stderr(data) {
       console.log(`${data}`);
@@ -42,15 +42,19 @@ const bagToolSpawn = ({
   }))(`bag-tool  ${command}`);
 }
 
-const vm = window.vm = new Base({
+const vm = new Base({
   data: {
     projects: ipcRenderer.sendSync('getData', ['projects']).projects || [],
     workingArr: [],
     nowProjectIdx: '',
+
     removeMode: false,
+    logMode: false,
     infoMode: false,
     configFile: '',
     aboutMode: false,
+
+    logContent: [],
 
     info: {}
   },
@@ -78,6 +82,34 @@ const vm = window.vm = new Base({
         command: 'clean',
         idx,
         cwd: this.projects[this.nowProjectIdx].path
+      });
+    },
+
+    // log
+    parseLog(log) {
+      log.split(/\s/).forEach(content => {
+        if (content !== '') {
+          let cls = '';
+          let end = false;
+
+          if (/\[\d{2}:\d{2}:\d{2}\]/.test(content)) {
+            cls = 'log-time';
+            end = true;
+          } else if (/\d+(\.\d+)?/.test(content)) {
+            cls = 'log-spend-time';
+          } else if (content === 'ms' || content === 'μs' || content === 's') {
+            cls = 'log-spend-time';
+          } else if (content === 'done') {
+            cls = 'log-finish';
+            end = true;
+          }
+
+          this.logContent.push({
+            cls,
+            content,
+            end
+          });
+        }
       });
     },
 
