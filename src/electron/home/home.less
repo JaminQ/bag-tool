@@ -69,11 +69,20 @@
         position: absolute;
         top: 0;
         left: 0;
-        padding: 40px 0 24px 0;
+        padding-top: 40px;
+        padding-bottom: 24px;
         overflow: hidden;
 
         &.show-work-area {
-          padding: 40px 0 94px 0;
+          padding-bottom: 94px;
+        }
+
+        &.show-log-area {
+          padding-bottom: 224px;
+
+          &.show-work-area {
+            padding-bottom: 294px;
+          }
         }
 
         ul {
@@ -239,26 +248,49 @@
     }
 
     .log-area {
+      @log-color: #7b8776;
+      @log-sub-color: #ababab;
+
       width: 100%;
       height: 200px;
       line-height: 16px;
-      padding: 5px;
+      padding: 5px 30px 5px 5px;
       font-family: Menlo, Monaco, 'Courier New', monospace;
       font-size: 12px;
-      color: #7b8776;
+      color: @log-color;
       background-color: @gray-color;
       border-top: 1px solid @border-color;
       position: fixed;
       bottom: 24px;
       overflow-y: scroll;
 
-      .log-time {
-        color: #ababab;
+      .log-empty-btn {
+        position: fixed;
+        bottom: 200px;
+        right: 10px;
+        font-size: 14px;
+        color: @log-sub-color;
+
+        &:hover {
+          color: @log-color;
+        }
       }
 
-      .log-spend-time,
+      .log-command {
+        color: @main-color;
+      }
+
+      .log-begin {
+        color: @log-sub-color;
+      }
+
+      .log-time,
       .log-finish {
         color: @accent-color;
+      }
+
+      .log-error {
+        color: @error-color;
       }
     }
 
@@ -284,7 +316,8 @@
         font-size: 14px;
         margin: 0 5px;
 
-        &.remove-mode {
+        &.remove-mode,
+        &.log-mode {
           color: @accent-color;
         }
 

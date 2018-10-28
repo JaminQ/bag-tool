@@ -18,29 +18,48 @@ const bagToolSpawn = ({
   cwd
 }) => {
   cwd = cwd.replace(/\\/g, '/');
-  spawn(Object.assign({}, {
-    cwd,
-    env: {
-      PROJECT: cwd // 运行命令时的当前路径
-    },
-    stdout(data) {
-      vm.parseLog(`${data}`);
-    },
-    stderr(data) {
-      console.log(`${data}`);
-    },
-    error(err) {
-      console.log(`${err}`);
-    }
-  }, {
-    begin: () => {
-      Vue.set(vm.workingArr, idx, command);
-    },
-    close: () => {
-      Vue.set(vm.workingArr, idx, '');
-    }
-  }))(`bag-tool  ${command}`);
-}
+  vm.spawnList[idx] = spawn(
+    Object.assign({}, {
+      cwd,
+      env: {
+        PROJECT: cwd // 运行命令时的当前路径
+      },
+      stdout(data) {
+        vm.addLog({
+          content: `${data}`,
+          idx
+        });
+      },
+      stderr(data) {
+        vm.addLog({
+          content: `${data}`,
+          idx,
+          type: 'error'
+        });
+      },
+      error(err) {
+        vm.addLog({
+          content: `${err}`,
+          idx,
+          type: 'error'
+        });
+      },
+      begin: () => {
+        vm.logMode = true;
+        vm.addLog({
+          content: `bag-tool ${command}`,
+          idx,
+          type: 'command'
+        });
+        Vue.set(vm.workingArr, idx, command);
+      },
+      close: () => {
+        vm.spawnList[idx] = null;
+        Vue.set(vm.workingArr, idx, '');
+      }
+    })
+  )(`bag-tool ${command}`);
+};
 
 const vm = new Base({
   data: {
@@ -54,83 +73,115 @@ const vm = new Base({
     configFile: '',
     aboutMode: false,
 
-    logContent: [],
+    logContent: {},
 
     info: {}
   },
+  created() {
+    this.spawnList = {}; // 记录spawn子进程
+  },
   methods: {
     // gulp-area
-    build(idx) {
-      bagToolSpawn({
-        command: 'build',
-        idx,
-        cwd: this.projects[this.nowProjectIdx].path
-      });
-    },
-    watch(idx) {
-      console.log('watch', idx);
-    },
-    // init(idx) {
-    //   bagToolSpawn({
-    //     command: 'init',
-    //     idx,
-    //     cwd: this.projects[this.nowProjectIdx].path
-    //   });
-    // },
-    clean(idx) {
-      bagToolSpawn({
-        command: 'clean',
-        idx,
-        cwd: this.projects[this.nowProjectIdx].path
-      });
+    gulp(idx, command) {
+      const working = this.workingArr[idx];
+      if (!working) {
+        bagToolSpawn({
+          command,
+          idx,
+          cwd: this.projects[idx].path
+        });
+      } else if (working === command) {
+        this.spawnList[idx] && process.kill(this.spawnList[idx].pid);
+        // if (process.platform === 'win32') {
+        //   childProcess.exec('taskkill /pid ' + pid);
+        // } else {
+        //   process.kill(pid);
+        // }
+      } else {
+        console.log('not');
+      }
     },
 
     // log
-    parseLog(log) {
-      log.split(/\s/).forEach(content => {
-        if (content !== '') {
-          let cls = '';
-          let end = false;
+    addLog({
+      content,
+      idx = 0,
+      type = 'log'
+    }) {
+      // init
+      typeof this.logContent[idx] === 'undefined' && this.clearLog(idx);
 
-          if (/\[\d{2}:\d{2}:\d{2}\]/.test(content)) {
-            cls = 'log-time';
-            end = true;
-          } else if (/\d+(\.\d+)?/.test(content)) {
-            cls = 'log-spend-time';
-          } else if (content === 'ms' || content === 'μs' || content === 's') {
-            cls = 'log-spend-time';
-          } else if (content === 'done') {
-            cls = 'log-finish';
-            end = true;
-          }
+      const logContent = this.logContent[idx];
 
-          this.logContent.push({
-            cls,
+      switch (type) {
+        case 'command':
+          logContent.push({
+            cls: 'log-command',
             content,
-            end
+            end: true
           });
-        }
-      });
+          break;
+        case 'log':
+        case 'error':
+        default:
+          content.split(/\s/).forEach(cnt => {
+            if (cnt !== '') {
+              let cls = type === 'error' ? 'log-error' : '';
+              let end = false;
+
+              if (/\[\d{2}:\d{2}:\d{2}\]/.test(cnt)) {
+                cls = cls || 'log-begin';
+                end = true;
+              } else if (/\d+(\.\d+)?/.test(cnt)) {
+                cls = cls || 'log-time';
+              } else if (
+                cnt === 'ms' ||
+                cnt === 'μs' ||
+                cnt === 's'
+              ) {
+                cls = cls || 'log-time';
+              } else if (cnt === 'done') {
+                cls = cls || 'log-finish';
+                end = true;
+              } else if (cnt === '[Browsersync]') {
+                cls = cls || 'log-begin';
+                end = true;
+              }
+
+              logContent.push({
+                cls,
+                content: cnt,
+                end
+              });
+            }
+          });
+      }
+    },
+    clearLog(idx) {
+      this.$set(this.logContent, idx, []);
     },
 
     // bottom-bar
     addProject() {
       dialog.showOpenDialog({
-        title: '添加新项目',
-        properties: ['openDirectory']
-      }, filePaths => {
-        if (!filePaths) return;
+          title: '添加新项目',
+          properties: ['openDirectory']
+        },
+        filePaths => {
+          if (!filePaths) return;
 
-        filePaths.forEach(filePath => {
-          this.projects.push({
-            title: path.basename(filePath),
-            path: filePath
+          filePaths.forEach(filePath => {
+            this.projects.push({
+              title: path.basename(filePath),
+              path: filePath
+            });
+            this.init(this.projects.length - 1);
           });
-        });
-        ipcRenderer.sendSync('setData', {
-          projects: this.projects
-        });
-      });
+          ipcRenderer.sendSync('setData', {
+            projects: this.projects
+          });
+        }
+      );
     },
     removeProjects() {
       this.removeMode = !this.removeMode;
@@ -143,11 +194,19 @@ const vm = new Base({
     },
 
     infoProject(idx) {
-      this.configFile = path.join(this.projects[idx].path, 'bag-tool-config.json');
+      this.configFile = path.join(
+        this.projects[idx].path,
+        'bag-tool-config.json'
+      );
       if (fs.existsSync(this.configFile)) {
-        this.info = Object.assign({}, defaultConfig, JSON.parse(fs.readFileSync(this.configFile, {
-          encoding: 'utf8'
-        })));
+        this.info = Object.assign({},
+          defaultConfig,
+          JSON.parse(
+            fs.readFileSync(this.configFile, {
+              encoding: 'utf8'
+            })
+          )
+        );
       } else {
         this.info = Object.assign({}, defaultConfig);
       }
@@ -167,11 +226,15 @@ const vm = new Base({
     },
     saveInfo() {
       if (this.configFile !== '') {
-        fs.writeFile(this.configFile, JSON.stringify(this.info), {
-          encoding: 'utf8'
-        }, () => {
-          this.closeInfoPage();
-        });
+        fs.writeFile(
+          this.configFile,
+          JSON.stringify(this.info), {
+            encoding: 'utf8'
+          },
+          () => {
+            this.closeInfoPage();
+          }
+        );
       } else {
         this.closeInfoPage();
       }

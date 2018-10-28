@@ -6,7 +6,7 @@
   </bag-slot>
 
   <bag-slot name="body">
-    <div :class="['page', 'page-projects', (infoMode || aboutMode) ? 'blur' : '']">
+    <div class="page page-projects" :class="{blur: infoMode || aboutMode}">
       <div class="poster" v-if="projects.length === 0">
         <h1 class="no-select">Bag Tool GUI版</h1>
       </div>
@@ -14,13 +14,14 @@
       <div class="projects-area" v-else @click="nowProjectIdx = ''">
         <header>Projects</header>
 
-        <main :class="[nowProjectIdx !== '' ? 'show-work-area' : '']">
-          <ul :class="[removeMode ? 'remove-mode' : '']">
+        <main :class="{'show-work-area': nowProjectIdx !== '', 'show-log-area': logMode}">
+          <ul :class="{'remove-mode': removeMode}">
             <li v-for="(project, project_i) in projects" @click.stop>
               <label>
                 <input type="radio" :value="project_i" v-model="nowProjectIdx">
-                <div :class="['project-main', workingArr[project_i] ? 'working' : '']">
-                  <i class="project-icon fas fa-folder"></i>
+                <div class="project-main" :class="{working: workingArr[project_i]}">
+                  <i v-if="workingArr[project_i] === 'start'" class="project-icon far fa-play-circle"></i>
+                  <i v-else class="project-icon fas fa-folder"></i>
                   <div class="project">
                     <div class="project-title">{{ project.title }}</div>
                     <div class="project-path">{{ project.path }}</div>
@@ -36,15 +37,15 @@
 
       <transition name="slide-updown">
         <div v-show="nowProjectIdx !== ''" class="work-area" :class="{'log-mode': logMode}">
-          <button :class="['btn', workingArr[nowProjectIdx] === 'build' ? 'working' : '']" @click="build(nowProjectIdx)">编译{{ workingArr[nowProjectIdx] === 'build' ? '...' : '' }}</button>
-          <button :class="['btn', workingArr[nowProjectIdx] === 'watch' ? 'working' : '']" @click="watch(nowProjectIdx)">监听{{ workingArr[nowProjectIdx] === 'watch' ? '...' : '' }}</button>
-          <!-- <button :class="['btn', workingArr[nowProjectIdx] === 'init' ? 'working' : '']" @click="init(nowProjectIdx)">初始化{{ workingArr[nowProjectIdx] === 'init' ? '...' : '' }}</button> -->
-          <button :class="['btn', workingArr[nowProjectIdx] === 'clean' ? 'working' : '']" @click="clean(nowProjectIdx)">清理{{ workingArr[nowProjectIdx] === 'clean' ? '...' : '' }}</button>
+          <button class="btn" :class="{working: workingArr[nowProjectIdx] === 'build'}" @click="gulp(nowProjectIdx, 'build')">编译{{ workingArr[nowProjectIdx] === 'build' ? '中...' : '' }}</button>
+          <button class="btn" :class="{working: workingArr[nowProjectIdx] === 'start'}" @click="gulp(nowProjectIdx, 'start')">监听{{ workingArr[nowProjectIdx] === 'start' ? '中...' : '' }}</button>
+          <button class="btn" :class="{working: workingArr[nowProjectIdx] === 'clean'}" @click="gulp(nowProjectIdx, 'clean')">清理{{ workingArr[nowProjectIdx] === 'clean' ? '中...' : '' }}</button>
         </div>
       </transition>
 
       <div v-show="logMode" class="log-area">
-        <template v-for="(log, log_i) in logContent">
+        <button class="log-empty-btn" @click="clearLog(nowProjectIdx)"><i title="清空日志" class="fas fa-trash-alt"></i></button>
+        <template v-for="(log, log_i) in logContent[nowProjectIdx]">
           <br v-if="log.end && log_i">
           <span :class="log.cls" v-html="log.content"></span>
         </template>
@@ -52,12 +53,12 @@
 
       <div class="bottom-bar">
         <button class="function-btn" @click="addProject"><i title="添加新项目" class="fas fa-plus"></i></button>
-        <button :class="['function-btn', removeMode ? 'remove-mode' : '']" :disabled="projects.length === 0" @click="removeProjects"><i title="移除项目" class="fas fa-minus"></i></button>
+        <button class="function-btn" :class="{'remove-mode': removeMode}" :disabled="projects.length === 0" @click="removeProjects"><i title="移除项目" class="fas fa-minus"></i></button>
         <button class="function-btn" :disabled="nowProjectIdx === ''" @click="openProject"><i title="打开项目目录" class="far fa-folder-open"></i></button>
         <button class="function-btn" @click="aboutUs"><i title="关于" class="far fa-question-circle"></i></button>
 
         <div class="function-right-btns">
-          <button class="function-btn" @click="logMode = !logMode"><i title="查看日志" class="fas fa-terminal"></i></button>
+          <button class="function-btn" :class="{'log-mode': logMode}" @click="logMode = !logMode"><i title="查看日志" class="fas fa-terminal"></i></button>
         </div>
       </div>
     </div>
