@@ -27,40 +27,22 @@ const bagToolSpawn = ({
         PROJECT: cwd // 运行命令时的当前路径
       },
       stdout(data) {
-        vm.addLog({
-          content: `${data}`,
-          idx
-        });
+        vm.addLog(idx, `${data}`);
       },
       stderr(data) {
-        vm.addLog({
-          content: `${data}`,
-          idx,
-          type: 'error'
-        });
+        vm.addLog(idx, `${data}`, 'error');
       },
       error(err) {
-        vm.addLog({
-          content: `${err}`,
-          idx,
-          type: 'error'
-        });
+        vm.addLog(idx, `${data}`, 'error');
       },
       begin: () => {
         vm.logMode = true;
-        vm.addLog({
-          content: `bag-tool ${command}`,
-          idx,
-          type: 'command'
-        });
+        vm.addLog(idx, `bag-tool ${command}`, 'command');
         Vue.set(vm.workingArr, idx, command);
       },
       close: code => {
-        vm.addLog({
-          content: code === 0 ? 'done' : 'cancel',
-          idx,
-          type: 'finish'
-        });
+        if (code === 0) vm.addLog(idx, 'done', 'finish');
+        else vm.addLog(idx, 'stop', 'cancel');
         vm.spawnList[idx] = null;
         Vue.set(vm.workingArr, idx, '');
       }
@@ -77,7 +59,7 @@ const vm = new Base({
     nowProjectIdx: '',
 
     removeMode: false,
-    logMode: false,
+    logMode: true,
     infoMode: false,
     configFile: '',
     aboutMode: false,
@@ -114,66 +96,33 @@ const vm = new Base({
     },
 
     // log
-    addLog({
-      content,
-      idx = 0,
-      type = 'log'
-    }) {
+    addLog(idx = 0, content, type = 'log') {
       // init
       typeof this.logContent[idx] === 'undefined' && this.clearLog(idx);
 
-      const logContent = this.logContent[idx];
+      let logContent = this.logContent[idx];
 
       switch (type) {
         case 'command':
-          logContent.push({
-            cls: 'log-command',
-            content,
-            end: true
-          });
-          break;
         case 'finish':
-          logContent.push({
-            cls: 'log-finish',
-            content,
-            end: true
-          });
+        case 'cancel':
+          logContent += `<span class="log-${type}">${content}</span>\n`;
+          break;
+        case 'error':
+          logContent += `<span class="log-${type}">${content}</span>`;
           break;
         case 'log':
-        case 'error':
         default:
-          content.split(/\s/).forEach(cnt => {
-            if (cnt !== '') {
-              let cls = type === 'error' ? 'log-error' : '';
-              let end = false;
-
-              if (/\[\d{2}:\d{2}:\d{2}\]/.test(cnt)) {
-                cls = cls || 'log-begin';
-                end = true;
-              } else if (/\d+(\.\d+)?/.test(cnt)) {
-                cls = cls || 'log-time';
-              } else if (
-                cnt === 'ms' ||
-                cnt === 'μs' ||
-                cnt === 's'
-              ) {
-                cls = cls || 'log-time';
-              } else if (cnt === '[Browsersync]') {
-                cls = cls || 'log-begin';
-                end = true;
-              }
-
-              logContent.push({
-                cls,
-                content: cnt,
-                end
-              });
-            }
-          });
+          logContent += content
+            .replace(/\[\d{2}:\d{2}:\d{2}\]/g, '<span class="log-begin">$&</span>')
+            .replace(/\[Browsersync\]/g, '<span class="log-begin">$&</span>')
+            .replace(/\d+(\.\d+)? (m|μ)?s/g, '<span class="log-time">$&</span>');
       }
+
+      this.$set(this.logContent, idx, logContent);
     },
     clearLog(idx) {
-      this.$set(this.logContent, idx, []);
+      this.$set(this.logContent, idx, '');
     },
 
     // bottom-bar

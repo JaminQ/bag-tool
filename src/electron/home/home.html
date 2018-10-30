@@ -49,10 +49,7 @@
 
       <div v-show="logMode" class="log-area">
         <button class="log-empty-btn" @click="clearLog(nowProjectIdx)"><i title="清空日志" class="fas fa-trash-alt"></i></button>
-        <template v-for="(log, log_i) in logContent[nowProjectIdx]">
-          <br v-if="log.end && log_i">
-          <span :class="log.cls" v-html="log.content"></span>
-        </template>
+        <code v-html="logContent[nowProjectIdx]"></code>
       </div>
 
       <div class="bottom-bar">

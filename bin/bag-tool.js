@@ -10,12 +10,7 @@ const spawn = require('../src/common/spawn')({
     PROJECT: process.cwd().replace(/\\/g, '/') // 运行命令时的当前路径
   },
   stdout(data) {
-    const dataStr = `${data}`;
-    if (/^\[BAG-TOOL INFO\]/.test(dataStr)) {
-      console.info(dataStr.slice(15));
-    } else {
-      showDetailLog && process.stdout.write(dataStr);
-    }
+    showDetailLog && process.stdout.write(`${data}`);
   },
   stderr(data) {
     process.stdout.write(`${data}`);

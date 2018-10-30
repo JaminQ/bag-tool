@@ -292,6 +292,10 @@
 
       .custom-scrollbar-y();
 
+      &:hover {
+        padding-right: 24px;
+      }
+
       .log-empty-btn {
         position: fixed;
         bottom: 200px;
@@ -304,21 +308,32 @@
         }
       }
 
-      .log-command {
-        color: @main-color;
-      }
+      code {
+        white-space: pre-wrap;
+        word-wrap: normal;
+        font-family: inherit;
 
-      .log-begin {
-        color: @log-sub-color;
-      }
+        .log-command {
+          font-family: inherit;
+          color: @main-color;
+        }
 
-      .log-time,
-      .log-finish {
-        color: @accent-color;
-      }
+        .log-begin {
+          font-family: inherit;
+          color: @log-sub-color;
+        }
 
-      .log-error {
-        color: @error-color;
+        .log-time,
+        .log-finish {
+          font-family: inherit;
+          color: @accent-color;
+        }
+
+        .log-error,
+        .log-cancel {
+          font-family: inherit;
+          color: @error-color;
+        }
       }
     }
 
