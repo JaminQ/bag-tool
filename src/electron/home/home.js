@@ -59,7 +59,7 @@ const vm = new Base({
     nowProjectIdx: '',
 
     removeMode: false,
-    logMode: true,
+    logMode: false,
     infoMode: false,
     configFile: '',
     aboutMode: false,
