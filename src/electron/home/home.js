@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const childProcess = require('child_process');
 const {
   ipcRenderer,
   shell
@@ -11,6 +12,7 @@ const {
 const spawn = require('../../common/spawn');
 const Base = require('../common/base');
 const defaultConfig = require('../../config.json');
+const main = require('../../index');
 
 const bagToolSpawn = ({
   command,
@@ -18,9 +20,9 @@ const bagToolSpawn = ({
   cwd
 }) => {
   cwd = cwd.replace(/\\/g, '/');
-  vm.spawnList[idx] = spawn(
+  vm.spawnList[idx] = main[command](spawn(
     Object.assign({}, {
-      cwd,
+      cwd: path.join(__dirname, '../../../').replace(/\\/g, '/'),
       env: {
         PROJECT: cwd // 运行命令时的当前路径
       },
@@ -53,16 +55,23 @@ const bagToolSpawn = ({
         });
         Vue.set(vm.workingArr, idx, command);
       },
-      close: () => {
+      close: code => {
+        vm.addLog({
+          content: code === 0 ? 'done' : 'cancel',
+          idx,
+          type: 'finish'
+        });
         vm.spawnList[idx] = null;
         Vue.set(vm.workingArr, idx, '');
       }
     })
-  )(`bag-tool ${command}`);
+  ));
 };
 
 const vm = new Base({
   data: {
+    globalTips: '',
+
     projects: ipcRenderer.sendSync('getData', ['projects']).projects || [],
     workingArr: [],
     nowProjectIdx: '',
@@ -78,6 +87,7 @@ const vm = new Base({
     info: {}
   },
   created() {
+    this.globalTipsTimeout = null;
     this.spawnList = {}; // 记录spawn子进程
   },
   methods: {
@@ -91,14 +101,15 @@ const vm = new Base({
           cwd: this.projects[idx].path
         });
       } else if (working === command) {
-        this.spawnList[idx] && process.kill(this.spawnList[idx].pid);
-        // if (process.platform === 'win32') {
-        //   childProcess.exec('taskkill /pid ' + pid);
-        // } else {
-        //   process.kill(pid);
-        // }
+        if (this.spawnList[idx]) {
+          if (process.platform === 'win32') {
+            childProcess.exec(`taskkill /PID ${this.spawnList[idx].pid} /T /F`);
+          } else {
+            process.kill(this.spawnList[idx].pid);
+          }
+        }
       } else {
-        console.log('not');
+        this.globalTip('请先等待任务执行完毕');
       }
     },
 
@@ -117,6 +128,13 @@ const vm = new Base({
         case 'command':
           logContent.push({
             cls: 'log-command',
+            content,
+            end: true
+          });
+          break;
+        case 'finish':
+          logContent.push({
+            cls: 'log-finish',
             content,
             end: true
           });
@@ -140,9 +158,6 @@ const vm = new Base({
                 cnt === 's'
               ) {
                 cls = cls || 'log-time';
-              } else if (cnt === 'done') {
-                cls = cls || 'log-finish';
-                end = true;
               } else if (cnt === '[Browsersync]') {
                 cls = cls || 'log-begin';
                 end = true;
@@ -246,6 +261,15 @@ const vm = new Base({
     },
 
     // common
+    globalTip(tip = '') {
+      if (tip === '') return;
+      this.globalTips = tip;
+      this.globalTipsTimeout !== null && clearTimeout(this.globalTipsTimeout);
+      this.globalTipsTimeout = setTimeout(() => {
+        this.globalTips = '';
+        this.globalTipsTimeout = null;
+      }, 3000);
+    },
     arrAdd(arr, val = '') {
       arr.push(val);
     },

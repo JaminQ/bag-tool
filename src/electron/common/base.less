@@ -11,6 +11,7 @@
 
 #app {
   height: 100%;
+  position: relative;
 }
 
 .no-select() {
@@ -30,6 +31,25 @@
   }
 }
 
+.custom-scrollbar-y() {
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 6px;
+  }
+
+  &:hover::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #c2c2c2;
+    background-clip: padding-box;
+    min-height: 28px;
+  }
+}
+
 .no-select {
   .no-select();
 }
@@ -43,7 +63,6 @@
   background-color: #fff;
   border-radius: 3px;
   cursor: pointer;
-  transition: color .3s ease, border-color .3s ease;
   .no-select();
 
   &:hover {

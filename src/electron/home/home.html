@@ -6,6 +6,10 @@
   </bag-slot>
 
   <bag-slot name="body">
+    <transition name="slide-downup">
+      <div v-show="!!globalTips" class="global-tips">{{ globalTips }}</div>
+    </transition>
+
     <div class="page page-projects" :class="{blur: infoMode || aboutMode}">
       <div class="poster" v-if="projects.length === 0">
         <h1 class="no-select">Bag Tool GUI版</h1>
