@@ -40,8 +40,8 @@ module.exports = ({
       typeof error === 'function' && error(err);
     });
 
-    spawn.on('close', () => {
-      typeof close === 'function' && close();
+    spawn.on('close', code => {
+      typeof close === 'function' && close(code);
     });
 
     return spawn;
