@@ -16,18 +16,20 @@ const main = require('../../index');
 
 const bagToolSpawn = ({
   command,
-  idx,
-  cwd
+  idx
 }) => {
-  cwd = cwd.replace(/\\/g, '/');
+  const USERCONFIG = vm.getConfig(vm.getConfigFile(idx));
   vm.spawnList[idx] = main[command](spawn(
     Object.assign({}, {
       cwd: path.join(__dirname, '../../../').replace(/\\/g, '/'),
       env: {
-        PROJECT: cwd // 运行命令时的当前路径
+        USERCONFIG: JSON.stringify(USERCONFIG),
+        PROJECT: vm.projects[idx].path.replace(/\\/g, '/') // 运行命令时的当前路径
       },
       stdout(data) {
-        vm.addLog(idx, `${data}`);
+        const dataStr = `${data}`;
+        if (/\[BAG-TOOL\]/.test(dataStr)) vm.addLog(idx, dataStr.replace(/\[BAG-TOOL\]/, ''));
+        else USERCONFIG.showDetailLog && vm.addLog(idx, dataStr);
       },
       stderr(data) {
         vm.addLog(idx, `${data}`, 'error');
@@ -61,7 +63,6 @@ const vm = new Base({
     removeMode: false,
     logMode: false,
     infoMode: false,
-    configFile: '',
     aboutMode: false,
 
     logContent: {},
@@ -69,6 +70,7 @@ const vm = new Base({
     info: {}
   },
   created() {
+    this.configFile = '';
     this.globalTipsTimeout = null;
     this.spawnList = {}; // 记录spawn子进程
   },
@@ -79,8 +81,7 @@ const vm = new Base({
       if (!working) {
         bagToolSpawn({
           command,
-          idx,
-          cwd: this.projects[idx].path
+          idx
         });
       } else if (working === command) {
         if (this.spawnList[idx]) {
@@ -158,22 +159,8 @@ const vm = new Base({
     },
 
     infoProject(idx) {
-      this.configFile = path.join(
-        this.projects[idx].path,
-        'bag-tool-config.json'
-      );
-      if (fs.existsSync(this.configFile)) {
-        this.info = Object.assign({},
-          defaultConfig,
-          JSON.parse(
-            fs.readFileSync(this.configFile, {
-              encoding: 'utf8'
-            })
-          )
-        );
-      } else {
-        this.info = Object.assign({}, defaultConfig);
-      }
+      this.configFile = this.getConfigFile(idx);
+      this.info = this.getConfig(this.configFile);
       this.infoMode = true;
     },
     removeProject(idx) {
@@ -224,6 +211,23 @@ const vm = new Base({
     },
     arrRemove(arr, idx = 0, len = 1) {
       arr.splice(idx, len);
+    },
+    getConfigFile(idx) {
+      return path.join(this.projects[idx].path, 'bag-tool-config.json');
+    },
+    getConfig(file) {
+      if (fs.existsSync(file)) {
+        return Object.assign({},
+          defaultConfig,
+          JSON.parse(
+            fs.readFileSync(file, {
+              encoding: 'utf8'
+            })
+          )
+        );
+      } else {
+        return Object.assign({}, defaultConfig);
+      }
     },
     openUrl(url) {
       shell.openExternal(url);

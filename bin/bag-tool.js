@@ -1,16 +1,17 @@
 #!/usr/bin/env node
 
 const path = require('path').posix;
-const {
-  showDetailLog
-} = require('../src/utils/config');
+const USERCONFIG = require('../src/utils/config');
 const spawn = require('../src/common/spawn')({
   cwd: path.join(__dirname.replace(/\\/g, '/'), '../'),
   env: {
+    USERCONFIG: JSON.stringify(USERCONFIG),
     PROJECT: process.cwd().replace(/\\/g, '/') // 运行命令时的当前路径
   },
   stdout(data) {
-    showDetailLog && process.stdout.write(`${data}`);
+    const dataStr = `${data}`;
+    if (/\[BAG-TOOL\]/.test(dataStr)) process.stdout.write(dataStr.replace(/\[BAG-TOOL\]/, ''));
+    else USERCONFIG.showDetailLog && process.stdout.write(dataStr);
   },
   stderr(data) {
     process.stdout.write(`${data}`);

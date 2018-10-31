@@ -5,7 +5,11 @@ const defaultConfig = require('../config.json');
 let userConfig = {};
 
 try {
-  userConfig = require(path.join(PROJECT, 'bag-tool-config.json')); // 拉取用户配置文件
+  if (process.env.USERCONFIG) {
+    userConfig = JSON.parse(process.env.USERCONFIG); // 从环境里读
+  } else {
+    userConfig = require(path.join(PROJECT, 'bag-tool-config.json')); // 拉取用户配置文件
+  }
 } catch (e) {
   userConfig = {
     noConfig: true // 表示没有用户配置文件
