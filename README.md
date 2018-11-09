@@ -297,6 +297,7 @@ After compilation
 ## TODO
 
 - Develop a GUI version
+- Config 容错
 
 ## Bugs
 
