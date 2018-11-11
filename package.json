@@ -1,6 +1,6 @@
 {
   "name": "bag-tool",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A tool just for bag",
   "main": "gulpfile.js",
   "scripts": {
