@@ -25,6 +25,6 @@ module.exports = {
     return spawn(`${gulpPath} build`);
   },
   start(spawn) {
-    return spawn(`${gulpPath} start`);
+    return spawn(`${gulpPath} watch`);
   }
 };
