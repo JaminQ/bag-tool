@@ -7,8 +7,7 @@
     "init": "gulp init",
     "clean": "gulp clean",
     "build": "gulp build",
-    "start": "gulp watch",
-    "postinstall": "npm install -g gulp-cli"
+    "start": "gulp watch"
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
