@@ -11,21 +11,27 @@ module.exports = ({
   close
 }) => {
   return command => {
-    let file = '';
-    let args = [];
-    if (process.platform === 'win32') {
-      file = process.env.comspec || 'cmd.exe';
-      args = ['/s', '/c', command];
-    } else {
-      file = '/bin/sh';
-      args = ['-c', command];
-    }
+    // let file = '';
+    // let args = [];
+    // if (process.platform === 'win32') {
+    //   file = process.env.comspec || 'cmd.exe';
+    //   args = ['/s', '/c', command];
+    // } else {
+    //   file = '/bin/sh';
+    //   args = ['-c', command];
+    // }
 
     typeof begin === 'function' && begin();
 
-    const spawn = childProcess.spawn(file, args, {
+    // const spawn = childProcess.spawn(file, args, {
+    //   cwd: cwd,
+    //   env: Object.assign({}, process.env, env)
+    // });
+
+    const spawn = childProcess.spawn(command, {
       cwd: cwd,
-      env: Object.assign({}, process.env, env)
+      env: Object.assign({}, process.env, env),
+      shell: true
     });
 
     spawn.stdout.on('data', data => {

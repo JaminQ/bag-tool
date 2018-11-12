@@ -2,7 +2,8 @@ const fs = require('fs');
 const path = require('path').posix;
 
 // const gulpPath = path.join(__dirname.replace(/\\/g, '/'), '../node_modules/gulp/bin/gulp.js');
-const gulpPath = 'gulp';
+const gulpPath = './node_modules/gulp/bin/gulp.js';
+// const gulpPath = 'gulp';
 
 module.exports = {
   getVersion() {
