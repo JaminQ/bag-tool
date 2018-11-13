@@ -141,7 +141,7 @@ const vm = new Base({
               title: path.basename(filePath),
               path: filePath
             });
-            this.init(this.projects.length - 1);
+            this.gulp(this.projects.length - 1, 'init');
           });
           ipcRenderer.sendSync('setData', {
             projects: this.projects
