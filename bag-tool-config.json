@@ -1,6 +1,6 @@
 {
   "template": "electron/template",
-  "showDetailLog": true,
+  "showDetailLog": false,
   "liveReload": false,
   "whiteList": [
     "electron/common/lib/vue.min.js",

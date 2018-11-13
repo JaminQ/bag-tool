@@ -9,18 +9,21 @@ const {
   dialog
 } = require('electron').remote;
 
-const spawn = require('../../common/spawn');
+const fork = require('../../common/fork');
 const Base = require('../common/base');
 const defaultConfig = require('../../config.json');
 const main = require('../../index');
+
+console.log(path.join(__dirname, '../../../').replace(/\\/g, '/'));
 
 const bagToolSpawn = ({
   command,
   idx
 }) => {
   const USERCONFIG = vm.getConfig(vm.getConfigFile(idx));
-  vm.spawnList[idx] = main[command](spawn(
+  vm.forkList[idx] = main[command](fork(
     Object.assign({}, {
+      modulePath: './node_modules/gulp/bin/gulp.js',
       cwd: path.join(__dirname, '../../../').replace(/\\/g, '/'),
       env: {
         USERCONFIG: JSON.stringify(USERCONFIG),
@@ -45,7 +48,7 @@ const bagToolSpawn = ({
       close: code => {
         if (code === 0) vm.addLog(idx, 'done', 'finish');
         else vm.addLog(idx, 'stop', 'cancel');
-        vm.spawnList[idx] = null;
+        vm.forkList[idx] = null;
         Vue.set(vm.workingArr, idx, '');
       }
     })
@@ -72,7 +75,7 @@ const vm = new Base({
   created() {
     this.configFile = '';
     this.globalTipsTimeout = null;
-    this.spawnList = {}; // 记录spawn子进程
+    this.forkList = {}; // 记录fork子进程
   },
   methods: {
     // gulp-area
@@ -84,11 +87,11 @@ const vm = new Base({
           idx
         });
       } else if (working === command) {
-        if (this.spawnList[idx]) {
+        if (this.forkList[idx]) {
           if (process.platform === 'win32') {
-            childProcess.exec(`taskkill /PID ${this.spawnList[idx].pid} /T /F`);
+            childProcess.exec(`taskkill /PID ${this.forkList[idx].pid} /T /F`);
           } else {
-            process.kill(this.spawnList[idx].pid);
+            process.kill(this.forkList[idx].pid);
           }
         }
       } else {
