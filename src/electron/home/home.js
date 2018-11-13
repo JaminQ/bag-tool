@@ -14,8 +14,6 @@ const Base = require('../common/base');
 const defaultConfig = require('../../config.json');
 const main = require('../../index');
 
-console.log(path.join(__dirname, '../../../').replace(/\\/g, '/'));
-
 const bagToolSpawn = ({
   command,
   idx
