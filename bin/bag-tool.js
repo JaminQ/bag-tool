@@ -2,7 +2,8 @@
 
 const path = require('path').posix;
 const USERCONFIG = require('../src/utils/config');
-const spawn = require('../src/common/spawn')({
+const gulpFork = require('../src/common/fork')({
+  modulePath: './node_modules/gulp/bin/gulp.js',
   cwd: path.join(__dirname.replace(/\\/g, '/'), '../'),
   env: {
     USERCONFIG: JSON.stringify(USERCONFIG),
@@ -43,16 +44,16 @@ switch (command) {
     main.getHelp(argv.indexOf('-c') > -1 ? '_CN' : '');
     break;
   case 'init':
-    main.init(spawn);
+    main.init(gulpFork);
     break;
   case 'clean':
-    main.clean(spawn);
+    main.clean(gulpFork);
     break;
   case 'build':
-    main.build(spawn);
+    main.build(gulpFork);
     break;
   case 'start':
-    main.start(spawn);
+    main.start(gulpFork);
     break;
   default:
     console.log('bag-tool: Incorrect command, maybe you need \`bag-tool help\`.');

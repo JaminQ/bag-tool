@@ -1,9 +1,6 @@
 const fs = require('fs');
 const path = require('path').posix;
 
-// const gulpPath = path.join(__dirname.replace(/\\/g, '/'), '../node_modules/gulp/bin/gulp.js');
-const gulpPath = 'gulp';
-
 module.exports = {
   getVersion() {
     console.log(JSON.parse(fs.readFileSync(path.join(__dirname.replace(/\\/g, '/'), '../package.json'), {
@@ -15,16 +12,16 @@ module.exports = {
       encoding: 'utf8'
     }));
   },
-  init(spawn) {
-    return spawn(`${gulpPath} init`);
+  init(gulpFork) {
+    return gulpFork(['init']);
   },
-  clean(spawn) {
-    return spawn(`${gulpPath} clean`);
+  clean(gulpFork) {
+    return gulpFork(['clean']);
   },
-  build(spawn) {
-    return spawn(`${gulpPath} build`);
+  build(gulpFork) {
+    return gulpFork(['build']);
   },
-  start(spawn) {
-    return spawn(`${gulpPath} watch`);
+  start(gulpFork) {
+    return gulpFork(['watch']);
   }
 };
