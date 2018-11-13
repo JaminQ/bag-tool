@@ -15,7 +15,7 @@ module.exports = callback => {
       enc,
       cb
     }));
-    file.contents = new Buffer(contentStr);
+    file.contents = Buffer.from(contentStr);
     this.push(file);
     cb(null, file);
   });
