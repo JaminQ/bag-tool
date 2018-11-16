@@ -2,7 +2,7 @@ const path = require('path').posix;
 const gulp = require('gulp');
 const filter = require('gulp-filter');
 const less = require('gulp-less');
-const sass = require('gulp-sass');
+// const sass = require('gulp-sass');
 const requireDir = require('require-dir');
 const lazypipe = require('lazypipe');
 
@@ -41,14 +41,14 @@ const getParseCssPipe = (cssEngine = CSSENGINE) => {
 
         break;
       case 'sass':
-        const sassFilter = filter(['**/*.scss'], {
-          restore: true
-        });
+        // const sassFilter = filter(['**/*.scss'], {
+        //   restore: true
+        // });
 
-        pipe = pipe
-          .pipe(() => sassFilter)
-          .pipe(() => sass({}).on('error', sass.logError))
-          .pipe(() => sassFilter.restore);
+        // pipe = pipe
+        //   .pipe(() => sassFilter)
+        //   .pipe(() => sass({}).on('error', sass.logError))
+        //   .pipe(() => sassFilter.restore);
 
         break;
       default:
