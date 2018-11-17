@@ -35,7 +35,7 @@ const createWindow = () => {
   });
 
   // 然后加载应用的 index.html。
-  win.loadFile(path.join(__dirname, 'home/home.html'));
+  win.loadFile(path.join(__dirname, './pages/home/home.html'));
 
   // 打开开发者工具。
   win.webContents.openDevTools();

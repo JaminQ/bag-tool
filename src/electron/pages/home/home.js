@@ -9,10 +9,10 @@ const {
   dialog
 } = require('electron').remote;
 
-const fork = require('../../common/fork');
-const Base = require('../common/base');
-const defaultConfig = require('../../config.json');
-const main = require('../../index');
+const fork = require('../../../common/fork');
+const Base = require('../../common/base');
+const defaultConfig = require('../../../config.json');
+const main = require('../../../index');
 
 const bagToolSpawn = ({
   command,
@@ -21,7 +21,7 @@ const bagToolSpawn = ({
   const USERCONFIG = vm.getConfig(vm.getConfigFile(idx));
   vm.forkList[idx] = main[command](fork(
     Object.assign({}, {
-      modulePath: './node_modules/gulp/bin/gulp.js',
+      modulePath: './../node_modules/gulp/bin/gulp.js',
       cwd: path.join(__dirname, '../../../').replace(/\\/g, '/'),
       env: {
         USERCONFIG: JSON.stringify(USERCONFIG),
