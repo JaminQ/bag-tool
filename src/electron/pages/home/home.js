@@ -116,7 +116,7 @@ const vm = new Base({
         case 'log':
         default:
           logContent += content
-            .replace(/\[\d{2}:\d{2}:\d{2}\]/g, '<span class="log-begin">$&</span>')
+            .replace(/\[(\d{2}:\d{2}:\d{2})\]/g, '[<span class="log-begin">$1</span>]')
             .replace(/\[Browsersync\]/g, '<span class="log-begin">$&</span>')
             .replace(/\d+(\.\d+)? (m|μ)?s/g, '<span class="log-time">$&</span>');
       }
