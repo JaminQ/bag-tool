@@ -29,7 +29,7 @@ const bagToolSpawn = ({
       },
       stdout(data) {
         const dataStr = `${data}`;
-        if (/\[BAG-TOOL\]/.test(dataStr)) vm.addLog(idx, dataStr.replace(/\[BAG-TOOL\]/, ''));
+        if (/\[BAG-TOOL\]/.test(dataStr)) vm.addLog(idx, dataStr.replace(/\[BAG-TOOL\]/, '$& '));
         else USERCONFIG.showDetailLog && vm.addLog(idx, dataStr);
       },
       stderr(data) {
