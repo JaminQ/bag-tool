@@ -62,7 +62,7 @@ const vm = new Base({
     nowProjectIdx: '',
 
     removeMode: false,
-    logMode: true,
+    logMode: false,
     infoMode: false,
     aboutMode: false,
 
@@ -116,9 +116,24 @@ const vm = new Base({
         case 'log':
         default:
           logContent += content
-            .replace(/\[(\d{2}:\d{2}:\d{2})\]/g, '[<span class="log-begin">$1</span>]')
-            .replace(/\[Browsersync\]/g, '<span class="log-begin">$&</span>')
-            .replace(/\d+(\.\d+)? (m|μ)?s/g, '<span class="log-time">$&</span>');
+            .replace(/(Starting ')([^']*?)(')/g, '$1<span class="log-command">$2</span>$3')
+            .replace(/(Finished ')([^']*?)(')/g, '$1<span class="log-command">$2</span>$3')
+            .replace(/Reloading Browsers\.{3}/g, '<span class="log-command">$&</span>')
+            .replace(/\[(BAG-TOOL)\]/g, '[<span class="log-command">$1</span>]')
+
+            .replace(/\[(Browsersync)\]/g, '[<span class="log-command-browsersync">$1</span>]')
+
+            .replace(/\[(\d{2}:\d{2}:\d{2})\]/g, '[<span class="log-sub">$1</span>]')
+            .replace(/------------------------------------------------/g, '<span class="log-sub">$&</span>')
+
+            .replace(/\d+(\.\d+)? (m|μ)?s/g, '<span class="log-accent">$&</span>')
+            .replace(/(Working directory changed to )(\S*)/g, '$1<span class="log-accent">$2</span>')
+            .replace(/(Using gulpfile )(\S*)/g, '$1<span class="log-accent">$2</span>')
+            .replace(/(begin to watch the dir: )(\S*)/g, '$1<span class="log-accent">$2</span>')
+            .replace(/(Serving files from: )(\S*)/g, '$1<span class="log-accent">$2</span>')
+            .replace(/(Local: )(\S*)/g, '$1<span class="log-accent">$2</span>')
+            .replace(/(External: )(\S*)/g, '$1<span class="log-accent">$2</span>')
+            .replace(/(UI: )(\S*)/g, '$1<span class="log-accent">$2</span>');
       }
 
       this.$set(this.logContent, idx, logContent);

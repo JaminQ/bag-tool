@@ -31,7 +31,7 @@
   }
 }
 
-.custom-scrollbar-y() {
+.custom-scrollbar-y(@thumb-color) {
   overflow-y: scroll;
 
   &::-webkit-scrollbar {
@@ -44,7 +44,7 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #c2c2c2;
+    background-color: @thumb-color;
     background-clip: padding-box;
     min-height: 28px;
   }

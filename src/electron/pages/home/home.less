@@ -291,7 +291,7 @@
       position: fixed;
       bottom: 24px;
 
-      .custom-scrollbar-y();
+      .custom-scrollbar-y(#3b414d);
 
       &:hover {
         padding-right: 24px;
@@ -312,31 +312,49 @@
       code {
         white-space: pre-wrap;
         word-wrap: normal;
-        font-family: inherit;
 
-        .log-command {
+        .common-style() {
           font-family: inherit;
-          color: #209ccd;
+
+          &::selection {
+            background-color: #ffffff24;
+          }
+
+          &::-webkit-selection {
+            background-color: #ffffff24;
+          }
         }
 
-        .log-begin {
-          font-family: inherit;
+        .common-style();
+
+        .log-command {
+          .common-style();
+          color: #21b6f1;
+        }
+
+        .log-command-browsersync {
+          .common-style();
+          color: #3999ff;
+        }
+
+        .log-sub {
+          .common-style();
           color: @log-sub-color;
         }
 
-        .log-time {
-          font-family: inherit;
-          color: #bc3fbc;
+        .log-accent {
+          .common-style();
+          color: #e43ee4;
         }
 
         .log-finish {
-          font-family: inherit;
+          .common-style();
           color: @accent-color;
         }
 
         .log-error,
         .log-cancel {
-          font-family: inherit;
+          .common-style();
           color: @error-color;
         }
       }
