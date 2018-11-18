@@ -276,7 +276,7 @@
 
     .log-area {
       @log-bg-color: #282c34;
-      @log-color: #cccccc;
+      @log-color: #fff;
       @log-sub-color: #666666;
 
       width: 100%;
@@ -327,34 +327,20 @@
 
         .common-style();
 
-        .log-command {
+        span {
           .common-style();
+        }
+
+        .log-command {
           color: #21b6f1;
         }
 
-        .log-command-browsersync {
-          .common-style();
-          color: #3999ff;
-        }
-
-        .log-sub {
-          .common-style();
-          color: @log-sub-color;
-        }
-
-        .log-accent {
-          .common-style();
-          color: #e43ee4;
-        }
-
         .log-finish {
-          .common-style();
           color: @accent-color;
         }
 
         .log-error,
         .log-cancel {
-          .common-style();
           color: @error-color;
         }
       }

@@ -8,6 +8,7 @@ const {
 const {
   dialog
 } = require('electron').remote;
+const ansiHTML = require('ansi-html');
 
 const fork = require('../../../common/fork');
 const Base = require('../../common/base');
@@ -113,27 +114,8 @@ const vm = new Base({
         case 'error':
           logContent += `<span class="log-${type}">${content}</span>`;
           break;
-        case 'log':
         default:
-          logContent += content
-            .replace(/(Starting ')([^']*?)(')/g, '$1<span class="log-command">$2</span>$3')
-            .replace(/(Finished ')([^']*?)(')/g, '$1<span class="log-command">$2</span>$3')
-            .replace(/Reloading Browsers\.{3}/g, '<span class="log-command">$&</span>')
-            .replace(/\[(BAG-TOOL)\]/g, '[<span class="log-command">$1</span>]')
-
-            .replace(/\[(Browsersync)\]/g, '[<span class="log-command-browsersync">$1</span>]')
-
-            .replace(/\[(\d{2}:\d{2}:\d{2})\]/g, '[<span class="log-sub">$1</span>]')
-            .replace(/------------------------------------------------/g, '<span class="log-sub">$&</span>')
-
-            .replace(/\d+(\.\d+)? (m|μ)?s/g, '<span class="log-accent">$&</span>')
-            .replace(/(Working directory changed to )(\S*)/g, '$1<span class="log-accent">$2</span>')
-            .replace(/(Using gulpfile )(\S*)/g, '$1<span class="log-accent">$2</span>')
-            .replace(/(begin to watch the dir: )(\S*)/g, '$1<span class="log-accent">$2</span>')
-            .replace(/(Serving files from: )(\S*)/g, '$1<span class="log-accent">$2</span>')
-            .replace(/(Local: )(\S*)/g, '$1<span class="log-accent">$2</span>')
-            .replace(/(External: )(\S*)/g, '$1<span class="log-accent">$2</span>')
-            .replace(/(UI: )(\S*)/g, '$1<span class="log-accent">$2</span>');
+          logContent += ansiHTML(content);
       }
 
       this.$set(this.logContent, idx, logContent);
