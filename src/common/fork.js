@@ -14,6 +14,8 @@ module.exports = ({
   return command => {
     typeof begin === 'function' && begin();
 
+    command.push('--colors'); // 保留颜色
+
     const fork = childProcess.fork(modulePath, command, {
       cwd,
       // env: Object.assign({}, process.env, env),
