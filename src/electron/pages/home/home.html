@@ -1,5 +1,5 @@
 <bag-include file="layout.html">
-  <bag-slot name="title">Bag Tool GUI版</bag-slot>
+  <bag-slot name="title">Bag Tool</bag-slot>
 
   <bag-slot name="link">
     <link rel="stylesheet" href="./home.css">
@@ -12,7 +12,7 @@
 
     <div class="page page-projects" :class="{blur: infoMode || aboutMode}">
       <div class="poster" v-if="projects.length === 0">
-        <h1 class="no-select">Bag Tool GUI版</h1>
+        <h1 class="no-select">Bag Tool</h1>
       </div>
 
       <div class="projects-area" v-else @click="nowProjectIdx = ''">

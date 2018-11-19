@@ -15,50 +15,11 @@ const Base = require('../../common/base');
 const defaultConfig = require('../../../config.json');
 const main = require('../../../index');
 
-const bagToolSpawn = ({
-  command,
-  idx
-}) => {
-  const USERCONFIG = vm.getConfig(vm.getConfigFile(idx));
-  vm.forkList[idx] = main[command](fork(
-    Object.assign({}, {
-      modulePath: './../node_modules/gulp/bin/gulp.js',
-      cwd: path.join(__dirname, '../../../').replace(/\\/g, '/'),
-      env: {
-        USERCONFIG: JSON.stringify(USERCONFIG),
-        PROJECT: vm.projects[idx].path.replace(/\\/g, '/') // 运行命令时的当前路径
-      },
-      stdout(data) {
-        const dataStr = `${data}`;
-        if (/\[BAG-TOOL\]/.test(dataStr)) vm.addLog(idx, dataStr.replace(/\[BAG-TOOL\]/, '$& '));
-        else USERCONFIG.showDetailLog && vm.addLog(idx, dataStr);
-      },
-      stderr(data) {
-        vm.addLog(idx, `${data}`, 'error');
-      },
-      error(err) {
-        vm.addLog(idx, `${data}`, 'error');
-      },
-      begin: () => {
-        vm.logMode = true;
-        vm.addLog(idx, `bag-tool ${command}`, 'command');
-        Vue.set(vm.workingArr, idx, command);
-      },
-      close: code => {
-        if (code === 0) vm.addLog(idx, 'done', 'finish');
-        else vm.addLog(idx, 'stop', 'cancel');
-        vm.forkList[idx] = null;
-        Vue.set(vm.workingArr, idx, '');
-      }
-    })
-  ));
-};
-
 const vm = new Base({
   data: {
     globalTips: '',
 
-    projects: ipcRenderer.sendSync('getData', ['projects']).projects || [],
+    projects: ipcRenderer.sendSync('getProjects', ['projects']).projects || [],
     workingArr: [],
     nowProjectIdx: '',
 
@@ -140,7 +101,7 @@ const vm = new Base({
             });
             this.gulp(this.projects.length - 1, 'init');
           });
-          ipcRenderer.sendSync('setData', {
+          ipcRenderer.sendSync('setProjects', {
             projects: this.projects
           });
         }
@@ -154,16 +115,18 @@ const vm = new Base({
     },
     aboutUs() {
       this.aboutMode = true;
+      this.windowTitle = '';
     },
 
     infoProject(idx) {
       this.configFile = this.getConfigFile(idx);
       this.info = this.getConfig(this.configFile);
       this.infoMode = true;
+      this.windowTitle = '配置';
     },
     removeProject(idx) {
       this.projects.splice(idx, 1);
-      ipcRenderer.sendSync('setData', {
+      ipcRenderer.sendSync('setProjects', {
         projects: this.projects
       });
     },
@@ -171,6 +134,7 @@ const vm = new Base({
     // info-page
     closeInfoPage() {
       this.infoMode = false;
+      this.windowTitle = 'Bag Tool';
       this.configFile = '';
     },
     saveInfo() {
@@ -192,6 +156,7 @@ const vm = new Base({
     // about-page
     closeAboutPage() {
       this.aboutMode = false;
+      this.windowTitle = 'Bag Tool';
     },
 
     // common
@@ -232,3 +197,44 @@ const vm = new Base({
     }
   }
 });
+
+const bagToolSpawn = ({
+  command,
+  idx
+}) => {
+  const USERCONFIG = vm.getConfig(vm.getConfigFile(idx));
+  vm.forkList[idx] = main[command](fork(
+    Object.assign({}, {
+      modulePath: './../node_modules/gulp/bin/gulp.js',
+      cwd: path.join(__dirname, '../../../').replace(/\\/g, '/'),
+      env: {
+        USERCONFIG: JSON.stringify(USERCONFIG),
+        PROJECT: vm.projects[idx].path.replace(/\\/g, '/') // 运行命令时的当前路径
+      },
+      stdout(data) {
+        const dataStr = `${data}`;
+        if (/\[BAG-TOOL\]/.test(dataStr)) vm.addLog(idx, dataStr.replace(/\[BAG-TOOL\]/, '$& '));
+        else USERCONFIG.showDetailLog && vm.addLog(idx, dataStr);
+      },
+      stderr(data) {
+        vm.addLog(idx, `${data}`, 'error');
+      },
+      error(err) {
+        vm.addLog(idx, `${data}`, 'error');
+      },
+      begin: () => {
+        vm.logMode = true;
+        vm.addLog(idx, `bag-tool ${command}`, 'command');
+        Vue.set(vm.workingArr, idx, command);
+      },
+      close: code => {
+        if (code === 0) vm.addLog(idx, 'done', 'finish');
+        else vm.addLog(idx, 'stop', 'cancel');
+        vm.forkList[idx] = null;
+        Vue.set(vm.workingArr, idx, '');
+      }
+    })
+  ));
+};
+
+require('../../common/ipcEvent')(vm);

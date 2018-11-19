@@ -31,7 +31,7 @@ const createWindow = () => {
   win = new BrowserWindow({
     width: 420,
     height: 600,
-    // frame: false
+    frame: false
   });
 
   // 然后加载应用的 index.html。
@@ -46,6 +46,14 @@ const createWindow = () => {
     // 通常会把多个 window 对象存放在一个数组里面，
     // 与此同时，你应该删除相应的元素。
     win = null;
+  });
+
+  win.on('maximize', () => {
+    win.webContents.send('maximize');
+  });
+
+  win.on('unmaximize', () => {
+    win.webContents.send('unmaximize');
   });
 };
 
@@ -74,7 +82,8 @@ app.on('activate', () => {
 // 在这文件，你可以续写应用剩下主进程代码。
 // 也可以拆分成几个文件，然后用 require 导入。
 
-ipcMain.on('getData', (event, arg) => {
+// 获取项目数据
+ipcMain.on('getProjects', (event, arg) => {
   const res = {};
   arg.forEach(attr => {
     res[attr] = DATA[arg];
@@ -82,10 +91,30 @@ ipcMain.on('getData', (event, arg) => {
   event.returnValue = res;
 });
 
-ipcMain.on('setData', (event, arg) => {
+// 设置配置项目数据
+ipcMain.on('setProjects', (event, arg) => {
   Object.assign(DATA, arg);
   fs.writeFileSync(projectsFile, JSON.stringify(DATA), {
     encoding: 'utf8'
   });
   event.returnValue = true;
+});
+
+// 关闭窗口
+ipcMain.on('closeWindow', () => {
+  win.close();
+});
+
+// 最小化窗口
+ipcMain.on('minimizeWindow', () => {
+  win.minimize();
+});
+
+// 最大化窗口
+ipcMain.on('maxmizeWindow', () => {
+  if (win.isMaximized()) {
+    win.unmaximize();
+  } else {
+    win.maximize();
+  }
 });
