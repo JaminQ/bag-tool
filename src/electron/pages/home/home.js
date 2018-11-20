@@ -24,11 +24,13 @@ const vm = new Base({
     nowProjectIdx: '',
 
     removeMode: false,
-    logMode: false,
+    logMode: true,
     infoMode: false,
     aboutMode: false,
 
     logContent: {},
+    logHeight: 200,
+    logMoveStatus: false,
 
     info: {}
   },
@@ -36,6 +38,11 @@ const vm = new Base({
     this.configFile = '';
     this.globalTipsTimeout = null;
     this.forkList = {}; // 记录fork子进程
+
+    this.logMoveEnd = () => {
+      this.logMoveStatus = false;
+    };
+    document.addEventListener('mouseup', this.logMoveEnd);
   },
   methods: {
     // gulp-area
@@ -82,7 +89,19 @@ const vm = new Base({
       this.$set(this.logContent, idx, logContent);
     },
     clearLog(idx) {
+      if (typeof idx !== 'number') return;
       this.$set(this.logContent, idx, '');
+    },
+    logMoveBegin() {
+      this.logMoveStatus = true;
+    },
+    logMoving(e) {
+      if (!this.logMoveStatus) return;
+
+      const y = e.movementY;
+      if (y > 0) {
+        this.logHeight -= y;
+      }
     },
 
     // bottom-bar
@@ -195,6 +214,9 @@ const vm = new Base({
     openUrl(url) {
       shell.openExternal(url);
     }
+  },
+  destroyed() {
+    document.removeEventListener('mouseup', this.logMoveEnd);
   }
 });
 
