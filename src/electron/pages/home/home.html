@@ -30,7 +30,7 @@
                     <div class="project-title">{{ project.title }}</div>
                     <div class="project-path">{{ project.path }}</div>
                   </div>
-                  <button class="project-info" @click.stop="infoProject(project_i)"><i class="fas fa-info-circle"></i></button>
+                  <button class="project-info" @click.stop="infoProject(project_i, project.title)"><i class="fas fa-info-circle"></i></button>
                   <button class="project-del" @click.stop="removeProject(project_i)"><i class="fas fa-trash-alt" title="移除"></i></button>
                 </div>
               </label>
@@ -52,7 +52,7 @@
         <code v-html="logContent[nowProjectIdx]"></code>
 
         <div class="drag-bar" @mousedown="logMoveBegin"></div>
-        <div class="move-area" v-show="logMoveStatus" @mousemove="logMoving"></div>
+        <div class="drag-move-area" v-show="logMoveStatus" @mousemove="logMoving"></div>
       </div>
 
       <div class="bottom-bar">
@@ -69,7 +69,7 @@
 
     <transition name="fade-in">
       <div class="page transparent-page page-info" v-if="infoMode">
-        <button class="close-info-page-btn" @click="closeInfoPage"><i class="far fa-times-circle"></i></button>
+        <button class="close-info-page-btn" @click="saveInfo"><i class="far fa-times-circle"></i></button>
 
         <div class="info-block">
           <header>项目配置</header>
@@ -219,10 +219,6 @@
               </label>
             </div>
           </main>
-        </div>
-
-        <div class="info-block control-block">
-          <button class="btn" @click="saveInfo">保存</button>
         </div>
       </div>
     </transition>

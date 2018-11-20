@@ -15,21 +15,26 @@ const Base = require('../../common/base');
 const defaultConfig = require('../../../config.json');
 const main = require('../../../index');
 
+const {
+  projects = [],
+  logHeight = 200
+} = ipcRenderer.sendSync('getDataSync', ['projects', 'logHeight']);
+
 const vm = new Base({
   data: {
     globalTips: '',
 
-    projects: ipcRenderer.sendSync('getProjects', ['projects']).projects || [],
+    projects,
     workingArr: [],
     nowProjectIdx: '',
 
     removeMode: false,
-    logMode: true,
+    logMode: false,
     infoMode: false,
     aboutMode: false,
 
     logContent: {},
-    logHeight: 200,
+    logHeight,
     logMoveStatus: false,
 
     info: {}
@@ -41,6 +46,16 @@ const vm = new Base({
 
     this.logMoveEnd = () => {
       this.logMoveStatus = false;
+      const maxHeight = window.innerHeight - 164;
+      const minHeight = 80;
+      if (this.logHeight > maxHeight) {
+        this.logHeight = maxHeight;
+      } else if (this.logHeight < minHeight) {
+        this.logHeight = minHeight;
+      }
+      ipcRenderer.send('setData', {
+        logHeight: this.logHeight
+      });
     };
     document.addEventListener('mouseup', this.logMoveEnd);
   },
@@ -98,8 +113,14 @@ const vm = new Base({
     logMoving(e) {
       if (!this.logMoveStatus) return;
 
+      const windowHeight = window.innerHeight;
       const y = e.movementY;
-      if (y > 0) {
+      const clientY = e.clientY;
+      const height = this.logHeight;
+      const top = windowHeight - height - 24;
+      const maxHeight = windowHeight - 164;
+      const minHeight = 80;
+      if ((y < 0 && height < maxHeight && clientY <= top) || (y > 0 && height > minHeight && clientY >= top)) {
         this.logHeight -= y;
       }
     },
@@ -120,7 +141,7 @@ const vm = new Base({
             });
             this.gulp(this.projects.length - 1, 'init');
           });
-          ipcRenderer.sendSync('setProjects', {
+          ipcRenderer.send('setData', {
             projects: this.projects
           });
         }
@@ -133,19 +154,21 @@ const vm = new Base({
       shell.showItemInFolder(this.projects[this.nowProjectIdx].path);
     },
     aboutUs() {
+      this.logMode = false;
       this.aboutMode = true;
       this.windowTitle = '';
     },
 
-    infoProject(idx) {
+    infoProject(idx, title) {
       this.configFile = this.getConfigFile(idx);
       this.info = this.getConfig(this.configFile);
+      this.logMode = false;
       this.infoMode = true;
-      this.windowTitle = '配置';
+      this.windowTitle = `${title} 配置`;
     },
     removeProject(idx) {
       this.projects.splice(idx, 1);
-      ipcRenderer.sendSync('setProjects', {
+      ipcRenderer.send('setData', {
         projects: this.projects
       });
     },
@@ -214,6 +237,9 @@ const vm = new Base({
     openUrl(url) {
       shell.openExternal(url);
     }
+  },
+  beforeDestroy() {
+    if (this.infoMode) this.saveInfo();
   },
   destroyed() {
     document.removeEventListener('mouseup', this.logMoveEnd);

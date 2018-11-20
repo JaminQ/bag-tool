@@ -24,8 +24,6 @@
 
 // 文字不可选中
 .no-select() {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
   user-select: none;
 };
 
@@ -203,6 +201,15 @@ input[type=checkbox] {
   width: 100%;
   height: 5px;
   position: absolute;
+  top: -2.5px;
+  left: 0;
+  cursor: n-resize;
+}
+
+.drag-move-area {
+  .full-page();
+
+  position: fixed;
   top: 0;
   left: 0;
   cursor: n-resize;

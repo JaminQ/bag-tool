@@ -83,21 +83,20 @@ app.on('activate', () => {
 // 也可以拆分成几个文件，然后用 require 导入。
 
 // 获取项目数据
-ipcMain.on('getProjects', (event, arg) => {
+ipcMain.on('getDataSync', (event, arg) => {
   const res = {};
   arg.forEach(attr => {
-    res[attr] = DATA[arg];
+    res[attr] = DATA[attr];
   });
   event.returnValue = res;
 });
 
 // 设置配置项目数据
-ipcMain.on('setProjects', (event, arg) => {
+ipcMain.on('setData', (event, arg) => {
   Object.assign(DATA, arg);
   fs.writeFileSync(projectsFile, JSON.stringify(DATA), {
     encoding: 'utf8'
   });
-  event.returnValue = true;
 });
 
 // 关闭窗口

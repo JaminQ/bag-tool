@@ -64,9 +64,7 @@ header {
 
       ul {
         .no-scrollbar();
-
-        width: 100%;
-        height: 100%;
+        .full-page();
 
         li {
           width: 100%;
@@ -222,7 +220,9 @@ header {
 
   .log-area {
     @log-bg-color: #282c34;
+    // @log-bg-color: #eeeeee;
     @log-color: #fff;
+    // @log-color: #6f7d6a
     @log-sub-color: #666666;
 
     width: 100%;
@@ -240,15 +240,6 @@ header {
 
     &:hover {
       padding-right: 24px;
-    }
-
-    .move-area {
-      width: 100%;
-      height: 100%;
-      padding: 140px 0 24px 0;
-      position: fixed;
-      top: 0;
-      left: 0;
     }
 
     .log-empty-btn {
@@ -340,10 +331,11 @@ header {
 }
 
 .page-info {
+  padding-bottom: 20px;
   font-size: 14px;
 
   .close-info-page-btn {
-    position: absolute;
+    position: fixed;
     top: 30px;
     right: 14px;
     color: @main-color;
@@ -421,11 +413,6 @@ header {
         .delete-icon-element(@edit-icon-width, @edit-icon-height/2, @error-color);
       }
     }
-  }
-
-  .control-block {
-    text-align: center;
-    margin-bottom: 30px;
   }
 }
 

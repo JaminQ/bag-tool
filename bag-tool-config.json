@@ -1,10 +1,1 @@
-{
-  "template": "electron/template",
-  "showDetailLog": false,
-  "liveReload": false,
-  "whiteList": [
-    "electron/common/lib/vue.min.js",
-    "electron/common/lib/normalize.css",
-    "electron/common/lib/font-awesome.min.css"
-  ]
-}
+{"src":"src/","dest":"dist/","template":"electron/template","tmplExtname":["*.html","*.tpl"],"cssEngine":["less"],"encoding":"utf8","showDetailLog":false,"liveReload":false,"startPath":"index.html","whiteList":["electron/common/lib/vue.min.js","electron/common/lib/normalize.css","electron/common/lib/font-awesome.min.css"],"ignore":["**/.DS_Store"]}
