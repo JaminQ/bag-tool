@@ -51,7 +51,7 @@
         <button class="log-empty-btn" :style="{ bottom: logHeight + 'px' }" @click="clearLog(nowProjectIdx)"><i title="清空日志" class="fas fa-trash-alt"></i></button>
         <code v-html="logContent[nowProjectIdx]"></code>
 
-        <div class="drag-bar" @mousedown="logMoveBegin"></div>
+        <div class="drag-bar" :style="{ bottom: logHeight + 20 + 'px' }" @mousedown="logMoveBegin"></div>
         <div class="drag-move-area" v-show="logMoveStatus" @mousemove="logMoving"></div>
       </div>
 
