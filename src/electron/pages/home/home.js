@@ -63,7 +63,8 @@ const vm = new Base({
       if (!working) {
         bagToolSpawn({
           command,
-          idx
+          idx,
+          notShowLog: command === 'init'
         });
       } else if (working === command) {
         this.killGulp(idx);
@@ -243,7 +244,8 @@ const vm = new Base({
 
 const bagToolSpawn = ({
   command,
-  idx
+  idx,
+  notShowLog
 }) => {
   const USERCONFIG = vm.getConfig(vm.getConfigFile(idx));
   vm.forkList[idx] = main[command](fork(
@@ -266,7 +268,7 @@ const bagToolSpawn = ({
         vm.addLog(idx, `${data}`, 'error');
       },
       begin: () => {
-        vm.logMode = true;
+        if (!notShowLog) vm.logMode = true;
         vm.addLog(idx, `bag-tool ${command}`, 'command');
         Vue.set(vm.workingArr, idx, command);
       },
