@@ -59,19 +59,17 @@ const vm = new Base({
   methods: {
     // gulp-area
     gulp(idx, command) {
-      this.globalTip('请先等待任务执行完毕');
-
-      // const working = this.workingArr[idx];
-      // if (!working) {
-      //   bagToolSpawn({
-      //     command,
-      //     idx
-      //   });
-      // } else if (working === command) {
-      //   this.killGulp(idx);
-      // } else {
-      //   this.globalTip('请先等待任务执行完毕');
-      // }
+      const working = this.workingArr[idx];
+      if (!working) {
+        bagToolSpawn({
+          command,
+          idx
+        });
+      } else if (working === command) {
+        this.killGulp(idx);
+      } else {
+        this.globalTip('请先等待任务执行完毕');
+      }
     },
     killGulp(idx) {
       if (this.forkList[idx]) {
