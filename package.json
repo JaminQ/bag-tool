@@ -2,12 +2,13 @@
   "name": "bag-tool",
   "version": "1.0.7",
   "description": "A tool just for bag",
-  "main": "gulpfile.js",
+  "main": "dist/electron/main.js",
   "scripts": {
     "init": "gulp init",
     "clean": "gulp clean",
     "build": "gulp build",
     "start": "gulp watch",
+    "packager": "electron-packager . BagTool --out ./OutApp --overwrite",
     "postinstall": "./node_modules/.bin/electron-rebuild"
   },
   "dependencies": {
