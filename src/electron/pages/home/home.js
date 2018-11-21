@@ -22,14 +22,12 @@ const {
 
 const vm = new Base({
   data: {
-    globalTips: '',
-
     projects,
     workingArr: [],
     nowProjectIdx: '',
 
     removeMode: false,
-    logMode: true,
+    logMode: false,
     infoMode: false,
     aboutMode: false,
 
@@ -41,7 +39,6 @@ const vm = new Base({
   },
   created() {
     this.configFile = '';
-    this.globalTipsTimeout = null;
     this.forkList = {}; // 记录fork子进程
 
     this.logMoveEnd = () => {
@@ -62,22 +59,27 @@ const vm = new Base({
   methods: {
     // gulp-area
     gulp(idx, command) {
-      const working = this.workingArr[idx];
-      if (!working) {
-        bagToolSpawn({
-          command,
-          idx
-        });
-      } else if (working === command) {
-        if (this.forkList[idx]) {
-          if (process.platform === 'win32') {
-            childProcess.exec(`taskkill /PID ${this.forkList[idx].pid} /T /F`);
-          } else {
-            process.kill(this.forkList[idx].pid);
-          }
+      this.globalTip('请先等待任务执行完毕');
+
+      // const working = this.workingArr[idx];
+      // if (!working) {
+      //   bagToolSpawn({
+      //     command,
+      //     idx
+      //   });
+      // } else if (working === command) {
+      //   this.killGulp(idx);
+      // } else {
+      //   this.globalTip('请先等待任务执行完毕');
+      // }
+    },
+    killGulp(idx) {
+      if (this.forkList[idx]) {
+        if (process.platform === 'win32') {
+          childProcess.exec(`taskkill /PID ${this.forkList[idx].pid} /T /F`);
+        } else {
+          process.kill(this.forkList[idx].pid);
         }
-      } else {
-        this.globalTip('请先等待任务执行完毕');
       }
     },
 
@@ -202,15 +204,6 @@ const vm = new Base({
     },
 
     // common
-    globalTip(tip = '') {
-      if (tip === '') return;
-      this.globalTips = tip;
-      this.globalTipsTimeout !== null && clearTimeout(this.globalTipsTimeout);
-      this.globalTipsTimeout = setTimeout(() => {
-        this.globalTips = '';
-        this.globalTipsTimeout = null;
-      }, 3000);
-    },
     arrAdd(arr, val = '') {
       arr.push(val);
     },
@@ -240,8 +233,12 @@ const vm = new Base({
   },
   beforeDestroy() {
     if (this.infoMode) this.saveInfo();
-  },
-  destroyed() {
+
+    // 销毁前手动把所有子进程杀掉
+    this.forkList.keys().forEach(idx => {
+      this.killGulp(idx);
+    });
+
     document.removeEventListener('mouseup', this.logMoveEnd);
   }
 });

@@ -1,31 +1,5 @@
 @import "../../common/base.less";
 
-.global-tips {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  z-index: 99999;
-  font-size: 14px;
-  width: 200px;
-  height: 30px;
-  line-height: 30px;
-  margin-left: -100px;
-  border-radius: 10px;
-  text-align: center;
-  color: #fff;
-  background-color: @error-color;
-
-  &.slide-downup-enter-active,
-  &.slide-downup-leave-active {
-    transition: all .3s ease;
-  }
-
-  &.slide-downup-enter,
-  &.slide-downup-leave-to {
-    transform: translateY(-50px);
-  }
-}
-
 header {
   line-height: 40px;
   color: @disable-color;

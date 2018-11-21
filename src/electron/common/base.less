@@ -131,6 +131,32 @@
   .no-select();
 }
 
+.global-tips {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  z-index: 99999;
+  font-size: 14px;
+  width: 200px;
+  height: 30px;
+  line-height: 30px;
+  margin-left: -100px;
+  border-radius: 10px;
+  text-align: center;
+  color: #fff;
+  background-color: @error-color;
+
+  &.slide-downup-enter-active,
+  &.slide-downup-leave-active {
+    transition: all .3s ease;
+  }
+
+  &.slide-downup-enter,
+  &.slide-downup-leave-to {
+    transform: translateY(-50px);
+  }
+}
+
 .btn {
   width: 74px;
   font-size: 14px;

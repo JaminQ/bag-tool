@@ -19,6 +19,10 @@
       <h1>{{ windowTitle }}</h1>
     </div>
 
+    <transition name="slide-downup">
+      <div v-show="!!globalTips" class="global-tips">{{ globalTips }}</div>
+    </transition>
+
     <div class="pages">
       <%$body%><%$/body%>
     </div>

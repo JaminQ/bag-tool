@@ -7,8 +7,12 @@ module.exports = Vue.extend({
   data() {
     return {
       isMaximized: false,
-      windowTitle: 'Bag Tool'
+      windowTitle: 'Bag Tool',
+      globalTips: ''
     };
+  },
+  created() {
+    this.globalTipsTimeout = null;
   },
   methods: {
     windowClose() {
@@ -19,6 +23,16 @@ module.exports = Vue.extend({
     },
     windowFull() {
       ipcRenderer.send('maxmizeWindow');
+    },
+
+    globalTip(tip = '') {
+      if (tip === '') return;
+      this.globalTips = tip;
+      this.globalTipsTimeout !== null && clearTimeout(this.globalTipsTimeout);
+      this.globalTipsTimeout = setTimeout(() => {
+        this.globalTips = '';
+        this.globalTipsTimeout = null;
+      }, 3000);
     }
   }
 });
