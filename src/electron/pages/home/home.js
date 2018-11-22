@@ -17,7 +17,7 @@ const main = require('../../../index');
 
 const {
   projects = [],
-  logHeight = 200
+    logHeight = 200
 } = ipcRenderer.sendSync('getDataSync', ['projects', 'logHeight']);
 
 const vm = new Base({
@@ -31,7 +31,7 @@ const vm = new Base({
     infoMode: false,
     aboutMode: false,
 
-    logContent: {},
+    logContent: [],
     logHeight,
     logMoveStatus: false,
 
@@ -39,7 +39,7 @@ const vm = new Base({
   },
   created() {
     this.configFile = '';
-    this.forkList = {}; // 记录fork子进程
+    this.forkList = []; // 记录fork子进程
 
     this.logMoveEnd = () => {
       this.logMoveStatus = false;
@@ -57,6 +57,10 @@ const vm = new Base({
     document.addEventListener('mouseup', this.logMoveEnd);
   },
   methods: {
+    dropProject(e) {
+      this.addProject(Array.prototype.map.call(e.dataTransfer.files, file => file.path));
+    },
+
     // gulp-area
     gulp(idx, command) {
       const working = this.workingArr[idx];
@@ -127,25 +131,12 @@ const vm = new Base({
     },
 
     // bottom-bar
-    addProject() {
+    addProjects() {
       dialog.showOpenDialog({
           title: '添加新项目',
-          properties: ['openDirectory']
+          properties: ['openDirectory', 'multiSelections', 'createDirectory', 'promptToCreate']
         },
-        filePaths => {
-          if (!filePaths) return;
-
-          filePaths.forEach(filePath => {
-            this.projects.push({
-              title: path.basename(filePath),
-              path: filePath
-            });
-            this.gulp(this.projects.length - 1, 'init');
-          });
-          ipcRenderer.send('setData', {
-            projects: this.projects
-          });
-        }
+        this.addProject
       );
     },
     removeProjects() {
@@ -168,7 +159,14 @@ const vm = new Base({
       this.windowTitle = `${title} 配置`;
     },
     removeProject(idx) {
+      if (this.nowProjectIdx === idx) {
+        this.nowProjectIdx = '';
+      } else if (this.nowProjectIdx > idx) {
+        this.nowProjectIdx--;
+      }
       this.projects.splice(idx, 1);
+      this.logContent.splice(idx, 1);
+      this.forkList.splice(idx, 1);
       ipcRenderer.send('setData', {
         projects: this.projects
       });
@@ -182,6 +180,9 @@ const vm = new Base({
     },
     saveInfo() {
       if (this.configFile !== '') {
+        this.info.tmplExtname = this.delEmptyItem(this.info.tmplExtname);
+        this.info.whiteList = this.delEmptyItem(this.info.whiteList);
+        this.info.ignore = this.delEmptyItem(this.info.ignore);
         fs.writeFile(
           this.configFile,
           JSON.stringify(this.info), {
@@ -228,15 +229,36 @@ const vm = new Base({
     },
     openUrl(url) {
       shell.openExternal(url);
+    },
+    delEmptyItem(arr) {
+      const newArr = [];
+      arr.forEach(item => {
+        if (item !== '') newArr.push(item);
+      });
+      return newArr;
+    },
+    addProject(filePaths) {
+      if (!filePaths) return;
+
+      filePaths.forEach(filePath => {
+        this.projects.push({
+          title: path.basename(filePath),
+          path: filePath
+        });
+        this.gulp(this.projects.length - 1, 'init');
+      });
+      ipcRenderer.send('setData', {
+        projects: this.projects
+      });
     }
   },
   beforeDestroy() {
     if (this.infoMode) this.saveInfo();
 
     // 销毁前手动把所有子进程杀掉
-    this.forkList.keys().forEach(idx => {
-      this.killGulp(idx);
-    });
+    for (let idx of this.forkList.keys()) {
+      if (this.forkList[idx] !== undefined) this.killGulp(idx);
+    }
 
     document.removeEventListener('mouseup', this.logMoveEnd);
   }
@@ -273,8 +295,8 @@ const bagToolSpawn = ({
         Vue.set(vm.workingArr, idx, command);
       },
       close: code => {
-        if (code === 0) vm.addLog(idx, 'done', 'finish');
-        else vm.addLog(idx, 'stop', 'cancel');
+        if (code === 0) vm.addLog(idx, 'done\n', 'finish');
+        else vm.addLog(idx, 'stop\n', 'cancel');
         vm.forkList[idx] = null;
         Vue.set(vm.workingArr, idx, '');
       }

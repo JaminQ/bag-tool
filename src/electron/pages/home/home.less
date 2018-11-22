@@ -308,13 +308,19 @@ header {
   padding-bottom: 20px;
   font-size: 14px;
 
-  .close-info-page-btn {
+  .info-btns {
     position: fixed;
     top: 30px;
     right: 14px;
-    color: @main-color;
     font-size: 20px;
     line-height: 40px;
+    overflow: hidden;
+
+    .info-btn {
+      float: left;
+      margin-left: 8px;
+      color: @main-color;
+    }
   }
 
   .info-block {

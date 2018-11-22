@@ -11,7 +11,7 @@
         <h1 class="no-select">Bag Tool</h1>
       </div>
 
-      <div class="projects-area" v-else @click="nowProjectIdx = ''" :style="{ pointerEvents: logMoveStatus ? 'none' : 'inherit' }">
+      <div id="drop" class="projects-area" v-else @click="nowProjectIdx = ''" :style="{ pointerEvents: logMoveStatus ? 'none' : 'inherit' }" @dragover.prevent @dragleave.prevent @dragend.prevent @drop.prevent="dropProject">
         <header>Projects</header>
 
         <main :style="{ paddingBottom: (nowProjectIdx !== '' ? 70 : 0) + (logMode ? logHeight : 0) + 24 + 'px' }">
@@ -26,7 +26,7 @@
                     <div class="project-title">{{ project.title }}</div>
                     <div class="project-path">{{ project.path }}</div>
                   </div>
-                  <button class="project-info" @click.stop="infoProject(project_i, project.title)"><i class="fas fa-info-circle"></i></button>
+                  <button class="project-info" @click.stop="infoProject(project_i, project.title)"><i class="fas fa-info-circle" title="查看配置"></i></button>
                   <button class="project-del" @click.stop="removeProject(project_i)"><i class="fas fa-trash-alt" title="移除"></i></button>
                 </div>
               </label>
@@ -52,7 +52,7 @@
       </div>
 
       <div class="bottom-bar">
-        <button class="function-btn" @click="addProject"><i title="添加新项目" class="fas fa-plus"></i></button>
+        <button class="function-btn" @click="addProjects"><i title="添加新项目" class="fas fa-plus"></i></button>
         <button class="function-btn" :class="{ 'remove-mode': removeMode }" :disabled="projects.length === 0" @click="removeProjects"><i title="移除项目" class="fas fa-minus"></i></button>
         <button class="function-btn" :disabled="nowProjectIdx === ''" @click="openProject"><i title="打开项目目录" class="far fa-folder-open"></i></button>
         <button class="function-btn" @click="aboutUs"><i title="关于" class="far fa-question-circle"></i></button>
@@ -65,7 +65,10 @@
 
     <transition name="fade-in">
       <div class="page transparent-page page-info" v-if="infoMode">
-        <button class="close-info-page-btn" @click="saveInfo"><i class="far fa-times-circle"></i></button>
+        <div class="info-btns">
+          <button class="info-btn" @click="openUrl('https://github.com/MiniCai/bag-tool/blob/master/README.md#config')"><i class="far fa-question-circle" title="帮助"></i></button>
+          <button class="info-btn" @click="saveInfo"><i class="far fa-times-circle" title="保存并关闭"></i></button>
+        </div>
 
         <div class="info-block">
           <header>项目配置</header>
@@ -138,8 +141,8 @@
           <main>
             <div class="form-tips">支持的文件后缀名</div>
 
-            <div>
-              <label class="form-row" v-for="(extname, idx) in info.tmplExtname">
+            <div v-for="(extname, idx) in info.tmplExtname">
+              <label class="form-row">
                 <input type="text" v-model="extname">
                 <button class="form-delete" @click="arrRemove(info.tmplExtname, idx)"></button>
               </label>
@@ -179,10 +182,10 @@
           <header>文件白名单</header>
 
           <main>
-            <div class="form-tips">白名单里的文件将直接复制到生产目录，路径相对源目录</div>
+            <div class="form-tips">以下文件将直接复制到生产目录，路径相对源目录</div>
 
-            <div>
-              <label class="form-row" v-for="(file, idx) in info.whiteList">
+            <div v-for="(file, idx) in info.whiteList">
+              <label class="form-row">
                 <input class="long" type="text" v-model="file">
                 <button class="form-delete" @click="arrRemove(info.whiteList, idx)"></button>
               </label>
@@ -202,8 +205,8 @@
           <main>
             <div class="form-tips">路径相对源目录</div>
 
-            <div>
-              <label class="form-row" v-for="(file, idx) in info.ignore">
+            <div v-for="(file, idx) in info.ignore">
+              <label class="form-row">
                 <input class="long" type="text" v-model="file">
                 <button class="form-delete" @click="arrRemove(info.ignore, idx)"></button>
               </label>
