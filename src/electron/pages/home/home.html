@@ -12,11 +12,17 @@
       </div>
 
       <div id="drop" class="projects-area" v-else @click="nowProjectIdx = '', logMode = false" :style="{ pointerEvents: logMoveStatus ? 'none' : 'inherit' }" @dragover.prevent @dragleave.prevent @dragend.prevent @drop.prevent="dropProject">
-        <header>Projects</header>
+        <header class="projects-title">
+          Projects
+          <button v-if="projects.length" @click="removeMode = !removeMode" class="edit-projects">
+            <i v-show="!removeMode" title="编辑项目" class="far fa-edit"></i>
+            <i v-show="removeMode" title="完成" class="far fa-check-circle edit-projects-done"></i>
+          </button>
+        </header>
 
         <main :style="{ paddingBottom: (nowProjectIdx !== '' ? 70 : 0) + (logMode ? logHeight : 0) + 24 + 'px' }">
           <ul :class="{ 'remove-mode': removeMode }">
-            <li v-for="(project, project_i) in projects" @click.stop>
+            <li v-for="(project, project_i) in projects" @click.stop :class="{ 'move-mode': moveProjectIdx === project_i }">
               <label>
                 <input type="radio" :value="project_i" v-model="nowProjectIdx">
                 <div class="project-main" :class="{ working: projects[project_i].workStatus }">
@@ -28,6 +34,7 @@
                   </div>
                   <button class="project-info" @click.stop="infoProject(project_i, project.title)"><i class="fas fa-info-circle" title="查看配置"></i></button>
                   <button class="project-del" @click.stop="removeProject(project_i)"><i class="fas fa-trash-alt" title="移除"></i></button>
+                  <button class="project-move" @mousedown="moveProjectStart(project_i)" @mousemove="movingProject" @mouseup="moveProjectEnd"><i class="icon-move" title="移动"></i></button>
                 </div>
               </label>
             </li>
@@ -53,7 +60,6 @@
 
       <div class="bottom-bar">
         <button class="function-btn" @click="addProjects"><i title="添加新项目" class="fas fa-plus"></i></button>
-        <button class="function-btn" :class="{ 'remove-mode': removeMode }" :disabled="projects.length === 0" @click="removeProjects"><i title="移除项目" class="fas fa-minus"></i></button>
         <button class="function-btn" :disabled="nowProjectIdx === ''" @click="openProject"><i title="打开项目目录" class="far fa-folder-open"></i></button>
         <button class="function-btn" @click="aboutUs"><i title="关于" class="far fa-question-circle"></i></button>
 

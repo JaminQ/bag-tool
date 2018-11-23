@@ -24,8 +24,9 @@ const vm = new Base({
   data: {
     projects,
     nowProjectIdx: '',
+    moveProjectIdx: '',
 
-    removeMode: false,
+    removeMode: true,
     logMode: false,
     infoMode: false,
     aboutMode: false,
@@ -142,9 +143,6 @@ const vm = new Base({
         this.addProject
       );
     },
-    removeProjects() {
-      this.removeMode = !this.removeMode;
-    },
     openProject() {
       shell.showItemInFolder(this.projects[this.nowProjectIdx].path);
     },
@@ -173,6 +171,13 @@ const vm = new Base({
         key: 'projects',
         data: idx
       }]);
+    },
+    moveProjectStart(idx) {
+      this.moveProjectIdx = idx;
+    },
+    movingProject() {},
+    moveProjectEnd() {
+      this.moveProjectIdx = '';
     },
 
     // info-page

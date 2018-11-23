@@ -240,6 +240,26 @@ input[type=checkbox] {
   cursor: n-resize;
 }
 
+.icon-move {
+  @icon-move-width: 14px;
+
+  display: flex;
+  align-items: center;
+  width: @icon-move-width;
+  height: 7px;
+  border-top: 1px solid @disable-color;
+  border-bottom: 1px solid @disable-color;
+  cursor: move;
+
+  &::after {
+    content: "";
+    display: block;
+    width: @icon-move-width;
+    height: 1px;
+    background-color: @disable-color;
+  }
+}
+
 #app {
   height: 100%;
   position: relative;
