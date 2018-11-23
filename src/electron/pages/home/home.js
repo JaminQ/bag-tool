@@ -23,7 +23,6 @@ const {
 const vm = new Base({
   data: {
     projects,
-    workingArr: [],
     nowProjectIdx: '',
 
     removeMode: false,
@@ -31,7 +30,6 @@ const vm = new Base({
     infoMode: false,
     aboutMode: false,
 
-    logContent: [],
     logHeight,
     logMoveStatus: false,
 
@@ -39,7 +37,6 @@ const vm = new Base({
   },
   created() {
     this.configFile = '';
-    this.forkList = []; // 记录fork子进程
 
     this.logMoveEnd = () => {
       this.logMoveStatus = false;
@@ -50,11 +47,17 @@ const vm = new Base({
       } else if (this.logHeight < minHeight) {
         this.logHeight = minHeight;
       }
-      ipcRenderer.send('setData', {
-        logHeight: this.logHeight
-      });
+      ipcRenderer.send('setData', [{
+        key: 'logHeight',
+        data: this.logHeight
+      }]);
     };
     document.addEventListener('mouseup', this.logMoveEnd);
+  },
+  computed: {
+    nowProject() {
+      return this.projects[this.nowProjectIdx] || {};
+    }
   },
   methods: {
     dropProject(e) {
@@ -63,25 +66,25 @@ const vm = new Base({
 
     // gulp-area
     gulp(idx, command) {
-      const working = this.workingArr[idx];
-      if (!working) {
+      const workStatus = this.projects[idx].workStatus;
+      if (!workStatus) {
         bagToolSpawn({
           command,
           idx,
           notShowLog: command === 'init'
         });
-      } else if (working === command) {
+      } else if (workStatus === command) {
         this.killGulp(idx);
       } else {
         this.globalTip('请先等待任务执行完毕');
       }
     },
     killGulp(idx) {
-      if (this.forkList[idx]) {
+      if (this.projects[idx].fork) {
         if (process.platform === 'win32') {
-          childProcess.exec(`taskkill /PID ${this.forkList[idx].pid} /T /F`);
+          childProcess.exec(`taskkill /PID ${this.projects[idx].fork.pid} /T /F`);
         } else {
-          process.kill(this.forkList[idx].pid);
+          process.kill(this.projects[idx].fork.pid);
         }
       }
     },
@@ -89,9 +92,9 @@ const vm = new Base({
     // log
     addLog(idx = 0, content, type = 'log') {
       // init
-      typeof this.logContent[idx] === 'undefined' && this.clearLog(idx);
+      typeof this.projects[idx].logContent === 'undefined' && this.clearLog(idx);
 
-      let logContent = this.logContent[idx];
+      let logContent = this.projects[idx].logContent;
 
       switch (type) {
         case 'command':
@@ -106,11 +109,11 @@ const vm = new Base({
           logContent += ansiHTML(content);
       }
 
-      this.$set(this.logContent, idx, logContent);
+      this.projects[idx].logContent = logContent;
     },
     clearLog(idx) {
       if (typeof idx !== 'number') return;
-      this.$set(this.logContent, idx, '');
+      this.$set(this.projects[idx], 'logContent', '');
     },
     logMoveBegin() {
       this.logMoveStatus = true;
@@ -165,11 +168,11 @@ const vm = new Base({
         this.nowProjectIdx--;
       }
       this.projects.splice(idx, 1);
-      this.logContent.splice(idx, 1);
-      this.forkList.splice(idx, 1);
-      ipcRenderer.send('setData', {
-        projects: this.projects
-      });
+      ipcRenderer.send('setData', [{
+        type: 'delete',
+        key: 'projects',
+        data: idx
+      }]);
     },
 
     // info-page
@@ -240,25 +243,30 @@ const vm = new Base({
     addProject(filePaths) {
       if (!filePaths) return;
 
+      const projects = [];
       filePaths.forEach(filePath => {
-        this.projects.push({
+        const project = {
           title: path.basename(filePath),
           path: filePath
-        });
+        };
+        projects.push(project);
+        this.projects.push(Object.assign({}, project)); // 浅复制一下
         this.gulp(this.projects.length - 1, 'init');
       });
-      ipcRenderer.send('setData', {
-        projects: this.projects
-      });
+      ipcRenderer.send('setData', [{
+        type: 'concat',
+        key: 'projects',
+        data: projects
+      }]);
     }
   },
   beforeDestroy() {
     if (this.infoMode) this.saveInfo();
 
     // 销毁前手动把所有子进程杀掉
-    for (let idx of this.forkList.keys()) {
-      if (this.forkList[idx] !== undefined) this.killGulp(idx);
-    }
+    this.projects.forEach((project, idx) => {
+      if (project.fork !== undefined) this.killGulp(idx);
+    });
 
     document.removeEventListener('mouseup', this.logMoveEnd);
   }
@@ -270,7 +278,7 @@ const bagToolSpawn = ({
   notShowLog
 }) => {
   const USERCONFIG = vm.getConfig(vm.getConfigFile(idx));
-  vm.forkList[idx] = main[command](fork(
+  vm.projects[idx].fork = main[command](fork(
     Object.assign({}, {
       modulePath: './../node_modules/gulp/bin/gulp.js',
       cwd: path.join(__dirname, '../../../').replace(/\\/g, '/'),
@@ -287,18 +295,18 @@ const bagToolSpawn = ({
         vm.addLog(idx, `${data}`, 'error');
       },
       error(err) {
-        vm.addLog(idx, `${data}`, 'error');
+        vm.addLog(idx, `${err}`, 'error');
       },
       begin: () => {
         if (!notShowLog) vm.logMode = true;
         vm.addLog(idx, `bag-tool ${command}`, 'command');
-        Vue.set(vm.workingArr, idx, command);
+        Vue.set(vm.projects[idx], 'workStatus', command);
       },
       close: code => {
         if (code === 0) vm.addLog(idx, 'done\n', 'finish');
         else vm.addLog(idx, 'stop\n', 'cancel');
-        vm.forkList[idx] = null;
-        Vue.set(vm.workingArr, idx, '');
+        vm.projects[idx].fork = null;
+        Vue.set(vm.projects[idx], 'workStatus', '');
       }
     })
   ));

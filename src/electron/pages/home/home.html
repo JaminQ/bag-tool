@@ -11,7 +11,7 @@
         <h1 class="no-select">Bag Tool</h1>
       </div>
 
-      <div id="drop" class="projects-area" v-else @click="nowProjectIdx = ''" :style="{ pointerEvents: logMoveStatus ? 'none' : 'inherit' }" @dragover.prevent @dragleave.prevent @dragend.prevent @drop.prevent="dropProject">
+      <div id="drop" class="projects-area" v-else @click="nowProjectIdx = '', logMode = false" :style="{ pointerEvents: logMoveStatus ? 'none' : 'inherit' }" @dragover.prevent @dragleave.prevent @dragend.prevent @drop.prevent="dropProject">
         <header>Projects</header>
 
         <main :style="{ paddingBottom: (nowProjectIdx !== '' ? 70 : 0) + (logMode ? logHeight : 0) + 24 + 'px' }">
@@ -19,8 +19,8 @@
             <li v-for="(project, project_i) in projects" @click.stop>
               <label>
                 <input type="radio" :value="project_i" v-model="nowProjectIdx">
-                <div class="project-main" :class="{ working: workingArr[project_i] }">
-                  <i v-if="workingArr[project_i] === 'start'" class="project-icon far fa-play-circle"></i>
+                <div class="project-main" :class="{ working: projects[project_i].workStatus }">
+                  <i v-if="projects[project_i].workStatus === 'start'" class="project-icon far fa-play-circle"></i>
                   <i v-else class="project-icon fas fa-folder"></i>
                   <div class="project">
                     <div class="project-title">{{ project.title }}</div>
@@ -37,15 +37,15 @@
 
       <transition name="slide-updown">
         <div v-show="nowProjectIdx !== ''" class="work-area" :style="{ bottom: (logMode ? logHeight : 0) + 24 + 'px' }">
-          <button class="btn" :class="{ working: workingArr[nowProjectIdx] === 'build' }" @click="gulp(nowProjectIdx, 'build')">编译{{ workingArr[nowProjectIdx] === 'build' ? '中...' : '' }}</button>
-          <button class="btn" :class="{ working: workingArr[nowProjectIdx] === 'start' }" @click="gulp(nowProjectIdx, 'start')">监听{{ workingArr[nowProjectIdx] === 'start' ? '中...' : '' }}</button>
-          <button class="btn" :class="{ working: workingArr[nowProjectIdx] === 'clean' }" @click="gulp(nowProjectIdx, 'clean')">清理{{ workingArr[nowProjectIdx] === 'clean' ? '中...' : '' }}</button>
+          <button class="btn" :class="{ working: nowProject.workStatus === 'build' }" @click="gulp(nowProjectIdx, 'build')">编译{{ nowProject.workStatus === 'build' ? '中...' : '' }}</button>
+          <button class="btn" :class="{ working: nowProject.workStatus === 'start' }" @click="gulp(nowProjectIdx, 'start')">监听{{ nowProject.workStatus === 'start' ? '中...' : '' }}</button>
+          <button class="btn" :class="{ working: nowProject.workStatus === 'clean' }" @click="gulp(nowProjectIdx, 'clean')">清理{{ nowProject.workStatus === 'clean' ? '中...' : '' }}</button>
         </div>
       </transition>
 
       <div v-show="logMode" class="log-area" :style="{ height: logHeight + 'px' }">
         <button class="log-empty-btn" :style="{ bottom: logHeight + 'px' }" @click="clearLog(nowProjectIdx)"><i title="清空日志" class="fas fa-trash-alt"></i></button>
-        <code v-html="logContent[nowProjectIdx]"></code>
+        <code v-html="nowProject.logContent"></code>
 
         <div class="drag-bar" :style="{ bottom: logHeight + 20 + 'px' }" @mousedown="logMoveBegin"></div>
         <div class="drag-move-area" v-show="logMoveStatus" @mousemove="logMoving"></div>

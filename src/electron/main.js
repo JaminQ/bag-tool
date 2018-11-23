@@ -93,7 +93,47 @@ ipcMain.on('getDataSync', (event, arg) => {
 
 // 设置配置项目数据
 ipcMain.on('setData', (event, arg) => {
-  Object.assign(DATA, arg);
+  arg.forEach(obj => {
+    const key = obj.key;
+    const data = obj.data;
+    switch (obj.type || 'replace') {
+      case 'replace':
+        DATA[key] = data;
+        break;
+      case 'add':
+        if (typeof DATA[key] === 'object' && DATA[key] instanceof Array) {
+          DATA[key].push(data);
+        } else {
+          DATA[key] = data;
+        }
+        break;
+      case 'delete':
+        if (typeof DATA[key] === 'object') {
+          if (DATA[key] instanceof Array) {
+            DATA[key].splice(data, 1);
+          } else if (DATA[key] instanceof Object) {
+            delete DATA[key][data];
+          } else {
+            delete DATA[key];
+          }
+        } else {
+          delete DATA[key];
+        }
+        break;
+      case 'change':
+        if (typeof DATA[key] === 'object' && DATA[key] instanceof Array) {
+          const arr = DATA[key];
+          DATA[key] = arr.slice(0, data[0]).concat(arr[data[1]], arr.slice(data[0] + 1, data[1]), arr[data[0]], arr.slice(data[1] + 1));
+        }
+        break;
+      case 'concat':
+        if (typeof DATA[key] === 'object' && DATA[key] instanceof Array) {
+          DATA[key] = DATA[key].concat(data);
+        }
+        break;
+      default:
+    }
+  });
   fs.writeFileSync(projectsFile, JSON.stringify(DATA), {
     encoding: 'utf8'
   });
