@@ -25,8 +25,9 @@ const vm = new Base({
     projects,
     nowProjectIdx: '',
     moveProjectIdx: '',
+    projectTop: 0,
 
-    removeMode: true,
+    editMode: true,
     logMode: false,
     infoMode: false,
     aboutMode: false,
@@ -39,21 +40,27 @@ const vm = new Base({
   created() {
     this.configFile = '';
 
-    this.logMoveEnd = () => {
-      this.logMoveStatus = false;
-      const maxHeight = window.innerHeight - 164;
-      const minHeight = 80;
-      if (this.logHeight > maxHeight) {
-        this.logHeight = maxHeight;
-      } else if (this.logHeight < minHeight) {
-        this.logHeight = minHeight;
+    this.documentMouseup = () => {
+      if (this.logMoveStatus) {
+        this.logMoveStatus = false;
+        const maxHeight = window.innerHeight - 164;
+        const minHeight = 80;
+        if (this.logHeight > maxHeight) {
+          this.logHeight = maxHeight;
+        } else if (this.logHeight < minHeight) {
+          this.logHeight = minHeight;
+        }
+        ipcRenderer.send('setData', [{
+          key: 'logHeight',
+          data: this.logHeight
+        }]);
       }
-      ipcRenderer.send('setData', [{
-        key: 'logHeight',
-        data: this.logHeight
-      }]);
+
+      if (this.moveProjectIdx !== '') {
+        this.moveProjectIdx = '';
+      }
     };
-    document.addEventListener('mouseup', this.logMoveEnd);
+    document.addEventListener('mouseup', this.documentMouseup);
   },
   computed: {
     nowProject() {
@@ -116,9 +123,6 @@ const vm = new Base({
       if (typeof idx !== 'number') return;
       this.$set(this.projects[idx], 'logContent', '');
     },
-    logMoveBegin() {
-      this.logMoveStatus = true;
-    },
     logMoving(e) {
       if (!this.logMoveStatus) return;
 
@@ -172,12 +176,34 @@ const vm = new Base({
         data: idx
       }]);
     },
-    moveProjectStart(idx) {
-      this.moveProjectIdx = idx;
-    },
-    movingProject() {},
-    moveProjectEnd() {
-      this.moveProjectIdx = '';
+    movingProject(e) {
+      this.projectTop += e.movementY;
+
+      let moveToIdx = Math.floor(this.projectTop / 50);
+      if (moveToIdx > this.projects.length) {
+        moveToIdx = this.projects.length;
+      }
+      if (moveToIdx !== this.moveProjectIdx) {
+        const arr = this.projects;
+        let small, big;
+        if (moveToIdx > this.moveProjectIdx) {
+          small = this.moveProjectIdx;
+          big = moveToIdx;
+          this.projectTop -= (big - small) * 50;
+        } else {
+          small = moveToIdx;
+          big = this.moveProjectIdx;
+          this.projectTop += (big - small) * 50;
+        }
+        this.projects = arr.slice(0, small).concat(arr[big], arr.slice(small + 1, big), arr[small], arr.slice(big + 1));
+        this.moveProjectIdx = moveToIdx;
+      }
+
+      // ipcRenderer.send('setData', [{
+      //   type: 'change',
+      //   key: 'projects',
+      //   data: [0, 1]
+      // }]);
     },
 
     // info-page
@@ -273,7 +299,7 @@ const vm = new Base({
       if (project.fork !== undefined) this.killGulp(idx);
     });
 
-    document.removeEventListener('mouseup', this.logMoveEnd);
+    document.removeEventListener('mouseup', this.documentMouseup);
   }
 });
 
