@@ -298,6 +298,7 @@ After compilation
 
 - Develop a GUI version
 - Config 容错
+- 导出功能
 
 ## Bugs
 
