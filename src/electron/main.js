@@ -8,6 +8,10 @@ const {
 const fs = require('fs');
 const path = require('path');
 
+const {
+  arrChangeItem
+} = require('./common/common');
+
 const cwd = process.cwd();
 const projectsFile = path.join(cwd, 'data.json');
 let DATA = {};
@@ -101,7 +105,9 @@ ipcMain.on('setData', (event, arg) => {
         DATA[key] = data;
         break;
       case 'add':
-        if (typeof DATA[key] === 'object' && DATA[key] instanceof Array) {
+        if (DATA[key] === undefined) {
+          DATA[key] = [data];
+        } else if (typeof DATA[key] === 'object' && DATA[key] instanceof Array) {
           DATA[key].push(data);
         } else {
           DATA[key] = data;
@@ -122,12 +128,13 @@ ipcMain.on('setData', (event, arg) => {
         break;
       case 'change':
         if (typeof DATA[key] === 'object' && DATA[key] instanceof Array) {
-          const arr = DATA[key];
-          DATA[key] = arr.slice(0, data[0]).concat(arr[data[1]], arr.slice(data[0] + 1, data[1]), arr[data[0]], arr.slice(data[1] + 1));
+          arrChangeItem(DATA[key], data[0], data[1]);
         }
         break;
       case 'concat':
-        if (typeof DATA[key] === 'object' && DATA[key] instanceof Array) {
+        if (DATA[key] === undefined) {
+          DATA[key] = data;
+        } else if (typeof DATA[key] === 'object' && DATA[key] instanceof Array) {
           DATA[key] = DATA[key].concat(data);
         }
         break;

@@ -65,7 +65,7 @@ header {
           align-items: center;
 
           &.move-mode {
-            box-shadow: 0px 0px 10px -1px #808080;
+            box-shadow: 0px 0px 10px -1px @disable-color;
             position: relative;
             z-index: 1;
           }
@@ -192,10 +192,67 @@ header {
         }
       }
 
+      .delete-confirm-dialog {
+        .full-page();
+
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+
+        .content {
+          width: 250px;
+          height: 150px;
+          position: absolute;
+          top: 30%;
+          left: 50%;
+          margin-left: -125px;
+          box-shadow: 0px 0px 10px 0px @border-color;
+          background-color: #fff;
+          border-radius: 10px;
+
+          p {
+            .no-select();
+            text-align: center;
+            height: 40px;
+            line-height: 20px;
+            margin: 30px 0 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            word-break: break-all;
+          }
+
+          .btns {
+            text-align: center;
+
+            .btn {
+              margin: 0 4px;
+            }
+          }
+        }
+
+        .mask {
+          .full-page();
+        }
+
+        &.zoom-in-down-enter-active,
+        &.zoom-in-down-leave-active {
+          transition: all .5s cubic-bezier(0.175, 0.885, 0.32, 1);
+        }
+
+        &.zoom-in-down-enter,
+        &.zoom-in-down-leave-to {
+          opacity: 0;
+          transform: scale3d(0.1, 0.1, 0.1) translate3d(0, -1000px, 0);
+        }
+      }
+
       .project-move-area {
         .full-page();
 
         position: fixed;
+        z-index: 2;
         top: 70px;
         left: 0;
         cursor: move;
@@ -316,6 +373,7 @@ header {
     justify-content: center;
     border-top: 1px solid @border-color;
     background-color: #fff;
+    z-index: 100;
 
     .function-right-btns {
       flex: 1;

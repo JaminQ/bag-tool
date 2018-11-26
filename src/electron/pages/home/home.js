@@ -14,10 +14,17 @@ const fork = require('../../../common/fork');
 const Base = require('../../common/base');
 const defaultConfig = require('../../../config.json');
 const main = require('../../../index');
+const {
+  arrAdd,
+  arrRemove,
+  arrChangeItem,
+  arrDelEmptyItem,
+  openUrl
+} = require('../../common/common');
 
 const {
   projects = [],
-    logHeight = 200
+  logHeight = 200
 } = ipcRenderer.sendSync('getDataSync', ['projects', 'logHeight']);
 
 const vm = new Base({
@@ -25,9 +32,10 @@ const vm = new Base({
     projects,
     nowProjectIdx: '',
     moveProjectIdx: '',
+    delProjectIdx: '',
     projectTop: 0,
 
-    editMode: true,
+    editMode: false,
     logMode: false,
     infoMode: false,
     aboutMode: false,
@@ -164,6 +172,11 @@ const vm = new Base({
       this.windowTitle = `${title} 配置`;
     },
     removeProject(idx) {
+      this.delProjectIdx = idx;
+    },
+    doRemoveProject() {
+      const idx = this.delProjectIdx;
+      this.delProjectIdx = '';
       if (this.nowProjectIdx === idx) {
         this.nowProjectIdx = '';
       } else if (this.nowProjectIdx > idx) {
@@ -179,31 +192,19 @@ const vm = new Base({
     movingProject(e) {
       this.projectTop += e.movementY;
 
-      let moveToIdx = Math.floor(this.projectTop / 50);
-      if (moveToIdx > this.projects.length) {
-        moveToIdx = this.projects.length;
-      }
-      if (moveToIdx !== this.moveProjectIdx) {
-        const arr = this.projects;
-        let small, big;
-        if (moveToIdx > this.moveProjectIdx) {
-          small = this.moveProjectIdx;
-          big = moveToIdx;
-          this.projectTop -= (big - small) * 50;
-        } else {
-          small = moveToIdx;
-          big = this.moveProjectIdx;
-          this.projectTop += (big - small) * 50;
-        }
-        this.projects = arr.slice(0, small).concat(arr[big], arr.slice(small + 1, big), arr[small], arr.slice(big + 1));
+      const moveToIdx = Math.floor((this.projectTop + 25) / 50) + this.moveProjectIdx;
+      if (moveToIdx >= 0 && moveToIdx < this.projects.length && moveToIdx !== this.moveProjectIdx) {
+        this.arrChangeItem(this.projects, moveToIdx, this.moveProjectIdx);
+        this.projectTop += (this.moveProjectIdx - moveToIdx) * 50;
+
+        ipcRenderer.send('setData', [{
+          type: 'change',
+          key: 'projects',
+          data: [moveToIdx, this.moveProjectIdx]
+        }]);
+
         this.moveProjectIdx = moveToIdx;
       }
-
-      // ipcRenderer.send('setData', [{
-      //   type: 'change',
-      //   key: 'projects',
-      //   data: [0, 1]
-      // }]);
     },
 
     // info-page
@@ -214,9 +215,10 @@ const vm = new Base({
     },
     saveInfo() {
       if (this.configFile !== '') {
-        this.info.tmplExtname = this.delEmptyItem(this.info.tmplExtname);
-        this.info.whiteList = this.delEmptyItem(this.info.whiteList);
-        this.info.ignore = this.delEmptyItem(this.info.ignore);
+        console.log(this.info.whiteList);
+        this.info.tmplExtname = this.arrDelEmptyItem(this.info.tmplExtname);
+        this.info.whiteList = this.arrDelEmptyItem(this.info.whiteList);
+        this.info.ignore = this.arrDelEmptyItem(this.info.ignore);
         fs.writeFile(
           this.configFile,
           JSON.stringify(this.info), {
@@ -238,12 +240,11 @@ const vm = new Base({
     },
 
     // common
-    arrAdd(arr, val = '') {
-      arr.push(val);
-    },
-    arrRemove(arr, idx = 0, len = 1) {
-      arr.splice(idx, len);
-    },
+    arrAdd,
+    arrRemove,
+    arrChangeItem,
+    arrDelEmptyItem,
+    openUrl,
     getConfigFile(idx) {
       return path.join(this.projects[idx].path, 'bag-tool-config.json');
     },
@@ -260,16 +261,6 @@ const vm = new Base({
       } else {
         return Object.assign({}, defaultConfig);
       }
-    },
-    openUrl(url) {
-      shell.openExternal(url);
-    },
-    delEmptyItem(arr) {
-      const newArr = [];
-      arr.forEach(item => {
-        if (item !== '') newArr.push(item);
-      });
-      return newArr;
     },
     addProject(filePaths) {
       if (!filePaths) return;

@@ -6,12 +6,12 @@
   </bag-slot>
 
   <bag-slot name="body">
-    <div class="page page-projects" :class="{ blur: infoMode || aboutMode }">
+    <div class="page page-projects" :class="{ blur: infoMode || aboutMode }" @dragover.prevent @dragleave.prevent @dragend.prevent @drop.prevent="dropProject">
       <div class="poster" v-if="projects.length === 0">
         <h1 class="no-select">Bag Tool</h1>
       </div>
 
-      <div id="drop" class="projects-area" v-else @click="nowProjectIdx = '', logMode = false" :style="{ pointerEvents: logMoveStatus ? 'none' : 'inherit' }" @dragover.prevent @dragleave.prevent @dragend.prevent @drop.prevent="dropProject">
+      <div class="projects-area" v-else @click="nowProjectIdx = '', logMode = false" :style="{ pointerEvents: logMoveStatus ? 'none' : 'inherit' }">
         <header class="projects-title">
           Projects
           <button v-if="projects.length" @click="editMode = !editMode" class="edit-projects">
@@ -39,6 +39,19 @@
               </label>
             </li>
           </ul>
+          <transition name="zoom-in-down">
+            <div v-show="delProjectIdx !== ''" class="delete-confirm-dialog">
+              <div class="content">
+                <p>确定要删除 {{ delProjectIdx !== '' ? projects[delProjectIdx].title : '' }} 吗？</p>
+
+                <div class="btns">
+                  <button class="btn btn-default" @click="delProjectIdx = ''">取消</button>
+                  <button class="btn btn-error" @click="doRemoveProject">删除</button>
+                </div>
+              </div>
+              <div class="mask"></div>
+            </div>
+          </transition>
           <div class="project-move-area" v-show="moveProjectIdx !== ''" @mousemove="movingProject"></div>
         </main>
       </div>
@@ -65,7 +78,7 @@
         <button class="function-btn" @click="aboutUs"><i title="关于" class="far fa-question-circle"></i></button>
 
         <div class="function-right-btns">
-          <button class="function-btn" :class="{ 'log-mode': logMode }" @click="logMode = !logMode"><i title="查看日志" class="fas fa-terminal"></i></button>
+          <button class="function-btn" :disabled="nowProjectIdx === ''" :class="{ 'log-mode': logMode }" @click="logMode = !logMode"><i title="查看日志" class="fas fa-terminal"></i></button>
         </div>
       </div>
     </div>
@@ -150,7 +163,7 @@
 
             <div v-for="(extname, idx) in info.tmplExtname">
               <label class="form-row">
-                <input type="text" v-model="extname">
+                <input type="text" v-model="info.tmplExtname[idx]">
                 <button class="form-delete" @click="arrRemove(info.tmplExtname, idx)"></button>
               </label>
             </div>
@@ -178,8 +191,8 @@
 
             <div>
               <label class="form-row">
-                <input type="checkbox" v-model="info.cssEngine" value="sass">
-                <div class="form-label">Sass</div>
+                <input type="checkbox" v-model="info.cssEngine" value="sass" disabled>
+                <div class="form-label">Sass<span class="form-tips">（GUI版本暂不支持Sass）</span></div>
               </label>
             </div>
           </main>
@@ -193,7 +206,7 @@
 
             <div v-for="(file, idx) in info.whiteList">
               <label class="form-row">
-                <input class="long" type="text" v-model="file">
+                <input class="long" type="text" v-model="info.whiteList[idx]">
                 <button class="form-delete" @click="arrRemove(info.whiteList, idx)"></button>
               </label>
             </div>
@@ -214,7 +227,7 @@
 
             <div v-for="(file, idx) in info.ignore">
               <label class="form-row">
-                <input class="long" type="text" v-model="file">
+                <input class="long" type="text" v-model="info.ignore[idx]">
                 <button class="form-delete" @click="arrRemove(info.ignore, idx)"></button>
               </label>
             </div>

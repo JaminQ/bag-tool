@@ -172,6 +172,21 @@
     color: #1ca62a;
     border-color: #1ca62a;
   }
+
+  &.btn-error {
+    color: @error-color;
+    border: 1px solid @error-color;
+  }
+
+  &.btn-error {
+    color: @error-color;
+    border: 1px solid @error-color;
+  }
+
+  &.btn-default {
+    color: @disable-color;
+    border: 1px solid @disable-color;
+  }
 }
 
 input[type=text] {
@@ -219,6 +234,14 @@ input[type=checkbox] {
       font-weight: 900;
       content: "\f00c";
       color: #fff;
+    }
+  }
+
+  &:disabled {
+    border-color: @disable-color;
+
+    &:checked {
+      background-color: @disable-color;
     }
   }
 }
