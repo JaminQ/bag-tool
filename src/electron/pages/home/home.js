@@ -215,7 +215,6 @@ const vm = new Base({
     },
     saveInfo() {
       if (this.configFile !== '') {
-        console.log(this.info.whiteList);
         this.info.tmplExtname = this.arrDelEmptyItem(this.info.tmplExtname);
         this.info.whiteList = this.arrDelEmptyItem(this.info.whiteList);
         this.info.ignore = this.arrDelEmptyItem(this.info.ignore);

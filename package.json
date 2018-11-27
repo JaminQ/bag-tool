@@ -8,7 +8,7 @@
     "clean": "gulp clean",
     "build": "gulp build",
     "start": "gulp watch",
-    "packager": "electron-packager . BagTool --out ./out_app --overwrite",
+    "packager": "node ./packager.js",
     "postinstall": "./node_modules/.bin/electron-rebuild"
   },
   "dependencies": {
