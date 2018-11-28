@@ -8,8 +8,7 @@
     "clean": "gulp clean",
     "build": "gulp build",
     "start": "gulp watch",
-    "packager": "node ./packager.js",
-    "postinstall": "./node_modules/.bin/electron-rebuild"
+    "packager": "node ./packager.js"
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
@@ -53,6 +52,7 @@
     "toolkits"
   ],
   "devDependencies": {
+    "copy": "^0.3.2",
     "electron": "^3.0.9"
   }
 }
