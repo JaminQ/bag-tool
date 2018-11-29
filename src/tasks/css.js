@@ -1,4 +1,4 @@
-const path = require('path').posix;
+const path = require('path');
 const gulp = require('gulp');
 const filter = require('gulp-filter');
 const less = require('gulp-less');

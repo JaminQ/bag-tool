@@ -298,6 +298,10 @@ After compilation
 
 - Develop a GUI version
 
+## bugs
+
+- 删除less、sass文件后没有删除dist里对应的css文件
+
 [npm-url]: https://www.npmjs.com/package/bag-tool
 [npm-image]: https://img.shields.io/npm/v/bag-tool.svg
 [downloads-image]: https://img.shields.io/npm/dm/bag-tool.svg

@@ -1,5 +1,5 @@
 const fs = require('fs');
-const path = require('path').posix;
+const path = require('path');
 const gulp = require('gulp');
 const watch = require('gulp-watch');
 const browserSync = require('browser-sync').create();
@@ -62,7 +62,6 @@ gulp.task('watch', ['build'], () => {
     cwd: PROJECT
   }, vinyl => {
     vinyl.history.forEach(file => {
-      file = file.replace(/\\/g, '/');
       if (sourceMap.hasKey(file)) {
         sourceMap.get(file).forEach(_file => changedFiles.add(_file));
       } else {

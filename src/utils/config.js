@@ -1,4 +1,4 @@
-const path = require('path').posix;
+const path = require('path');
 
 const PROJECT = process.env.PROJECT || process.cwd() || '';
 const defaultConfig = require('../config.json');

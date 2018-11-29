@@ -1,5 +1,5 @@
 const fs = require('fs');
-const path = require('path').posix;
+const path = require('path');
 const iconv = require('iconv-lite');
 
 const {

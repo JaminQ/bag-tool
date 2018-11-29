@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-const path = require('path').posix;
+const path = require('path');
 const USERCONFIG = require('../src/utils/config');
 const gulpFork = require('../src/common/fork')({
   modulePath: './node_modules/gulp/bin/gulp.js',
-  cwd: path.join(__dirname.replace(/\\/g, '/'), '../'),
+  cwd: path.join(__dirname, '../'),
   env: {
     USERCONFIG: JSON.stringify(USERCONFIG),
-    PROJECT: process.cwd().replace(/\\/g, '/') // 运行命令时的当前路径
+    PROJECT: process.cwd() // 运行命令时的当前路径
   },
   stdout(data) {
     const dataStr = `${data}`;
