@@ -25,6 +25,9 @@ module.exports = {
 
     if (type === 'unlink') { // 删除
       key = 'del';
+      if (STYLEEXTNAME.indexOf(extname) > -1) { // 如果是样式文件，则修改后缀为.css
+        file = `${file.slice(0, 1 - extname.length)}.css`;
+      }
     } else {
       if (WHITELIST.indexOf(file.slice(FULLSRC.length)) > -1) {
         key = 'copy';

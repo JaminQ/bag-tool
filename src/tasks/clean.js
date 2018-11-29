@@ -1,4 +1,3 @@
-const path = require('path');
 const del = require('del');
 const gulp = require('gulp');
 
@@ -15,9 +14,7 @@ gulp.task('clean', () => {
 });
 
 gulp.task('clean_watch', () => {
-  const delFiles = changedFiles.get('del');
-  const pos = FULLSRC.length;
-  return del(delFiles.map(src => path.join(FULLDEST, src.slice(pos))), {
+  return del(changedFiles.get('del').map(src => src.replace(FULLSRC, FULLDEST)), {
     force: true
   });
 });
