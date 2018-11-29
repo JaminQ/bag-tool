@@ -10,8 +10,8 @@ module.exports = callback => {
     }
     typeof callback === 'function' && (contentStr = callback({
       content: contentStr,
-      file: file.history[0].replace(/\\/g, '/'),
-      basePath: file.base.replace(/\\/g, '/'),
+      file: file.history[0],
+      basePath: file.base,
       enc,
       cb
     }));
