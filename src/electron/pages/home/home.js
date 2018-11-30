@@ -158,6 +158,9 @@ const vm = new Base({
     openProject() {
       shell.showItemInFolder(this.projects[this.nowProjectIdx].path);
     },
+    exportProject() {
+      this.globalTip('导出功能敬请期待');
+    },
     aboutUs() {
       this.logMode = false;
       this.aboutMode = true;
