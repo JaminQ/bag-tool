@@ -63,10 +63,9 @@ gulp.task('watch', ['build'], () => {
   }, vinyl => {
     vinyl.history.forEach(file => {
       if (sourceMap.hasKey(file)) {
-        sourceMap.get(file).forEach(_file => changedFiles.add(_file));
-      } else {
-        changedFiles.add(file, vinyl.event);
+        sourceMap.get(file).forEach(_file => changedFiles.set(_file));
       }
+      changedFiles.set(file, vinyl.event);
     });
     gulp.start('reload');
   });
@@ -79,7 +78,7 @@ gulp.task('watch', ['build'], () => {
 });
 
 gulp.task('reload', ['html_watch', 'css_watch', 'js_watch', 'copy_watch', 'clean_watch'], () => {
-  if (changedFiles.getLen('all')) {
+  if (changedFiles.getLen()) {
     if (LIVERELOAD) browserSync.reload(); // 自动刷新页面
     changedFiles.init(); // 重置
   }

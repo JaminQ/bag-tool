@@ -17,7 +17,7 @@ module.exports = {
     changedFiles.copy = [];
     changedFiles.del = [];
   },
-  add(file, type) {
+  set(file, type) {
     if (/\/\..*/.test(file)) return; // 如果有.开头的文件或文件夹，则忽略
 
     const extname = `*${path.extname(file)}`;

@@ -10,6 +10,8 @@ const {
   common: {
     getSrc
   },
+  through,
+  sourceMap,
   changedFiles,
   config: {
     fullSrc: FULLSRC,
@@ -23,6 +25,20 @@ const {
 const getParseCssPipe = (cssEngine = CSSENGINE) => {
   let pipe = lazypipe();
 
+  const initSourceMap = () => {
+    return through(({
+      content,
+      file
+    }) => {
+      const regex = /@import ['"]([^'"]*?)['"];/g;
+      let match = null;
+      while ((match = regex.exec(content)) !== null) {
+        sourceMap.set(path.normalize(file.replace(path.basename(file), match[1])), file);
+      }
+      return content;
+    });
+  };
+
   cssEngine.forEach(engine => {
     switch (engine) {
       case 'less':
@@ -32,6 +48,7 @@ const getParseCssPipe = (cssEngine = CSSENGINE) => {
 
         pipe = pipe
           .pipe(() => lessFilter)
+          .pipe(initSourceMap)
           .pipe(less, {
             // paths: [
             //   path.join(__dirname, 'less', 'includes')
@@ -47,6 +64,7 @@ const getParseCssPipe = (cssEngine = CSSENGINE) => {
 
         // pipe = pipe
         //   .pipe(() => sassFilter)
+        //   .pipe(initSourceMap)
         //   .pipe(() => sass({}).on('error', sass.logError))
         //   .pipe(() => sassFilter.restore);
 
