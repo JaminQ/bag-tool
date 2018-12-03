@@ -13,7 +13,6 @@ const {
   config: {
     src: SRC,
     fullSrc: FULLSRC,
-    dest: DEST,
     fullDest: FULLDEST,
     template: TEMPLATE,
     liveReload: LIVERELOAD,
@@ -99,5 +98,5 @@ gulp.task('reload', ['html_watch', 'css_watch', 'js_watch', 'copy_watch', 'clean
 
 // 导出dest并zip压缩
 gulp.task('export', () => {
-  zip(DEST, argv.output || 'out.zip');
+  zip(FULLDEST, argv.output || 'out.zip');
 });
