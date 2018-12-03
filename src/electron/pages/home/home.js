@@ -10,7 +10,7 @@ const {
 } = require('electron').remote;
 const ansiHTML = require('ansi-html');
 
-const fork = require('../../../common/fork');
+const fork = require('../../../utils/fork');
 const Base = require('../../common/base');
 const defaultConfig = require('../../../config.json');
 const main = require('../../../index');
