@@ -9,19 +9,19 @@ const TEMPPATH = './packager-temp';
 const spawn = (command, options, success) => { // 简单封装spawn
   console.log(`> ${command}\n`);
 
-  const npmSpawn = childProcess.spawn(command, ['--colors'], Object.assign({
+  const spawn = childProcess.spawn(command, ['--colors'], Object.assign({
     shell: true
   }, options));
 
-  npmSpawn.stdout.on('data', data => {
+  spawn.stdout.on('data', data => {
     process.stdout.write(`${data}`);
   });
 
-  npmSpawn.stderr.on('data', data => {
+  spawn.stderr.on('data', data => {
     process.stdout.write(`${data}`);
   });
 
-  npmSpawn.on('close', code => {
+  spawn.on('close', code => {
     if (code === 0) {
       process.stdout.write('\n');
       typeof success === 'function' && success();
@@ -45,8 +45,13 @@ makeDir.sync(TEMPPATH);
 // 复制文件
 copy(['gulpfile.js', 'dist/**/*.*', 'package.json'], TEMPPATH, () => {
   // 重写package.json，删除不必要的属性
-  const packageJson = require(`${TEMPPATH}/package.json`);
+  const packageJson = JSON.parse(fs.readFileSync(`${TEMPPATH}/package.json`, {
+    encoding: 'utf8'
+  }));
   delete packageJson.scripts;
+  delete packageJson.dependencies['gulp-sass'];
+  delete packageJson.dependencies['minimist'];
+  delete packageJson.dependencies['node-sass'];
   delete packageJson.bin;
   delete packageJson.devDependencies;
   fs.writeFileSync(path.join(TEMPPATH, 'package.json'), JSON.stringify(packageJson));
@@ -68,7 +73,7 @@ copy(['gulpfile.js', 'dist/**/*.*', 'package.json'], TEMPPATH, () => {
     cwd: TEMPPATH
   }, () => {
     // 打包
-    spawn(`electron-packager ${TEMPPATH} BagTool --out ./out_app --overwrite`, {}, () => {
+    spawn(`electron-packager ${TEMPPATH} BagTool --out ../out_app --overwrite`, {}, () => {
       // 清空临时目录
       removeTempSync();
 
