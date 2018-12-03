@@ -12,16 +12,7 @@ module.exports = {
       encoding: 'utf8'
     }));
   },
-  init(gulpFork) {
-    return gulpFork(['init']);
-  },
-  clean(gulpFork) {
-    return gulpFork(['clean']);
-  },
-  build(gulpFork) {
-    return gulpFork(['build']);
-  },
-  start(gulpFork) {
-    return gulpFork(['watch']);
+  gulp(gulpFork, args) {
+    return gulpFork(args);
   }
 };

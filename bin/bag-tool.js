@@ -44,16 +44,11 @@ switch (command) {
     main.getHelp(argv.indexOf('-c') > -1 ? '_CN' : '');
     break;
   case 'init':
-    main.init(gulpFork);
-    break;
   case 'clean':
-    main.clean(gulpFork);
-    break;
   case 'build':
-    main.build(gulpFork);
-    break;
   case 'start':
-    main.start(gulpFork);
+  case 'export':
+    main.gulp(gulpFork, [command]);
     break;
   default:
     console.log('bag-tool: Incorrect command, maybe you need \`bag-tool help\`.');
