@@ -8,5 +8,7 @@ You can use these <command>:
   build     Compile your src-dir to dest-dir
   start     Build once, Open your browser and load,
             then Watch your src-dir to live-reload
+  export    Pack your dest-dir and compress it by zip
+    --output    To specify the path of the output file
 
 你可以输入`bag-tool help -c`来获取中文文档。

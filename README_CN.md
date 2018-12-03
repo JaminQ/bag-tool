@@ -30,6 +30,7 @@ npm install -g bag-tool
 - `clean` 清空dest目录。
 - `build` 编译src目录并输出到dest目录。
 - `start` 编译后自动打开默认浏览器并加载，然后监听src目录并实时刷新浏览器。
+- `export` 打包并使用zip压缩dest目录，支持`--output`属性来指定输出文件的路径。
 
 ## 配置
 
@@ -293,10 +294,6 @@ Default: `["**/.DS_Store"]`
 </body>
 </html>
 ```
-
-## TODO
-
-- 开发GUI版本
 
 [npm-url]: https://www.npmjs.com/package/bag-tool
 [npm-image]: https://img.shields.io/npm/v/bag-tool.svg

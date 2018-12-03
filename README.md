@@ -30,6 +30,7 @@ Run `bag-tool <command>` in your projoct. Bag-tool support these `<command>`:
 - `clean` Clear dest-dir.
 - `build` Compile your src-dir to dest-dir.
 - `start` Build once, open your browser and load, then watch your src-dir to live-reload.
+- `export` Pack your dest-dir and compress it by zip, support `--output` attribute to specify the path of the output file.
 
 ## Config
 
@@ -297,7 +298,6 @@ After compilation
 ## TODO
 
 - Config 容错
-- 导出功能
 
 [npm-url]: https://www.npmjs.com/package/bag-tool
 [npm-image]: https://img.shields.io/npm/v/bag-tool.svg

@@ -98,5 +98,9 @@ gulp.task('reload', ['html_watch', 'css_watch', 'js_watch', 'copy_watch', 'clean
 
 // 导出dest并zip压缩
 gulp.task('export', () => {
-  zip(FULLDEST, argv.output || 'out.zip');
+  if (!fs.existsSync(FULLDEST)) { // 没有dest目录，提示
+    console.error(`Did't find your dest-dir(${FULLDEST}), maybe you need \`bag-tool build\` first.`);
+  } else {
+    zip(FULLDEST, argv.output || 'out.zip');
+  }
 });
