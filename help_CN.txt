@@ -8,5 +8,7 @@
   build     编译src目录并输出到dest目录
   start     编译后自动打开默认浏览器并加载，
             然后监听src目录并实时刷新浏览器
+  export    打包并使用zip压缩dest目录
+    --output    用于指定输出文件的路径
 
 You can use `bag-tool help` to get English docs.
