@@ -92,7 +92,7 @@ const vm = new Base({
       } else if (workStatus === command) {
         this.killGulp(idx);
       } else {
-        this.globalTip('请先等待任务执行完毕');
+        this.globalTip('请先等待任务执行完毕', 'err');
       }
     },
     killGulp(idx) {

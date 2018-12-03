@@ -144,7 +144,14 @@
   border-radius: 10px;
   text-align: center;
   color: #fff;
-  background-color: @error-color;
+
+  &.suc {
+    background-color: @accent-color;
+  }
+
+  &.err {
+    background-color: @error-color;
+  }
 
   &.slide-downup-enter-active,
   &.slide-downup-leave-active {

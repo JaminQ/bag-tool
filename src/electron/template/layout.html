@@ -20,7 +20,7 @@
     </div>
 
     <transition name="slide-downup">
-      <div v-show="!!globalTips" class="global-tips">{{ globalTips }}</div>
+      <div v-show="!!globalTips" class="global-tips" :class="globalTipsType">{{ globalTips }}</div>
     </transition>
 
     <div class="pages">
