@@ -159,7 +159,8 @@ const vm = new Base({
       shell.showItemInFolder(this.projects[this.nowProjectIdx].path);
     },
     exportProject() {
-      this.globalTip('导出功能敬请期待');
+      this.gulp(this.nowProjectIdx, 'export');
+      // shell.showItemInFolder(this.projects[this.nowProjectIdx].path);
     },
     aboutUs() {
       this.logMode = false;
@@ -308,7 +309,8 @@ const bagToolSpawn = ({
       cwd: path.join(__dirname, '../../../').replace(/\\/g, '/'),
       env: {
         USERCONFIG: JSON.stringify(USERCONFIG),
-        PROJECT: vm.projects[idx].path.replace(/\\/g, '/') // 运行命令时的当前路径
+        PROJECT: vm.projects[idx].path.replace(/\\/g, '/'), // 运行命令时的当前路径
+        ARGV: JSON.stringify({})
       },
       stdout(data) {
         const dataStr = `${data}`;
