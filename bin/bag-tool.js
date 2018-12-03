@@ -1,13 +1,16 @@
 #!/usr/bin/env node
 
 const path = require('path');
+const argv = require('minimist')(process.argv.slice(2));
+
 const USERCONFIG = require('../src/utils/config');
-const gulpFork = require('../src/common/fork')({
+const gulpFork = require('../src/utils/fork')({
   modulePath: './node_modules/gulp/bin/gulp.js',
   cwd: path.join(__dirname, '../'),
   env: {
     USERCONFIG: JSON.stringify(USERCONFIG),
-    PROJECT: process.cwd() // 运行命令时的当前路径
+    PROJECT: process.cwd(), // 运行命令时的当前路径
+    ARGV: JSON.stringify(argv)
   },
   stdout(data) {
     const dataStr = `${data}`;
@@ -26,30 +29,25 @@ const gulpFork = require('../src/common/fork')({
 });
 const main = require('../src/index');
 
-// 获取输入参数并排序，command在前面，其余在后面
-const getStdinArgvs = ([, , ...argvs]) => {
-  argvs.sort((item1, item2) => {
-    return item1[0] === '-' ? 1 : -1;
-  });
-
-  return [...argvs];
-};
-
-const [command, ...argv] = getStdinArgvs(process.argv);
-switch (command) {
-  case '-v':
+if (argv._.length === 0) { // 处理无command的情况
+  if (argv.v || argv.version) { // bag-tool -v 获取版本号
     main.getVersion();
-    break;
-  case 'help':
-    main.getHelp(argv.indexOf('-c') > -1 ? '_CN' : '');
-    break;
-  case 'init':
-  case 'clean':
-  case 'build':
-  case 'start':
-  case 'export':
-    main.gulp(gulpFork, [command]);
-    break;
-  default:
-    console.log('bag-tool: Incorrect command, maybe you need \`bag-tool help\`.');
+  } else { // bag-tool 默认执行help
+    main.getHelp();
+  }
+} else {
+  switch (argv._[0]) {
+    case 'help':
+      main.getHelp(argv.c ? '_CN' : '');
+      break;
+    case 'init':
+    case 'clean':
+    case 'build':
+    case 'start':
+    case 'export':
+      main.gulp(gulpFork, [argv._[0]]);
+      break;
+    default:
+      console.log('bag-tool: Incorrect command, maybe you need \`bag-tool help\`.');
+  }
 }
