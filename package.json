@@ -8,7 +8,7 @@
     "clean": "gulp clean",
     "build": "gulp build",
     "start": "gulp watch",
-    "packager": "node ./packager.js"
+    "packager": "node build/packager.js"
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
