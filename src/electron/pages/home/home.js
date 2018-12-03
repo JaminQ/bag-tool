@@ -87,7 +87,7 @@ const vm = new Base({
         bagToolSpawn({
           command,
           idx,
-          notShowLog: command === 'init'
+          notOpenLogArea: command === 'init'
         });
       } else if (workStatus === command) {
         this.killGulp(idx);
@@ -299,10 +299,10 @@ const vm = new Base({
 const bagToolSpawn = ({
   command,
   idx,
-  notShowLog
+  notOpenLogArea
 }) => {
   const USERCONFIG = vm.getConfig(vm.getConfigFile(idx));
-  vm.projects[idx].fork = main[command](fork(
+  vm.projects[idx].fork = main.gulp(fork(
     Object.assign({}, {
       modulePath: './../node_modules/gulp/bin/gulp.js',
       cwd: path.join(__dirname, '../../../').replace(/\\/g, '/'),
@@ -322,7 +322,7 @@ const bagToolSpawn = ({
         vm.addLog(idx, `${err}`, 'error');
       },
       begin: () => {
-        if (!notShowLog) vm.logMode = true;
+        if (!notOpenLogArea) vm.logMode = true;
         vm.addLog(idx, `bag-tool ${command}`, 'command');
         Vue.set(vm.projects[idx], 'workStatus', command);
       },
@@ -333,7 +333,7 @@ const bagToolSpawn = ({
         Vue.set(vm.projects[idx], 'workStatus', '');
       }
     })
-  ));
+  ), [command]);
 };
 
 require('../../common/ipcEvent')(vm);
