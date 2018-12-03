@@ -81,13 +81,14 @@ const vm = new Base({
     },
 
     // gulp-area
-    gulp(idx, command) {
+    gulp(idx, command, close) {
       const workStatus = this.projects[idx].workStatus;
       if (!workStatus) {
         bagToolSpawn({
           command,
           idx,
-          notOpenLogArea: command === 'init'
+          notOpenLogArea: command === 'init',
+          close
         });
       } else if (workStatus === command) {
         this.killGulp(idx);
@@ -159,8 +160,9 @@ const vm = new Base({
       shell.showItemInFolder(this.projects[this.nowProjectIdx].path);
     },
     exportProject() {
-      this.gulp(this.nowProjectIdx, 'export');
-      // shell.showItemInFolder(this.projects[this.nowProjectIdx].path);
+      this.gulp(this.nowProjectIdx, 'export', code => { // 完成后自动打开zip所在目录
+        if (code === 0) shell.showItemInFolder(path.join(this.projects[this.nowProjectIdx].path, 'out.zip'));
+      });
     },
     aboutUs() {
       this.logMode = false;
@@ -300,16 +302,17 @@ const vm = new Base({
 const bagToolSpawn = ({
   command,
   idx,
-  notOpenLogArea
+  notOpenLogArea,
+  close
 }) => {
   const USERCONFIG = vm.getConfig(vm.getConfigFile(idx));
   vm.projects[idx].fork = main.gulp(fork(
     Object.assign({}, {
       modulePath: './../node_modules/gulp/bin/gulp.js',
-      cwd: path.join(__dirname, '../../../').replace(/\\/g, '/'),
+      cwd: path.join(__dirname, '../../../'),
       env: {
         USERCONFIG: JSON.stringify(USERCONFIG),
-        PROJECT: vm.projects[idx].path.replace(/\\/g, '/'), // 运行命令时的当前路径
+        PROJECT: vm.projects[idx].path, // 运行命令时的当前路径
         ARGV: JSON.stringify({})
       },
       stdout(data) {
@@ -333,6 +336,7 @@ const bagToolSpawn = ({
         else vm.addLog(idx, 'stop\n', 'cancel');
         vm.projects[idx].fork = null;
         Vue.set(vm.projects[idx], 'workStatus', '');
+        typeof close === 'function' && close(code);
       }
     })
   ), [command]);
