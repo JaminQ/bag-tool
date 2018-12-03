@@ -6,13 +6,14 @@ const browserSync = require('browser-sync').create();
 const requireDir = require('require-dir');
 const makeDir = require('make-dir');
 
-const tasks = requireDir('./src/tasks');
+requireDir('./src/tasks');
 const {
   sourceMap,
   changedFiles,
   config: {
     src: SRC,
     fullSrc: FULLSRC,
+    dest: DEST,
     fullDest: FULLDEST,
     template: TEMPLATE,
     liveReload: LIVERELOAD,
@@ -20,12 +21,21 @@ const {
     project: PROJECT,
     noConfig: NOCONFIG,
     encoding: ENCODING
-  }
+  },
+  zip
 } = requireDir('./src/utils');
+
+let argv;
+if (process.env.ARGV !== undefined) {
+  argv = JSON.parse(process.env.ARGV);
+} else {
+  argv = require('minimist')(process.argv.slice(2));
+}
 
 // 设置build为默认task
 gulp.task('default', ['build']);
 
+// 初始化
 gulp.task('init', () => {
   // 如果没有用户配置文件，就新建一个
   NOCONFIG && fs.writeFile(path.join(PROJECT, 'bag-tool-config.json'), `{}`, {
@@ -40,8 +50,10 @@ gulp.task('init', () => {
   !fs.existsSync(templateDir) && makeDir.sync(templateDir);
 });
 
+// 编译
 gulp.task('build', ['html', 'css', 'js', 'copy']);
 
+// 编译+监听
 gulp.task('start', ['build'], () => {
   console.info(`[BAG-TOOL]begin to watch the dir: ${FULLDEST}`);
 
@@ -77,9 +89,15 @@ gulp.task('start', ['build'], () => {
   return stream;
 });
 
+// 重载浏览器页面（刷新浏览器页面）
 gulp.task('reload', ['html_watch', 'css_watch', 'js_watch', 'copy_watch', 'clean_watch'], () => {
   if (changedFiles.getLen()) {
     if (LIVERELOAD) browserSync.reload(); // 自动刷新页面
     changedFiles.init(); // 重置
   }
+});
+
+// 导出dest并zip压缩
+gulp.task('export', () => {
+  zip(DEST, argv.output || 'out.zip');
 });
