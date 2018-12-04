@@ -1,6 +1,6 @@
 node_modules
 dist
 data.json
+out.zip
 out_app
 packager-temp
-out.zip
