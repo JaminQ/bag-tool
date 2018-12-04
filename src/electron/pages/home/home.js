@@ -22,6 +22,8 @@ const {
   openUrl
 } = require('../../common/common');
 
+require('../../common/components/dialog/dialog');
+
 const {
   projects = [],
   logHeight = 200
