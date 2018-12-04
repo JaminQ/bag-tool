@@ -75,7 +75,7 @@
       <div class="bottom-bar">
         <button class="function-btn" @click="addProjects"><i title="添加新项目" class="fas fa-plus"></i></button>
         <button class="function-btn" :disabled="nowProjectIdx === ''" @click="openProject"><i title="打开项目目录" class="far fa-folder-open"></i></button>
-        <button class="function-btn" @click="exportProject"><i title="打包并压缩项目输出目录" class="fas fa-cube"></i></button>
+        <button class="function-btn" :disabled="nowProjectIdx === ''" @click="exportProject"><i title="打包并压缩项目输出目录" class="fas fa-cube"></i></button>
         <button class="function-btn" @click="aboutUs"><i title="关于" class="far fa-question-circle"></i></button>
 
         <div class="function-right-btns">

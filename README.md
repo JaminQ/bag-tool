@@ -299,6 +299,10 @@ After compilation
 
 - Config 容错
 
+## bugs
+
+- 窗口变化时log-area的高度要跟着变化
+
 [npm-url]: https://www.npmjs.com/package/bag-tool
 [npm-image]: https://img.shields.io/npm/v/bag-tool.svg
 [downloads-image]: https://img.shields.io/npm/dm/bag-tool.svg
