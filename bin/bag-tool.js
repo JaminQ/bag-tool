@@ -14,7 +14,7 @@ const gulpFork = require('../src/utils/fork')({
   },
   stdout(data) {
     const dataStr = `${data}`;
-    if (/\[BAG-TOOL\]/.test(dataStr)) process.stdout.write(dataStr.replace(/\[BAG-TOOL\]/, ''));
+    if (/\[BAG-TOOL\]/.test(dataStr)) process.stdout.write(dataStr.replace(/\[BAG-TOOL\]/g, ''));
     else USERCONFIG.showDetailLog && process.stdout.write(dataStr);
   },
   stderr(data) {
