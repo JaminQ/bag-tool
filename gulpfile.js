@@ -103,6 +103,13 @@ gulp.task('export', () => {
   } else {
     let outputFile = argv.output || 'out.zip';
     if (!path.isAbsolute(outputFile)) outputFile = path.join(PROJECT, outputFile); // 如果是相对路径，转化为绝对路径
-    zip(FULLDEST, outputFile);
+    zip({
+      inputDir: FULLDEST,
+      outputFile,
+      close: archive => {
+        console.info(`[BAG-TOOL][output file] ${outputFile}`);
+        console.info(`[BAG-TOOL][total bytes] ${archive.pointer()}`);
+      }
+    });
   }
 });

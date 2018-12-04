@@ -2,7 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const archiver = require('archiver');
 
-module.exports = (inputDir, outputFile) => {
+module.exports = ({
+  inputDir,
+  outputFile,
+  close
+}) => {
   // 如果存在该输出文件，先删除
   fs.existsSync(outputFile) && fs.unlinkSync(outputFile);
 
@@ -14,8 +18,7 @@ module.exports = (inputDir, outputFile) => {
   });
 
   output.on('close', () => {
-    console.info(`[BAG-TOOL][output file] ${outputFile}`);
-    console.info(`[BAG-TOOL][total bytes] ${archive.pointer()}`);
+    typeof close === 'function' && close(archive);
   });
 
   output.on('end', () => {
