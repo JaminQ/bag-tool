@@ -101,6 +101,8 @@ gulp.task('export', () => {
   if (!fs.existsSync(FULLDEST)) { // 没有dest目录，提示
     console.error(`Did't find your dest-dir(${FULLDEST}), maybe you need \`bag-tool build\` first.`);
   } else {
-    zip(FULLDEST, argv.output || 'out.zip');
+    let outputFile = argv.output || 'out.zip';
+    if (!path.isAbsolute(outputFile)) outputFile = path.join(PROJECT, outputFile); // 如果是相对路径，转化为绝对路径
+    zip(FULLDEST, outputFile);
   }
 });

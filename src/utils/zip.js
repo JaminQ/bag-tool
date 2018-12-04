@@ -3,10 +3,6 @@ const path = require('path');
 const archiver = require('archiver');
 
 module.exports = (inputDir, outputFile) => {
-  // 如果是相对路径，转化为绝对路径
-  if (!path.isAbsolute(inputDir)) inputDir = path.join(process.env.PROJECT, inputDir);
-  if (!path.isAbsolute(outputFile)) outputFile = path.join(process.env.PROJECT, outputFile);
-
   // 如果存在该输出文件，先删除
   fs.existsSync(outputFile) && fs.unlinkSync(outputFile);
 
