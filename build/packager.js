@@ -5,6 +5,8 @@ const copy = require('copy');
 const del = require('del');
 const makeDir = require('make-dir');
 
+const zip = require('../src/utils/zip');
+
 const TEMPPATH = './packager-temp';
 const spawn = (command, options, success) => { // 简单封装spawn
   console.log(`> ${command}\n`);
@@ -68,17 +70,20 @@ copy(['gulpfile.js', 'dist/**/*.*', 'package.json'], TEMPPATH, () => {
     encoding: 'utf8'
   }).replace(/win\.webContents\.openDevTools\(\);/g, '// $&'));
 
-  // 安装依赖
-  spawn('npm i', {
-    cwd: TEMPPATH
-  }, () => {
-    // 打包
-    spawn(`electron-packager ${TEMPPATH} BagTool --out ./out_app --overwrite`, {}, () => {
-      // 清空临时目录
-      removeTempSync();
+  console.log(TEMPPATH);
+  zip(TEMPPATH, 'BagTool.zip');
 
-      // K.O.
-      console.log('done');
-    });
-  });
+  // 安装依赖
+  // spawn('npm i', {
+  //   cwd: TEMPPATH
+  // }, () => {
+  //   // 打包
+  //   spawn(`electron-packager ${TEMPPATH} BagTool --out ./out_app --overwrite`, {}, () => {
+  //     // 清空临时目录
+  //     removeTempSync();
+
+  //     // K.O.
+  //     console.log('done');
+  //   });
+  // });
 });
