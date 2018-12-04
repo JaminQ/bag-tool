@@ -39,7 +39,7 @@ const removeTempSync = () => {
   });
 };
 
-console.log('> init data\n\n');
+console.log('> init data\n');
 
 // 如果临时目录存在，先清空
 fs.existsSync(TEMPPATH) && removeTempSync();
@@ -74,7 +74,7 @@ copy(['gulpfile.js', 'dist/**/*.*', 'package.json'], TEMPPATH, () => {
   }).replace(/win\.webContents\.openDevTools\(\);/g, '// $&'));
 
   // 安装依赖
-  spawn('tnpm i', {
+  spawn('npm i', {
     cwd: TEMPPATH
   }, () => {
     // 如果输出目录存在，先清空
@@ -87,16 +87,30 @@ copy(['gulpfile.js', 'dist/**/*.*', 'package.json'], TEMPPATH, () => {
       // 清空临时目录
       removeTempSync();
 
-      console.log('> zip\n\n');
+      // 压缩（递归）
+      const dirs = fs.readdirSync(OUTPATH);
+      const zipRecursion = () => {
+        if (dirs.length) {
+          const dir = path.join(OUTPATH, dirs.shift());
 
-      // 压缩
-      fs.readdirSync(OUTPATH).forEach(dir => {
-        dir = path.join(OUTPATH, dir);
-        zip(dir, dir + '.zip');
-      });
+          console.log(`> zip ${dir}\n`);
 
-      // K.O.
-      console.log('done');
+          zip({
+            inputDir: dir,
+            outputFile: dir + '.zip',
+            close: archive => {
+              console.log(`[output file] ${dir}.zip`);
+              console.log(`[total bytes] ${archive.pointer()}\n`);
+
+              zipRecursion();
+            }
+          });
+        } else {
+          // K.O.
+          console.log('done');
+        }
+      };
+      zipRecursion();
     });
   });
 });
