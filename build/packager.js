@@ -8,6 +8,7 @@ const makeDir = require('make-dir');
 const zip = require('../src/utils/zip');
 
 const TEMPPATH = './packager-temp';
+const OUTPATH = './out_app';
 const spawn = (command, options, success) => { // 简单封装spawn
   console.log(`> ${command}\n`);
 
@@ -37,6 +38,8 @@ const removeTempSync = () => {
     force: true
   });
 };
+
+console.log('> init data\n\n');
 
 // 如果临时目录存在，先清空
 fs.existsSync(TEMPPATH) && removeTempSync();
@@ -70,20 +73,30 @@ copy(['gulpfile.js', 'dist/**/*.*', 'package.json'], TEMPPATH, () => {
     encoding: 'utf8'
   }).replace(/win\.webContents\.openDevTools\(\);/g, '// $&'));
 
-  console.log(TEMPPATH);
-  zip(TEMPPATH, 'BagTool.zip');
-
   // 安装依赖
-  // spawn('npm i', {
-  //   cwd: TEMPPATH
-  // }, () => {
-  //   // 打包
-  //   spawn(`electron-packager ${TEMPPATH} BagTool --out ./out_app --overwrite`, {}, () => {
-  //     // 清空临时目录
-  //     removeTempSync();
+  spawn('tnpm i', {
+    cwd: TEMPPATH
+  }, () => {
+    // 如果输出目录存在，先清空
+    fs.existsSync(OUTPATH) && del.sync([`${OUTPATH}/**`], {
+      force: true
+    });
 
-  //     // K.O.
-  //     console.log('done');
-  //   });
-  // });
+    // 打包
+    spawn(`electron-packager ${TEMPPATH} BagTool --out ${OUTPATH} --overwrite`, {}, () => {
+      // 清空临时目录
+      removeTempSync();
+
+      console.log('> zip\n\n');
+
+      // 压缩
+      fs.readdirSync(OUTPATH).forEach(dir => {
+        dir = path.join(OUTPATH, dir);
+        zip(dir, dir + '.zip');
+      });
+
+      // K.O.
+      console.log('done');
+    });
+  });
 });
