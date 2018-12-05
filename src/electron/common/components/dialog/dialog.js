@@ -1,5 +1,4 @@
-// const tpl = require('./dialog.tpl');
-// const css = require('./dialog.css');
+require('./dialog.less');
+const tpl = require('./dialog.tpl');
 
-// console.log(tpl);
-// console.log(css);
+console.log(tpl);
