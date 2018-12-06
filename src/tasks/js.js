@@ -1,11 +1,8 @@
-const fs = require('fs');
 const path = require('path');
 const gulp = require('gulp');
 const babel = require('gulp-babel');
 const requireDir = require('require-dir');
 const lazypipe = require('lazypipe')
-const iconv = require('iconv-lite');
-const makeDir = require('make-dir');
 
 const {
   common: {
@@ -13,6 +10,7 @@ const {
   },
   through,
   changedFiles,
+  parseFile2Js,
   config: {
     fullSrc: FULLSRC,
     fullDest: FULLDEST,
@@ -24,51 +22,28 @@ const {
 
 const getParseJsPipe = () => {
   return lazypipe()
+    .pipe(babel, {
+      presets: ['@babel/env']
+    })
     .pipe(through, ({
       content,
       file
     }) => {
+      // 检测到引用`.tpl`,`.less`,`.scss`文件时把这些文件转换为.js文件
       return content.replace(/require\(['"]([^'"]*?)['"]\)/g, (w, filePath) => {
-        const extname = path.extname(filePath);
-        if (extname === '.tpl' || extname === '.less' || extname === '.scss') {
-          parseFile2Js(path.join(path.dirname(file), filePath), extname);
-          return `require('${filePath}.js')`;
-        } else {
-          return w;
+        switch(path.extname(filePath)) {
+          case '.tpl':
+          case '.less':
+          case '.scss':
+            const inputFile = path.join(path.dirname(file), filePath);
+            parseFile2Js(inputFile, `${inputFile.replace(FULLSRC, FULLDEST)}.js`, ENCODING);
+            return `require('${filePath}.js')`;
+          default:
+            return w;
         }
       });
     })
-    .pipe(babel, {
-      presets: ['@babel/env']
-    })
     .pipe(gulp.dest, FULLDEST);
-};
-
-// 将文件转换为js
-const parseFile2Js = (file, extname) => {
-  const outputFile = `${file.replace(FULLSRC, FULLDEST)}.js`;
-  if (!fs.existsSync(outputFile)) {
-    let str = `'${iconv.decode(fs.readFileSync(file), ENCODING).split('\n').map(line => {
-      return line.trim().replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
-    }).join('\\n')}'`;
-    const outputDir = path.dirname(outputFile);
-    !fs.existsSync(outputDir) && makeDir.sync(outputDir); // 如果没有该目录，则创建
-
-    switch (extname) {
-      case '.tpl':
-        str = `module.exports = ${str};`;
-        break;
-      case '.less':
-      case '.scss':
-        str = `var style = document.createElement('style');
-style.innerHTML = ${str};
-document.getElementsByTagName('head')[0].appendChild(style);`;
-        break;
-      default:
-    }
-
-    fs.writeFileSync(outputFile, str); // 写文件
-  }
 };
 
 gulp.task('js', ['clean'], () => {
