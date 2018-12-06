@@ -29,7 +29,9 @@ module.exports = {
         file = `${file.slice(0, 1 - extname.length)}.css`;
       }
     } else {
-      if (WHITELIST.indexOf(file.slice(FULLSRC.length)) > -1) {
+      if (extname === '*' && file === '__to__js') {
+        console.log('here');
+      } else if (WHITELIST.indexOf(file.slice(FULLSRC.length)) > -1) {
         key = 'copy';
       } else if (TMPLEXTNAME.indexOf(extname) > -1) {
         key = 'html';

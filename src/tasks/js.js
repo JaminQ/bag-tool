@@ -9,6 +9,7 @@ const {
     getSrc
   },
   through,
+  sourceMap,
   changedFiles,
   parseFile2Js,
   config: {
@@ -36,6 +37,7 @@ const getParseJsPipe = () => {
           case '.less':
           case '.scss':
             const inputFile = path.join(path.dirname(file), filePath);
+            sourceMap.set(inputFile, '__to__js');
             parseFile2Js(inputFile, `${inputFile.replace(FULLSRC, FULLDEST)}.js`, ENCODING);
             return `require('${filePath}.js')`;
           default:
