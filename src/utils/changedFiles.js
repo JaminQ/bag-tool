@@ -16,6 +16,7 @@ module.exports = {
     changedFiles.js = [];
     changedFiles.copy = [];
     changedFiles.del = [];
+    changedFiles.parseFile2Js = [];
   },
   set(file, type) {
     if (/\/\..*/.test(file)) return; // 如果有.开头的文件或文件夹，则忽略
@@ -29,7 +30,10 @@ module.exports = {
         file = `${file.slice(0, 1 - extname.length)}.css`;
       }
     } else {
-      if (WHITELIST.indexOf(file.slice(FULLSRC.length)) > -1) {
+      if (/^__to__js__.+/.test(file)) {
+        key = 'parseFile2Js';
+        file = file.slice(10);
+      } else if (WHITELIST.indexOf(file.slice(FULLSRC.length)) > -1) {
         key = 'copy';
       } else if (TMPLEXTNAME.indexOf(extname) > -1) {
         key = 'html';
