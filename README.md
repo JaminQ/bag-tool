@@ -12,6 +12,7 @@ This is a tool designed for the pain of a front-end development program when wri
 - **CSS-compile**: You can write [less](http://lesscss.org/) or [sass](https://sass-lang.com/) according to your preferences, then bag-tool will help you compile very easily;
 - **Babel-compile**: Feel free to write es6, bag-tool will help you compile es6 into es5 through babel;
 - **Live-reload**: Don't waste time on `F5`, just enjoy the pleasure of the browser automatically refreshing after `ctrl+s`;
+- **Import tpl and style files**: Bag-tool will compile the tpl and style files you reference into js files, you can directly get the string of tpl or inject the style into the `<title>`;
 - If you have the function you want, just [contact me](mailto:jaminqian@outlook.com) or [open an issue](https://github.com/MiniCai/bag-tool/issues/new).
 
 ## Install

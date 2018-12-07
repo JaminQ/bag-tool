@@ -37,9 +37,10 @@ const getParseJsPipe = () => {
           case '.tpl':
           case '.less':
           case '.scss':
+          case '.css':
             const inputFile = path.join(path.dirname(file), filePath);
             sourceMap.set(inputFile, `__to__js__${inputFile}`);
-            parseFile2Js(inputFile, `${inputFile.replace(FULLSRC, FULLDEST)}.js`, ENCODING);
+            parseFile2Js(inputFile);
             return `require('${filePath}.js')`;
           default:
             return w;
@@ -49,7 +50,7 @@ const getParseJsPipe = () => {
     .pipe(gulp.dest, FULLDEST);
 };
 
-gulp.task('js', ['clean'], () => {
+gulp.task('js', ['html', 'css', 'clean'], () => {
   const stream = gulp.src(getSrc({
       src: FULLSRC,
       includeExtname: JSEXTNAME,
@@ -89,7 +90,7 @@ gulp.task('js_watch', () => {
       .pipe(through(({
         file
       }) => {
-        parseFile2Js(file, `${file.replace(FULLSRC, FULLDEST)}.js`, ENCODING, true);
+        parseFile2Js(file, true);
         return '';
       }));
 
