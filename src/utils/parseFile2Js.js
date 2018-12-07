@@ -3,8 +3,8 @@ const path = require('path');
 const iconv = require('iconv-lite');
 const makeDir = require('make-dir');
 
-module.exports = (inputFile, outputFile, encoding) => {
-  if (!fs.existsSync(outputFile)) {
+module.exports = (inputFile, outputFile, encoding, isForce = false) => {
+  if (isForce || !fs.existsSync(outputFile)) {
     // 将文件内容处理成一个字符串，每行trim，处理引号，处理换行符
     let str = `'${iconv.decode(fs.readFileSync(inputFile), encoding).split('\n').map(line => {
       return line.trim().replace(/\\/g, '\\\\').replace(/'/g, '\\\'');

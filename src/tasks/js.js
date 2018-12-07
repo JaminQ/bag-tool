@@ -2,7 +2,8 @@ const path = require('path');
 const gulp = require('gulp');
 const babel = require('gulp-babel');
 const requireDir = require('require-dir');
-const lazypipe = require('lazypipe')
+const lazypipe = require('lazypipe');
+const merge = require('merge-stream');
 
 const {
   common: {
@@ -32,12 +33,12 @@ const getParseJsPipe = () => {
     }) => {
       // 检测到引用`.tpl`,`.less`,`.scss`文件时把这些文件转换为.js文件
       return content.replace(/require\(['"]([^'"]*?)['"]\)/g, (w, filePath) => {
-        switch(path.extname(filePath)) {
+        switch (path.extname(filePath)) {
           case '.tpl':
           case '.less':
           case '.scss':
             const inputFile = path.join(path.dirname(file), filePath);
-            sourceMap.set(inputFile, '__to__js');
+            sourceMap.set(inputFile, `__to__js__${inputFile}`);
             parseFile2Js(inputFile, `${inputFile.replace(FULLSRC, FULLDEST)}.js`, ENCODING);
             return `require('${filePath}.js')`;
           default:
@@ -67,18 +68,39 @@ gulp.task('js', ['clean'], () => {
 
 gulp.task('js_watch', () => {
   const jsFiles = changedFiles.get('js');
-  const stream = gulp.src(jsFiles.length ? jsFiles.concat(getSrc({
+  const jsStream = gulp.src(jsFiles.length ? jsFiles.concat(getSrc({
       src: FULLSRC
     })) : jsFiles, {
       base: FULLSRC
     })
     .pipe(getParseJsPipe()());
 
-  stream.on('error', e => {
+  jsStream.on('error', e => {
     console.error('js_watch task error:', e);
   });
 
-  return stream;
+  const parseFile2JsFiles = changedFiles.get('parseFile2Js');
+  if (parseFile2JsFiles.length) {
+    const parseFile2JsStream = gulp.src(parseFile2JsFiles.concat(getSrc({
+        src: FULLSRC
+      })), {
+        base: FULLSRC
+      })
+      .pipe(through(({
+        file
+      }) => {
+        parseFile2Js(file, `${file.replace(FULLSRC, FULLDEST)}.js`, ENCODING, true);
+        return '';
+      }));
+
+    parseFile2JsStream.on('error', e => {
+      console.error('parse file to js task error:', e);
+    });
+
+    return merge(jsStream, parseFile2JsStream);
+  } else {
+    return jsStream;
+  }
 });
 
 module.exports = {
