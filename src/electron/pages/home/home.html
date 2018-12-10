@@ -24,7 +24,7 @@
           <ul :class="{ 'edit-mode': editMode }">
             <li v-for="(project, project_i) in projects" @click.stop :class="{ 'move-mode': moveProjectIdx === project_i }" :style="{ top: projectTop + 'px' }">
               <label>
-                <input type="radio" :value="project_i" v-model="nowProjectIdx" :disabled="editMode">
+                <input type="radio" :value="project_i" v-model="nowProjectIdx" :disabled="editMode" @focus="radioFocus">
                 <div class="project-main" :class="{ working: projects[project_i].workStatus }">
                   <i v-if="projects[project_i].workStatus === 'start'" class="project-icon far fa-play-circle"></i>
                   <i v-else class="project-icon fas fa-folder"></i>

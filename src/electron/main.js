@@ -1,8 +1,7 @@
 const {
   app,
   BrowserWindow,
-  ipcMain,
-  Menu,
+  ipcMain
   // dialog
 } = require('electron');
 const fs = require('fs');
@@ -28,9 +27,6 @@ if (fs.existsSync(projectsFile)) {
 let win;
 
 const createWindow = () => {
-  // 隐藏菜单
-  Menu.setApplicationMenu(null);
-
   // 创建浏览器窗口。
   win = new BrowserWindow({
     width: 400,
@@ -50,14 +46,6 @@ const createWindow = () => {
     // 通常会把多个 window 对象存放在一个数组里面，
     // 与此同时，你应该删除相应的元素。
     win = null;
-  });
-
-  win.on('maximize', () => {
-    win.webContents.send('maximize');
-  });
-
-  win.on('unmaximize', () => {
-    win.webContents.send('unmaximize');
   });
 };
 
