@@ -67,7 +67,7 @@ gulp.task('js', ['html', 'css', 'clean'], () => {
   return stream;
 });
 
-gulp.task('js_watch', () => {
+gulp.task('js_watch', ['html_watch', 'css_watch'], () => {
   const jsFiles = changedFiles.get('js');
   const jsStream = gulp.src(jsFiles.length ? jsFiles.concat(getSrc({
       src: FULLSRC
