@@ -299,6 +299,7 @@ After compilation
 ## TODO
 
 - Config 容错
+- 记住上一次的导出文件路径
 
 ## bugs
 

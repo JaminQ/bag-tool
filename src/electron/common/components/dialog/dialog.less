@@ -1,6 +1,69 @@
+@import "../../base.less";
+
 .bt-dialog {
   position: fixed;
-  top: 30px;
+  top: 0;
   left: 0;
   z-index: 999999;
+  .full-page();
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .dialog-mask {
+    background-color: rgba(0, 0, 0, 0.35);
+    .full-page();
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .dialog-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    width: 300px;
+    height: 200px;
+    margin-top: -20%;
+    background-color: #fff;
+    box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+
+    .dialog-hd {
+      height: 40px;
+      padding: 0 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      h3 {
+        font-size: 16px;
+        font-weight: 100;
+      }
+
+      .close {
+        @close-btn-width: 15px;
+        width: @close-btn-width;
+        height: @close-btn-width;
+        .close-icon-element(1px, @close-btn-width, #222);
+      }
+    }
+
+    .dialog-bd {
+      padding: 0 12px;
+    }
+
+    .dialog-ft {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 50px;
+      padding: 0 12px;
+
+      button {
+        margin: 0 5px;
+      }
+    }
+  }
 }

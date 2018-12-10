@@ -26,7 +26,7 @@ require('../../common/components/dialog/dialog');
 
 const {
   projects = [],
-  logHeight = 200
+    logHeight = 200
 } = ipcRenderer.sendSync('getDataSync', ['projects', 'logHeight']);
 
 const vm = new Base({
@@ -83,11 +83,12 @@ const vm = new Base({
     },
 
     // gulp-area
-    gulp(idx, command, close) {
+    gulp(idx, command, argv, close) {
       const workStatus = this.projects[idx].workStatus;
       if (!workStatus) {
         bagToolSpawn({
           command,
+          argv,
           idx,
           notOpenLogArea: command === 'init',
           close
@@ -158,13 +159,31 @@ const vm = new Base({
         this.addProject
       );
     },
-    openProject() {
-      shell.showItemInFolder(this.projects[this.nowProjectIdx].path);
+    openProject(filePath) {
+      if (!filePath || typeof filePath !== 'string') return;
+      shell.showItemInFolder(filePath);
     },
     exportProject() {
-      this.gulp(this.nowProjectIdx, 'export', code => { // 完成后自动打开zip所在目录
-        if (code === 0) shell.showItemInFolder(path.join(this.projects[this.nowProjectIdx].path, 'out.zip'));
-      });
+      dialog.showOpenDialog({
+          title: '选择导出文件',
+          defaultPath: path.join(this.projects[this.nowProjectIdx].path, 'out.zip'),
+          buttonLabel: '导出并压缩',
+          filters: [{
+            name: 'Zips', extensions: ['zip']
+          }],
+          properties: ['openFile', 'createDirectory', 'promptToCreate']
+        },
+        filePaths => {
+          if (!filePaths) return;
+
+          const output = filePaths[0];
+          this.gulp(this.nowProjectIdx, 'export', {
+            output
+          }, code => { // 完成后自动打开zip所在目录
+            if (code === 0) this.openProject(output);
+          });
+        }
+      );
     },
     aboutUs() {
       this.logMode = false;
@@ -303,6 +322,7 @@ const vm = new Base({
 
 const bagToolSpawn = ({
   command,
+  argv = {},
   idx,
   notOpenLogArea,
   close
@@ -315,7 +335,7 @@ const bagToolSpawn = ({
       env: {
         USERCONFIG: JSON.stringify(USERCONFIG),
         PROJECT: vm.projects[idx].path, // 运行命令时的当前路径
-        ARGV: JSON.stringify({})
+        ARGV: JSON.stringify(argv)
       },
       stdout(data) {
         const dataStr = `${data}`;
