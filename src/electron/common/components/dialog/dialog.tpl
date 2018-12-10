@@ -1,3 +1,3 @@
-<div>
-  <p title='test'>{{ '\'abc\'' }}</p>
+<div class="bt-dialog">
+  <p title='test'>abc</p>
 </div>
