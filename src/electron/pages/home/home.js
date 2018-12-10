@@ -71,6 +71,57 @@ const vm = new Base({
       }
     };
     document.addEventListener('mouseup', this.documentMouseup);
+
+    // 快捷键操作
+    this.keyArr = []; // 按键队列
+    this.documentKeydown = e => {
+      if (this.editMode || this.infoMode || this.aboutMode) return false;
+
+      if (this.keyArr.indexOf(e.keyCode) === -1) {
+        // 添加到按键队列里
+        this.keyArr.push(e.keyCode);
+
+        switch (this.keyArr.length) {
+          case 1:
+            switch (this.keyArr[0]) {
+              case 38: // ↑
+                if (this.nowProjectIdx !== '' && this.nowProjectIdx > 0) this.nowProjectIdx--;
+                break;
+              case 40: // ↓
+                if (this.nowProjectIdx === '') this.nowProjectIdx = 0;
+                else if (this.nowProjectIdx < this.projects.length - 1) this.nowProjectIdx++;
+                break;
+              default:
+            }
+            break;
+          case 2:
+            switch (this.keyArr[0]) {
+              case 17: // ctrl
+                switch (this.keyArr[1]) {
+                  case 190: // ctrl + .
+                    this.nowProjectIdx !== '' && (this.logMode = !this.logMode);
+                    break;
+                  default:
+                }
+                break;
+              default:
+            }
+            break;
+          default:
+        }
+      }
+    };
+    this.documentKeyup = e => {
+      if (this.editMode || this.infoMode || this.aboutMode) return false;
+
+      const idx = this.keyArr.indexOf(e.keyCode);
+      if (idx > -1) {
+        // 删除按键队列里对应的值
+        this.keyArr.splice(idx, 1);
+      }
+    };
+    document.addEventListener('keyup', this.documentKeyup);
+    document.addEventListener('keydown', this.documentKeydown);
   },
   computed: {
     nowProject() {
@@ -169,7 +220,8 @@ const vm = new Base({
           defaultPath: path.join(this.projects[this.nowProjectIdx].path, 'out.zip'),
           buttonLabel: '导出并压缩',
           filters: [{
-            name: 'Zips', extensions: ['zip']
+            name: 'Zips',
+            extensions: ['zip']
           }],
           properties: ['openFile', 'createDirectory', 'promptToCreate']
         },
@@ -317,6 +369,8 @@ const vm = new Base({
     });
 
     document.removeEventListener('mouseup', this.documentMouseup);
+    document.removeEventListener('keyup', this.documentKeyup);
+    document.removeEventListener('keydown', this.documentKeydown);
   }
 });
 
