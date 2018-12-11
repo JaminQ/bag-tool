@@ -211,6 +211,7 @@ const vm = new Base({
             output
           }, code => { // 完成后自动打开zip所在目录
             if (code === 0) this.openProject(output);
+            else this.globalTip('没有输出目录，请先编译一次', 'err');
           });
         }
       );
