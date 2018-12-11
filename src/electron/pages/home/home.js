@@ -323,15 +323,21 @@ const vm = new Base({
       if (!filePaths) return;
 
       const projects = [];
+      let hasFile = false;
       filePaths.forEach(filePath => {
-        const project = {
-          title: path.basename(filePath),
-          path: filePath
-        };
-        projects.push(project);
-        this.projects.push(Object.assign({}, project)); // 浅复制一下
-        this.gulp(this.projects.length - 1, 'init');
+        if (fs.lstatSync(filePath).isDirectory()) { // 判断为目录
+          const project = {
+            title: path.basename(filePath),
+            path: filePath
+          };
+          projects.push(project);
+          this.projects.push(Object.assign({}, project)); // 浅复制一下
+          this.gulp(this.projects.length - 1, 'init');
+        } else { // 不是目录
+          hasFile = true;
+        }
       });
+      hasFile && this.globalTip('添加的项目必须是目录', 'err');
       ipcRenderer.send('setData', [{
         type: 'concat',
         key: 'projects',
