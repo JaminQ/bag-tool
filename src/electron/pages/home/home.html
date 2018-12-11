@@ -24,7 +24,7 @@
           <ul :class="{ 'edit-mode': editMode }">
             <li v-for="(project, project_i) in projects" @click.stop :class="{ 'move-mode': moveProjectIdx === project_i }" :style="{ top: projectTop + 'px' }">
               <label>
-                <input type="radio" :value="project_i" v-model="nowProjectIdx" :disabled="editMode" @focus="radioFocus">
+                <input type="radio" :value="project_i" v-model="nowProjectIdx" :disabled="editMode" @focus="inputFocus">
                 <div class="project-main" :class="{ working: projects[project_i].workStatus }">
                   <i v-if="projects[project_i].workStatus === 'start'" class="project-icon far fa-play-circle"></i>
                   <i v-else class="project-icon fas fa-folder"></i>
@@ -129,7 +129,7 @@
 
             <div>
               <label class="form-row">
-                <input type="checkbox" v-model="info.showDetailLog">
+                <input type="checkbox" v-model="info.showDetailLog" @focus="inputFocus">
                 <div class="form-label">是否打印详细log</div>
               </label>
             </div>
@@ -142,7 +142,7 @@
           <main>
             <div>
               <label class="form-row">
-                <input type="checkbox" v-model="info.liveReload">
+                <input type="checkbox" v-model="info.liveReload" @focus="inputFocus">
                 <div class="form-label">开启 LiveReload 浏览器自动刷新</div>
               </label>
             </div>
@@ -185,14 +185,14 @@
 
             <div>
               <label class="form-row">
-                <input type="checkbox" v-model="info.cssEngine" value="less">
+                <input type="checkbox" v-model="info.cssEngine" value="less" @focus="inputFocus">
                 <div class="form-label">Less</div>
               </label>
             </div>
 
             <div>
               <label class="form-row">
-                <input type="checkbox" v-model="info.cssEngine" value="sass" disabled>
+                <input type="checkbox" v-model="info.cssEngine" value="sass" @focus="inputFocus" disabled>
                 <div class="form-label">Sass<span class="form-tips">（GUI版本暂不支持Sass）</span></div>
               </label>
             </div>

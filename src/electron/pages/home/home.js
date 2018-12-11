@@ -74,12 +74,25 @@ const vm = new Base({
     document.addEventListener('mouseup', this.documentMouseup);
 
     // 快捷键操作
-    this.documentKeydown = e => {
-      e.preventDefault();
-    };
-    document.addEventListener('keydown', this.documentKeydown);
+    Mousetrap.prototype.stopCallback = (e, element, combo) => {
+      // 如果有'mousetrap'类就不阻止
+      // if ((' ' + element.className + ' ').indexOf(' mousetrap ') > -1) {
+      //   return false;
+      // }
 
-    Mousetrap.bind(['command+.', 'ctrl+.'], () => { // 开关日志面板
+      if (element.tagName === 'INPUT' ||
+      element.tagName === 'SELECT' ||
+      element.tagName === 'TEXTAREA' ||
+      (element.contentEditable && element.contentEditable === 'true')) {
+        // 如果是表单元素或者contentEditable属性为true则阻止
+        return true;
+      }
+    };
+
+    // 开关日志面板
+    Mousetrap.bind(['command+.', 'ctrl+.'], () => {
+      if (this.editMode || this.infoMode || this.aboutMode) return;
+
       if (this.nowProjectIdx !== '') {
         this.logMode = !this.logMode;
       } else {
@@ -87,18 +100,38 @@ const vm = new Base({
       }
     });
 
-    Mousetrap.bind('up', () => { // 上移项目焦点
+    // 上移项目焦点
+    Mousetrap.bind('up', () => {
+      if (this.editMode || this.infoMode || this.aboutMode) return;
+
       if (this.nowProjectIdx !== '' && this.nowProjectIdx > 0) this.nowProjectIdx--;
+      else this.nowProjectIdx = this.projects.length - 1;
     });
 
-    Mousetrap.bind('down', () => { // 上移项目焦点
-      if (this.nowProjectIdx === '') this.nowProjectIdx = 0;
-      else if (this.nowProjectIdx < this.projects.length - 1) this.nowProjectIdx++;
+    // 下移项目焦点
+    Mousetrap.bind('down', () => {
+      if (this.editMode || this.infoMode || this.aboutMode) return;
+
+      if (this.nowProjectIdx !== '' && this.nowProjectIdx < this.projects.length - 1) this.nowProjectIdx++;
+      else this.nowProjectIdx = 0;
     });
 
-    Mousetrap.bind('esc', () => { // 取消项目焦点
-      this.nowProjectIdx = '';
-      this.logMode = false;
+    // 取消项目焦点
+    Mousetrap.bind('esc', () => {
+      if (this.editMode) {
+        if (this.delProjectIdx !== '') {
+          this.delProjectIdx = '';
+        } else {
+          this.editMode = false;
+        }
+      } else if (this.infoMode) {
+        this.saveInfo();
+      } else if (this.aboutMode) {
+        this.closeAboutPage();
+      } else {
+        this.nowProjectIdx = '';
+        this.logMode = false;
+      }
     });
   },
   computed: {
@@ -345,7 +378,8 @@ const vm = new Base({
       }]);
     },
 
-    radioFocus(e) {
+    // 表单元素focus后立马blur
+    inputFocus(e) {
       e.target.blur();
     }
   },
@@ -358,7 +392,6 @@ const vm = new Base({
     });
 
     document.removeEventListener('mouseup', this.documentMouseup);
-    document.removeEventListener('keydown', this.documentKeydown);
   }
 });
 
