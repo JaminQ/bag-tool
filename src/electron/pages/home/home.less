@@ -415,7 +415,7 @@ header {
     line-height: 40px;
     overflow: hidden;
 
-    .info-btn {
+    button {
       float: left;
       margin-left: 8px;
       color: @main-color;
@@ -496,33 +496,153 @@ header {
 }
 
 .page-about {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding-bottom: 60px;
+  text-align: center;
+  .no-select();
 
-  .avatar {
-    @avatarWidth: 100px;
-    width: @avatarWidth;
-    height: @avatarWidth;
-    border-radius: 50%;
-    margin-bottom: 10px;
-    .no-select();
+  .about-btns {
+    position: fixed;
+    top: 30px;
+    right: 14px;
+    font-size: 20px;
+    line-height: 40px;
+    overflow: hidden;
+
+    button {
+      float: left;
+      margin-left: 8px;
+      color: @main-color;
+    }
   }
 
-  .line {
-    line-height: 24px;
+  .logo {
+    margin-top: 30px;
+
+    i {
+      font-size: 80px;
+      color: @main-color;
+    }
+  }
+
+  .title {
+    font-weight: 100;
+    font-size: 16px;
+    margin: 15px 0 10px 0;
+  }
+
+  .version {
+    color: @disable-color;
+    font-size: 12px;
+    margin: 10px 0;
+
+    p {
+      font-family: Consolas, "Courier New", monospace;
+      height: 15px;
+      line-height: 15px;
+    }
+  }
+
+  .decoration {
     font-size: 14px;
-    .no-select();
-  }
+    margin-top: 20px;
+    letter-spacing: 1px;
 
-  a {
-    color: @main-color;
-    text-decoration: underline;
+    a {
+      margin: 0 3px;
+    }
   }
 
   .like {
-    margin-top: 10px;
+    margin-top: 15px;
+    cursor: default;
+
+    .reward {
+      display: none;
+      @rewardWidth: 300px;
+      width: @rewardWidth;
+      height: @rewardWidth;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-top: -@rewardWidth/2;
+      margin-left: -@rewardWidth/2;
+    }
+
+    &:hover {
+      .reward {
+        display: block;
+      }
+    }
+  }
+
+  .shortcut {
+    width: 300px;
+    padding: 10px;
+    margin: 15px auto;
+    border: 1px solid #ddd;
+
+    .shortcut-title {
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .shortcut-main {
+      width: 200px;
+      margin: 0 auto;
+
+      .shortcut-item {
+        font-size: 14px;
+        height: 25px;
+        overflow: hidden;
+
+        .code {
+          float: left;
+          display: flex;
+          align-items: center;
+          width: 70px;
+          height: 25px;
+
+          code {
+            background-color: rgba(27, 31, 35, .05);
+            border-radius: 3px;
+            font-size: 85%;
+            margin: 0 3px;
+            padding: .2em .4em;
+          }
+        }
+
+        .text {
+          float: left;
+          height: 25px;
+          line-height: 25px;
+        }
+      }
+    }
+  }
+
+  .author-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+
+    .author {
+      margin: 0 5px;
+      text-decoration: underline;
+    }
+
+    .avatar {
+      @avatarWidth: 16px;
+      width: @avatarWidth;
+      height: @avatarWidth;
+      border-radius: 3px;
+    }
+  }
+
+  .link {
+    margin: 20px 0 59px 0;
+
+    button {
+      margin: 0 8px;
+    }
   }
 }

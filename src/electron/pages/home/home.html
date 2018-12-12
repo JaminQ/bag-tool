@@ -87,8 +87,8 @@
     <transition name="fade-in">
       <div class="page transparent-page page-info" v-if="infoMode">
         <div class="info-btns">
-          <button class="info-btn" @click="openUrl('https://github.com/JaminQ/bag-tool/blob/master/README.md#config')"><i class="far fa-question-circle" title="帮助"></i></button>
-          <button class="info-btn" @click="saveInfo"><i class="far fa-times-circle" title="保存并关闭"></i></button>
+          <button @click="openUrl('https://github.com/JaminQ/bag-tool/blob/master/README.md#config')"><i class="far fa-question-circle" title="帮助"></i></button>
+          <button @click="saveInfo"><i class="far fa-times-circle" title="保存并关闭"></i></button>
         </div>
 
         <div class="info-block">
@@ -245,17 +245,74 @@
 
     <transition name="fade-in">
       <div class="page transparent-page page-about" v-if="aboutMode">
-        <img class="avatar" src="../../imgs/avatar.jpg" alt="头像" draggable="false">
-        <div class="line version">Version: 0.0.1</div>
-        <div class="line author">Author: <a href="javascript:;" @click="openUrl('https://github.com/JaminQ')">Jamin Qian</a></div>
-        <div class="line link">
-          <a href="javascript:;" @click="openUrl('https://github.com/JaminQ/bag-tool')">Github</a>
-          ,
-          <a href="javascript:;" @click="openUrl('https://www.npmjs.com/package/bag-tool')">NPM</a>
-          ,
-          <a href="javascript:;" @click="openUrl('https://github.com/JaminQ/bag-tool/blob/master/README.md')">README</a>
+        <div class="about-btns">
+          <button @click="closeAboutPage"><i class="far fa-times-circle" title="关闭"></i></button>
         </div>
-        <button class="btn like" @click="closeAboutPage"><i class="far fa-thumbs-up"></i> Good</button>
+
+        <div class="logo">
+          <i class="fab fa-github"></i>
+        </div>
+
+        <h3 class="title">Bag Tool</h3>
+
+        <div class="version">
+          <p>GUI Version 0.0.1</p>
+          <p>CLI Version 1.0.7</p>
+        </div>
+
+        <div class="decoration">一个基于<a href="javascript:;" draggable="false" @click="openUrl('https://gulpjs.com')">Gulp</a>的前端工作流程序</div>
+
+        <button class="btn like">
+          <i class="far fa-thumbs-up"></i> 赞赏
+          <img class="reward" src="../../imgs/reward.jpg" alt="赞赏码" draggable="false">
+        </button>
+
+        <div class="shortcut">
+          <p class="shortcut-title">快捷键说明</p>
+
+          <div class="shortcut-main">
+            <div class="shortcut-item">
+              <div class="code">
+                <code>Ctrl</code>
+                <code>.</code>
+              </div>
+              <div class="text">开/关日志面板</div>
+            </div>
+
+            <div class="shortcut-item">
+              <div class="code">
+                <code>Up</code>
+              </div>
+              <div class="text">上移当前选中的项目</div>
+            </div>
+
+            <div class="shortcut-item">
+              <div class="code">
+                <code>Down</code>
+              </div>
+              <div class="text">下移当前选中的项目</div>
+            </div>
+
+            <div class="shortcut-item">
+              <div class="code">
+                <code>Esc</code>
+              </div>
+              <div class="text">各种返回和取消</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="author-area">
+          <label>Author:</label>
+          <a class="author" href="javascript:;" draggable="false" @click="openUrl('https://github.com/JaminQ')">Jamin Qian</a>
+          <img class="avatar" src="../../imgs/avatar.jpg" alt="头像" draggable="false">
+        </div>
+
+        <div class="link">
+          <button class="btn btn-default" @click="openUrl('https://github.com/JaminQ/bag-tool')">Github</button>
+          <button class="btn btn-error" @click="openUrl('https://www.npmjs.com/package/bag-tool')">NPM</button>
+          <button class="btn" @click="openUrl('https://github.com/JaminQ/bag-tool/blob/master/README.md')">README</button>
+        </div>
       </div>
     </transition>
   </bag-slot>
