@@ -31,7 +31,8 @@ const createWindow = () => {
   win = new BrowserWindow({
     width: 400,
     height: 600,
-    frame: false
+    frame: false,
+    icon: `${__dirname}/imgs/Icon/png/iconr.png`
   });
 
   // 然后加载应用的 index.html。
