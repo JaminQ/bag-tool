@@ -41,7 +41,7 @@ const vm = new Base({
     editMode: false,
     logMode: false,
     infoMode: false,
-    aboutMode: true,
+    aboutMode: false,
 
     logHeight,
     logMoveStatus: false,
