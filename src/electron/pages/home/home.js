@@ -41,7 +41,7 @@ const vm = new Base({
     editMode: false,
     logMode: false,
     infoMode: false,
-    aboutMode: false,
+    aboutMode: true,
 
     logHeight,
     logMoveStatus: false,
@@ -128,9 +128,11 @@ const vm = new Base({
         this.saveInfo();
       } else if (this.aboutMode) {
         this.closeAboutPage();
-      } else {
+      } else if (this.nowProjectIdx !== '') {
         this.nowProjectIdx = '';
         this.logMode = false;
+      } else {
+        this.windowMinimize();
       }
     });
   },
