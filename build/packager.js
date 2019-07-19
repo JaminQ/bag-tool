@@ -83,7 +83,7 @@ copy(['gulpfile.js', 'dist/**/*.*', 'package.json'], TEMPPATH, () => {
     });
 
     // 打包
-    spawn(`electron-packager ${TEMPPATH} BagTool-v${packageJson.version} --out=${OUTPATH} --overwrite --icon=icon.png`, {}, () => {
+    spawn(`electron-packager ${TEMPPATH} BagTool-v${packageJson.version} --out=${OUTPATH} --overwrite --icon=icon.${process.platform === 'darwin' ? 'icns' : 'ico'}`, {}, () => {
       // 清空临时目录
       removeTempSync();
 

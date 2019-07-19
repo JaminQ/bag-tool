@@ -33,6 +33,9 @@ const createWindow = () => {
     width: 400,
     height: 600,
     frame: false,
+    webPreferences: {
+      nodeIntegration: true
+    },
     icon: `${__dirname}/imgs/Icon/png/iconr.png`
   });
 
