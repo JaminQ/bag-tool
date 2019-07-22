@@ -275,6 +275,9 @@ const vm = new Base({
       } else if (this.nowProjectIdx > idx) {
         this.nowProjectIdx--;
       }
+      if (this.projects.length === 1) { // 如果项目长度只有1，删除成功后要取消编辑模式
+        this.editMode = false;
+      }
       this.projects.splice(idx, 1);
       ipcRenderer.send('setData', [{
         type: 'delete',
