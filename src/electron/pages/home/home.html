@@ -15,8 +15,8 @@
         <header class="projects-title">
           Projects
           <button v-if="projects.length" @click="editMode = !editMode" class="edit-projects">
-            <i v-show="!editMode" title="编辑项目" class="far fa-edit"></i>
-            <i v-show="editMode" title="完成" class="far fa-check-circle edit-projects-done"></i>
+            <i v-show="!editMode" title="编辑项目" class="far fa-edit fs-16"></i>
+            <i v-show="editMode" title="完成" class="far fa-check-circle edit-projects-done fs-16"></i>
           </button>
         </header>
 
@@ -32,8 +32,8 @@
                     <div class="project-title">{{ project.title }}</div>
                     <div class="project-path">{{ project.path }}</div>
                   </div>
-                  <button class="project-info" @click.stop="infoProject(project_i, project.title)"><i class="fas fa-info-circle" title="查看配置"></i></button>
-                  <button class="project-del" @click.stop="removeProject(project_i)"><i class="fas fa-trash-alt" title="移除"></i></button>
+                  <button class="project-info" @click.stop="infoProject(project_i, project.title)"><i class="fas fa-info-circle fs-14" title="查看配置"></i></button>
+                  <button class="project-del" @click.stop="removeProject(project_i)"><i class="fas fa-trash-alt fs-14" title="移除"></i></button>
                   <button class="project-move" @mousedown="moveProjectIdx = project_i, projectTop = 0"><i class="icon-move" title="移动"></i></button>
                 </div>
               </label>
@@ -65,7 +65,7 @@
       </transition>
 
       <div v-show="logMode" class="log-area" :style="{ height: logHeight + 'px' }">
-        <button class="log-empty-btn" :style="{ bottom: logHeight + 'px' }" @click="clearLog(nowProjectIdx)"><i title="清空日志" class="fas fa-trash-alt"></i></button>
+        <button class="log-empty-btn" :style="{ bottom: logHeight + 'px' }" @click="clearLog(nowProjectIdx)"><i title="清空日志" class="fas fa-trash-alt fs-14"></i></button>
         <code v-html="nowProject.logContent"></code>
 
         <div class="drag-bar" :style="{ bottom: logHeight + 20 + 'px' }" @mousedown="logMoveStatus = true"></div>
@@ -73,13 +73,13 @@
       </div>
 
       <div class="bottom-bar">
-        <button class="function-btn" @click="addProjects"><i title="添加新项目" class="fas fa-plus"></i></button>
-        <button class="function-btn" :disabled="nowProjectIdx === ''" @click="openProject(projects[nowProjectIdx].path)"><i title="打开项目目录" class="far fa-folder-open"></i></button>
-        <button class="function-btn" :disabled="nowProjectIdx === ''" @click="exportProject"><i title="打包并压缩项目输出目录" class="fas fa-cube"></i></button>
-        <button class="function-btn" @click="aboutUs"><i title="关于" class="far fa-question-circle"></i></button>
+        <button class="function-btn" @click="addProjects"><i title="添加新项目" class="fas fa-plus fs-14"></i></button>
+        <button class="function-btn" :disabled="nowProjectIdx === ''" @click="openProject(projects[nowProjectIdx].path)"><i title="打开项目目录" class="far fa-folder-open fs-14"></i></button>
+        <button class="function-btn" :disabled="nowProjectIdx === ''" @click="exportProject"><i title="打包并压缩项目输出目录" class="fas fa-cube fs-14"></i></button>
+        <button class="function-btn" @click="aboutUs"><i title="关于" class="far fa-question-circle fs-14"></i></button>
 
         <div class="function-right-btns">
-          <button class="function-btn" :disabled="nowProjectIdx === ''" :class="{ 'log-mode': logMode }" @click="logMode = !logMode"><i title="查看日志" class="fas fa-terminal"></i></button>
+          <button class="function-btn" :disabled="nowProjectIdx === ''" :class="{ 'log-mode': logMode }" @click="logMode = !logMode"><i title="查看日志" class="fas fa-terminal fs-14"></i></button>
         </div>
       </div>
     </div>
@@ -87,8 +87,8 @@
     <transition name="fade-in">
       <div class="page transparent-page page-info" v-if="infoMode">
         <div class="info-btns">
-          <button @click="openUrl('https://github.com/JaminQ/bag-tool/blob/master/README.md#config')"><i class="far fa-question-circle" title="帮助"></i></button>
-          <button @click="saveInfo"><i class="far fa-times-circle" title="保存并关闭"></i></button>
+          <button @click="openUrl('https://github.com/JaminQ/bag-tool/blob/master/README.md#config')"><i class="far fa-question-circle fs-20" title="帮助"></i></button>
+          <button @click="saveInfo"><i class="far fa-times-circle fs-20" title="保存并关闭"></i></button>
         </div>
 
         <div class="info-block">
@@ -246,7 +246,7 @@
     <transition name="fade-in">
       <div class="page transparent-page page-about" v-if="aboutMode">
         <div class="about-btns">
-          <button @click="closeAboutPage"><i class="far fa-times-circle" title="关闭"></i></button>
+          <button @click="closeAboutPage"><i class="far fa-times-circle fs-20" title="关闭"></i></button>
         </div>
 
         <div class="logo">
@@ -263,7 +263,7 @@
         <div class="decoration">一个基于<a href="javascript:;" draggable="false" @click="openUrl('https://gulpjs.com')">Gulp</a>的前端工作流程序</div>
 
         <button class="btn like">
-          <i class="far fa-thumbs-up"></i> 赞赏
+          <i class="far fa-thumbs-up fs-14"></i> 赞赏
           <img class="reward" src="../../imgs/reward.jpg" alt="赞赏码" draggable="false">
         </button>
 

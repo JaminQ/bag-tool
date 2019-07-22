@@ -12,8 +12,7 @@ const {
   arrChangeItem
 } = require('./common/common');
 
-const cwd = process.cwd();
-const projectsFile = path.join(cwd, 'data.json');
+const projectsFile = path.join(app.getPath('userData'), 'data.json');
 let DATA = {};
 
 // 读取data
